@@ -8,10 +8,13 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private Texture2D _testimage;
+    private Effect _mapShader;
 
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
+        _graphics.GraphicsProfile = GraphicsProfile.HiDef;
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
@@ -27,8 +30,9 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // TODO: use this.Content to load your game content here
-    }
+    _testimage = Content.Load<Texture2D>("testimage");
+    _mapShader = Content.Load<Effect>("map-shader");
+}
 
     protected override void Update(GameTime gameTime)
     {
@@ -44,7 +48,17 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        // TODO: Add your drawing code here
+        Matrix view = Matrix.Identity;
+
+        int width = GraphicsDevice.Viewport.Width;
+        int height = GraphicsDevice.Viewport.Height;
+        Matrix projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
+
+        _mapShader.Parameters["view_projection"].SetValue(view * projection);
+
+        _spriteBatch.Begin(effect: _mapShader);
+        _spriteBatch.Draw(_testimage, new Vector2(0, 0), Color.White);
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }

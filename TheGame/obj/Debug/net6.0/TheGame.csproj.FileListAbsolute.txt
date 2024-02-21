@@ -23,3 +23,5 @@ D:\Game202402\TheGame\obj\Debug\net6.0\refint\TheGame.dll
 D:\Game202402\TheGame\obj\Debug\net6.0\TheGame.pdb
 D:\Game202402\TheGame\obj\Debug\net6.0\TheGame.genruntimeconfig.cache
 D:\Game202402\TheGame\obj\Debug\net6.0\ref\TheGame.dll
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\map-shader.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\testimage.xnb
