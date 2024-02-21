@@ -4,10 +4,16 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>D:/Game202402/TheGame/Content/darkgrey.png</File>
+    <File>D:/Game202402/TheGame/Content/enemy1.png</File>
+    <File>D:/Game202402/TheGame/Content/lightgrey.png</File>
     <File>D:/Game202402/TheGame/Content/map-shader.fx</File>
     <File>D:/Game202402/TheGame/Content/testimage.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
