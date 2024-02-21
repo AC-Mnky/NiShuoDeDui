@@ -20,9 +20,9 @@ public class Game1 : Game
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
     private long tick = 0;
     private double timeBank = 0d;
-    private enum Status {Paused = 0, Half = 30, Normal = 60, Double = 120, Triple = 180};
-    private Status status = Status.Normal;
-    private Status oldStatus = Status.Normal;
+    private enum Status {Paused, Running};
+    private Status status = Status.Running;
+    private int tps = 60;
     private Dictionary<int, Entity> entities = new() {
         {1,new Entity(new Vector2(16,16))}
     };
@@ -60,7 +60,7 @@ public class Game1 : Game
     {
         entities[1].coordinate.X += 1;
         ++tick;
-        Debug.Print(tick.ToString());
+        // Debug.Print(tick.ToString());
     }
     protected override void Update(GameTime gameTime)
     {
@@ -71,36 +71,35 @@ public class Game1 : Game
             ToggleBorderless();
         if (Keyboard.HasBeenPressed(Keys.Q))
             Exit();
-        if (Keyboard.HasBeenPressed(Keys.Space))
-        {
-            if (status == Status.Paused)
-                status = oldStatus;
-            else
-            {
-            oldStatus = status;
-            status = Status.Paused;
-            }
-        }
-        if (Keyboard.HasBeenPressed(Keys.OemTilde))
-            status = Status.Half;
-        if (Keyboard.HasBeenPressed(Keys.D1))
-            status = Status.Normal;
-        if (Keyboard.HasBeenPressed(Keys.D2))
-            status = Status.Double;
-        if (Keyboard.HasBeenPressed(Keys.D3))
-            status = Status.Triple;
             // TickUpdate();
 
         // Debug.Print(Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(view * projection)).ToString());
         // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
-        view *=  Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
+        Matrix newView = view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
+        Vector3 scale;
+        newView.Decompose(out scale, out _, out _);
+        // Debug.Print(scale.X.ToString());
+        if (scale.X<1.05f) view =  newView;
 
+        if (Keyboard.HasBeenPressed(Keys.Space))
+        {
+            if (status == Status.Paused) status = Status.Running;
+            else status = Status.Paused;
+        }
+        if (Keyboard.HasBeenPressed(Keys.OemTilde))
+            tps = 30;
+        if (Keyboard.HasBeenPressed(Keys.D1))
+            tps = 60;
+        if (Keyboard.HasBeenPressed(Keys.D2))
+            tps = 120;
+        if (Keyboard.HasBeenPressed(Keys.D3))
+            tps = 180;
         timeBank += gameTime.ElapsedGameTime.TotalSeconds;
         if (status == Status.Paused) timeBank = 0d;
         else while(timeBank > 0d)
         {
             TickUpdate();
-            timeBank -= 1d / (int)status;
+            timeBank -= 1d / tps;
         }
 
         base.Update(gameTime);
@@ -117,7 +116,7 @@ public class Game1 : Game
         _mapShader.Parameters["view_projection"].SetValue(view * projection);
 
         _spriteBatch.Begin(effect: _mapShader);
-        for(int i=0;i<10;++i)for(int j=0;j<10;++j)
+        for(int i=0;i<16;++i)for(int j=0;j<10;++j)
         {
             _spriteBatch.Draw(((i+j)%2==0) ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
         }
