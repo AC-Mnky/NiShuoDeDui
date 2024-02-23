@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -18,14 +21,17 @@ public class Game1 : Game
     private Effect _mapShader;
     private Matrix view = Matrix.Identity;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
-    private long tick = 0;
+    public long tick = 0;
     private double timeBank = 0d;
     private enum Status {Paused, Running};
     private Status status = Status.Running;
     private int tps = 60;
-    private Dictionary<int, Entity> entities = new() {
-        {1,new Entity(new Vector2(16,16))}
-    };
+    public Dictionary<long, Entity> entities = new();
+    public Dictionary<long, Spell> spells = new();
+    public Dictionary<long, Spellcast> spellcasts = new();
+    private const int gridI = 32;
+    private const int gridJ = 20;
+    private bool[,] isLight = new bool[gridI,gridJ];
 
 
     public Game1()
@@ -41,6 +47,14 @@ public class Game1 : Game
     protected override void Initialize()
     {
         ToggleBorderless();
+        entities[0] = new Enemy(this, Entity.Name.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
+        spells[0] = new Spell(this, Spell.Name.SummonEnemy1, Spell.Affiliation.Map, 60);
+
+        for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
+        {
+            isLight[i,j] = RandomNumberGenerator.GetInt32(2)>0;
+            // (i+j)%2==0;
+        }
 
         base.Initialize();
     }
@@ -58,9 +72,17 @@ public class Game1 : Game
 
     protected void TickUpdate()
     {
-        entities[1].coordinate.X += 1;
+        foreach(Entity e in entities.Values)
+            e.TickUpdateVelocity();
+        foreach(Entity e in entities.Values)
+            e.TickUpdateCoordinate();
+        foreach(Spellcast sc in spellcasts.Values)
+            sc.TickUpdate(tick);
+        foreach(Spell s in spells.Values)
+            s.TickUpdate(tick);
         ++tick;
         // Debug.Print(tick.ToString());
+        // Debug.Print(spellcasts.Count.ToString());
     }
     protected override void Update(GameTime gameTime)
     {
@@ -71,21 +93,21 @@ public class Game1 : Game
             ToggleBorderless();
         if (Keyboard.HasBeenPressed(Keys.Q))
             Exit();
-            // TickUpdate();
+        if (Keyboard.HasBeenPressed(Keys.R))
+            view = Matrix.Identity;
+        if (Keyboard.HasBeenPressed(Keys.T) && status == Status.Paused)
+            TickUpdate();
 
-        // Debug.Print(Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(view * projection)).ToString());
         // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
         Matrix newView = view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
-        Vector3 scale;
-        newView.Decompose(out scale, out _, out _);
-        // Debug.Print(scale.X.ToString());
-        if (scale.X<1.05f) view =  newView;
+        Vector3 scale; Vector3 translation;
+        newView.Decompose(out scale, out _, out translation);
+        if (scale.X<0.95f) view =  newView;
+        else if (scale.X<1.05d) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
 
         if (Keyboard.HasBeenPressed(Keys.Space))
-        {
             if (status == Status.Paused) status = Status.Running;
             else status = Status.Paused;
-        }
         if (Keyboard.HasBeenPressed(Keys.OemTilde))
             tps = 30;
         if (Keyboard.HasBeenPressed(Keys.D1))
@@ -116,13 +138,13 @@ public class Game1 : Game
         _mapShader.Parameters["view_projection"].SetValue(view * projection);
 
         _spriteBatch.Begin(effect: _mapShader);
-        for(int i=0;i<16;++i)for(int j=0;j<10;++j)
+        for(int i=0;i<gridI;++i)for(int j=0;j<gridJ;++j)
         {
-            _spriteBatch.Draw(((i+j)%2==0) ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
+            _spriteBatch.Draw(isLight[i,j] ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
         }
-        foreach(int entityid in entities.Keys)
+        foreach(int id in entities.Keys)
         {
-            _spriteBatch.Draw(_enemy1, entities[entityid].coordinate, Color.White);
+            _spriteBatch.Draw(_enemy1, entities[id].RenderCoordinate(), Color.White);
         }
         _spriteBatch.End();
 
