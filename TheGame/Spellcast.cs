@@ -3,21 +3,24 @@ using Microsoft.Xna.Framework;
 
 namespace TheGame;
 
+public enum SpellName {SummonEnemy1, SummonProjectile1};
+public enum CastType {Independent, Dependent};
+
+
 public class Spellcast : Thing
 {
-    public Spell.Name name;
+    public SpellName name;
     public long tickBirth;
-    public enum Dependence {Independent, Dependent};
-    public Dependence dependence;
+    public CastType dependence;
     public Vector2 coordinate;
     public Vector2 currentCoordinate()
     {
-        if(dependence == Dependence.Independent) return coordinate;
+        if(dependence == CastType.Independent) return coordinate;
         else return game.entities[subjectId].coordinate;
     }
     public long subjectId;
     public Vector2 direction = Vector2.Zero;
-    public Spellcast(Game1 game, Spell.Name name, Dependence dependence, Vector2 coordinate, long subjectId) : base(game)
+    public Spellcast(Game1 game, SpellName name, CastType dependence, Vector2 coordinate, long subjectId) : base(game)
     {
         id = game.spellcasts.Count;
         tickBirth = game.tick;
@@ -27,9 +30,20 @@ public class Spellcast : Thing
         this.subjectId = subjectId;
     }
 
+
+
+
+
     public void TickUpdate(long tick)
     {
-        game.entities[game.entities.Count] = new Enemy(game, Entity.Name.Enemy1, currentCoordinate(), new Vector2(1,0));
-        game.spellcasts.Remove(id);
+        switch(name)
+        {
+            case SpellName.SummonEnemy1:
+            {
+                game.entities[game.entities.Count] = new Enemy(game, EntityName.Enemy1, currentCoordinate(), new Vector2(1,0));
+                game.spellcasts.Remove(id);
+                break;
+            }
+        }
     }
 }

@@ -1,37 +1,42 @@
-﻿using System;
+﻿// 要想理解这个源码的架构，最直观的方式是看看有哪些class，它们有哪些作用。
+// 整个游戏是一个Game1对象。游戏中有很多实体Entity，包含敌人Enemy和弹射物Projectile。
+// 另外，游戏中有一些法术Spell，但这些是静态的，并不是被施放出的法术。
+// 被施放出的法术是Spellcast，它们很快出现和消失。一个Spell每次被施放都会产生一个Spellcast。
+// Game1有三个字典entities[]，spells[]，spellcasts[]，存储着游戏里的所有东西。它们十分关键。
+// 如果要删除某个东西的话，直接从字典中移除引用就可以了，C#会自动回收内存的。
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Cryptography;
-using Microsoft.VisualBasic.FileIO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace TheGame;
 
+public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private Texture2D _testimage;
     private Texture2D _lightgrey;
     private Texture2D _darkgrey;
-    private Texture2D _enemy1;
     private Effect _mapShader;
     private Matrix view = Matrix.Identity;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
-    public long tick = 0;
+    public long tick = 0; // 游戏从开始经过的刻数
     private double timeBank = 0d;
-    private enum Status {Paused, Running};
-    private Status status = Status.Running;
-    private int tps = 60;
-    public Dictionary<long, Entity> entities = new();
-    public Dictionary<long, Spell> spells = new();
-    public Dictionary<long, Spellcast> spellcasts = new();
+    private GameStatus status = GameStatus.Running; // 是不是暂停
+    private int tps = 60; // 每秒多少刻（控制倍速，60刻是一倍速）
+    public Dictionary<long, Entity> entities = new(); // 十分关键的字典，其中每个实体都有一个唯一的id
+    public Dictionary<long, Spell> spells = new(); // 十分关键的字典，其中每个spell都有一个唯一的id
+    public Dictionary<long, Spellcast> spellcasts = new(); // 十分关键的字典，其中每个spellcast都有一个唯一的id
     private const int gridI = 32;
     private const int gridJ = 20;
     private bool[,] isLight = new bool[gridI,gridJ];
+
 
 
     public Game1()
@@ -46,9 +51,10 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        ToggleBorderless();
-        entities[0] = new Enemy(this, Entity.Name.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
-        spells[0] = new Spell(this, Spell.Name.SummonEnemy1, Spell.Affiliation.Map, 60);
+        ToggleBorderless(); // 先全屏
+
+        entities[0] = new Enemy(this, EntityName.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
+        spells[0] = new Spell(this, SpellName.SummonEnemy1, Spell.Affiliation.Map, 60);
 
         for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
         {
@@ -59,21 +65,22 @@ public class Game1 : Game
         base.Initialize();
     }
 
-    protected override void LoadContent()
+    protected override void LoadContent() // 加载材质
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _testimage = Content.Load<Texture2D>("testimage");
         _lightgrey = Content.Load<Texture2D>("lightgrey");
         _darkgrey = Content.Load<Texture2D>("darkgrey");
-        _enemy1 = Content.Load<Texture2D>("enemy1");
+        Entity.Texture[EntityName.Enemy1] = Content.Load<Texture2D>("enemy1");
+        Entity.Texture[EntityName.Projectile1] = Content.Load<Texture2D>("projectile1");
+        
         _mapShader = Content.Load<Effect>("map-shader");
     }
 
-    protected void TickUpdate()
+    protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
         foreach(Entity e in entities.Values)
-            e.TickUpdateVelocity();
+            e.TickUpdate();
         foreach(Entity e in entities.Values)
             e.TickUpdateCoordinate();
         foreach(Spellcast sc in spellcasts.Values)
@@ -84,7 +91,7 @@ public class Game1 : Game
         // Debug.Print(tick.ToString());
         // Debug.Print(spellcasts.Count.ToString());
     }
-    protected override void Update(GameTime gameTime)
+    protected override void Update(GameTime gameTime) // 窗口每帧更新（和暂停或倍速无关），这里主要负责一些输入输出的计算
     {
         Keyboard.GetState();
         Mouse.GetState();
@@ -94,10 +101,11 @@ public class Game1 : Game
         if (Keyboard.HasBeenPressed(Keys.Q))
             Exit();
         if (Keyboard.HasBeenPressed(Keys.R))
-            view = Matrix.Identity;
-        if (Keyboard.HasBeenPressed(Keys.T) && status == Status.Paused)
-            TickUpdate();
+            view = Matrix.Identity; // 恢复视角至初始状态
+        if (Keyboard.HasBeenPressed(Keys.T) && status == GameStatus.Paused)
+            TickUpdate(); // 暂停状态下，按一次T增加一刻
 
+        // 这部分是鼠标滚轮缩放
         // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
         Matrix newView = view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
         Vector3 scale; Vector3 translation;
@@ -106,51 +114,57 @@ public class Game1 : Game
         else if (scale.X<1.05d) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
 
         if (Keyboard.HasBeenPressed(Keys.Space))
-            if (status == Status.Paused) status = Status.Running;
-            else status = Status.Paused;
+            if (status == GameStatus.Paused) status = GameStatus.Running;
+            else status = GameStatus.Paused;
         if (Keyboard.HasBeenPressed(Keys.OemTilde))
-            tps = 30;
+            tps = 30; // 半速
         if (Keyboard.HasBeenPressed(Keys.D1))
-            tps = 60;
+            tps = 60; // 一倍速
         if (Keyboard.HasBeenPressed(Keys.D2))
-            tps = 120;
+            tps = 120; // 二倍速
         if (Keyboard.HasBeenPressed(Keys.D3))
-            tps = 180;
+            tps = 180; // 三倍速
         timeBank += gameTime.ElapsedGameTime.TotalSeconds;
-        if (status == Status.Paused) timeBank = 0d;
-        else while(timeBank > 0d)
+        if (status == GameStatus.Paused) timeBank = 0d;
+        else 
         {
-            TickUpdate();
-            timeBank -= 1d / tps;
+            int TickUpdateMax = 5;
+            while(timeBank > 0d && TickUpdateMax > 0)
+            {
+                TickUpdate();
+                --TickUpdateMax;
+                timeBank -= 1d / tps;
+            }
         }
+        // 采用的倍速使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过五倍速
 
         base.Update(gameTime);
     }
 
-    protected override void Draw(GameTime gameTime)
+    protected override void Draw(GameTime gameTime) // 显示
     {
-        GraphicsDevice.Clear(Color.Black);
+        GraphicsDevice.Clear(Color.Black); // 背景是黑的
 
-        int width = GraphicsDevice.Viewport.Width;
-        int height = GraphicsDevice.Viewport.Height;
-        projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
-
+        projection = Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, 1);
         _mapShader.Parameters["view_projection"].SetValue(view * projection);
 
         _spriteBatch.Begin(effect: _mapShader);
-        for(int i=0;i<gridI;++i)for(int j=0;j<gridJ;++j)
+
+        for(int i=0;i<gridI;++i)for(int j=0;j<gridJ;++j) // 画地图
         {
             _spriteBatch.Draw(isLight[i,j] ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
         }
-        foreach(int id in entities.Keys)
+        foreach(Entity e in entities.Values) // 画实体
         {
-            _spriteBatch.Draw(_enemy1, entities[id].RenderCoordinate(), Color.White);
+            _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White);
         }
+
         _spriteBatch.End();
 
         base.Draw(gameTime);
     }
 
+    // 下面是关于全屏显示的东西，不用管
     #region fullscreen
 
     bool _isFullscreen = false;

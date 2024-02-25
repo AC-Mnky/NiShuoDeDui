@@ -3,4 +3,4 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",170,4181,0.1804716
 "D:/Game202402/TheGame/Content/lightgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/lightgrey.xnb","TextureProcessor","Texture2DContent",221,16469,0.0039345
 "D:/Game202402/TheGame/Content/map-shader.fx","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/map-shader.xnb","EffectProcessor","CompiledEffectContent",1019,1565,0.3225478
-"D:/Game202402/TheGame/Content/testimage.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/testimage.xnb","TextureProcessor","Texture2DContent",3758,360085,0.1452563
+"D:/Game202402/TheGame/Content/projectile1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/projectile1.xnb","TextureProcessor","Texture2DContent",148,1109,0.2081213

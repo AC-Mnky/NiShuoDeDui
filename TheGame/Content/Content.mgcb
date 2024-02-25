@@ -55,7 +55,7 @@
 /processorParam:DebugMode=Auto
 /build:map-shader.fx
 
-#begin testimage.png
+#begin projectile1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -65,5 +65,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:testimage.png
+/build:projectile1.png
 

@@ -24,7 +24,7 @@ D:\Game202402\TheGame\obj\Debug\net6.0\TheGame.pdb
 D:\Game202402\TheGame\obj\Debug\net6.0\TheGame.genruntimeconfig.cache
 D:\Game202402\TheGame\obj\Debug\net6.0\ref\TheGame.dll
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\map-shader.xnb
-D:\Game202402\TheGame\bin\Debug\net6.0\Content\testimage.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\darkgrey.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\lightgrey.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemy1.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\projectile1.xnb

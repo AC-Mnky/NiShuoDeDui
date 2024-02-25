@@ -5,19 +5,13 @@ namespace TheGame;
 
 public class Projectile : Entity
 {
-    public Projectile(Game1 game, Name name, Vector2 coordinate, Vector2 velocity) : base(game,name)
+    public Projectile(Game1 game, EntityName name, Vector2 coordinate, Vector2 velocity) : base(game,name,coordinate,velocity)
     {
-        this.coordinate = coordinate;
-        this.velocity = velocity;
     }
 
-    public override void TickAction()
+    public override void TickUpdate()
     {
         throw new System.NotImplementedException();
     }
 
-    public override void TickUpdateVelocity()
-    {
-        throw new System.NotImplementedException();
-    }
 }

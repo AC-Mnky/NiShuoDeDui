@@ -6,19 +6,17 @@ namespace TheGame;
 
 public class Enemy : Entity
 {
-    public Enemy(Game1 game, Name name, Vector2 coordinate, Vector2 velocity) : base(game, name)
+    public Enemy(Game1 game, EntityName name, Vector2 coordinate, Vector2 velocity) : base(game, name, coordinate, velocity)
     {
-        this.coordinate = coordinate;
-        this.velocity = velocity;
     }
 
-    public override void TickAction()
-    {
-        throw new System.NotImplementedException();
-    }
 
-    public override void TickUpdateVelocity()
+
+
+
+    public override void TickUpdate()
     {
         // throw new System.NotImplementedException();
     }
+
 }
