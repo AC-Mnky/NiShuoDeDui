@@ -8,11 +8,9 @@ using Microsoft.Xna.Framework;
 
 namespace TheGame;
 
-public enum SpellName {SummonEnemy1, SummonProjectile1, AddYVelocity};
 
 public class Spell : Thing
 {
-    public SpellName name;
     public enum Affiliation {Desk, Map, Child, Suffix, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术，还是某个法术的后继法术
     public Affiliation affiliation = Affiliation.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号
@@ -20,24 +18,23 @@ public class Spell : Thing
     public Vector2 Coordinate() {return new Vector2(mapI*64f+32f, mapJ*64f+32f);}
     public Spell parent = null; // 如果是子法术或后继法术，那么它挂在哪个法术身上
     public int rank = -1; // 如果是子法术，那么是第几个
-    protected static Dictionary<SpellName, int> childrenNumber = new() {
-        {SpellName.SummonEnemy1, 1},
-        {SpellName.SummonProjectile1, 1},
-        {SpellName.AddYVelocity, 0}
+    protected static Dictionary<Name, int> childrenNumber = new() {
+        {Name.SummonEnemy1, 1},
+        {Name.SummonProjectile1, 1},
+        {Name.AddYVelocity, 0}
     };
-    public static Dictionary<SpellName, bool> dependentOnly = new() {
-        {SpellName.SummonEnemy1, false},
-        {SpellName.SummonProjectile1, false},
-        {SpellName.AddYVelocity, true}
+    public static Dictionary<Name, bool> dependentOnly = new() {
+        {Name.SummonEnemy1, false},
+        {Name.SummonProjectile1, false},
+        {Name.AddYVelocity, true}
     };
     public Spell[] children; // 子法术是谁
     public Spell suffix = null; // 后继法术是谁
     public ArrayList toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public long coolDownMax;
     public long coolDown;
-    public Spell(Game1 game, long id, SpellName name, long coolDownMax) : base(game, id)
+    public Spell(Game1 game, long id, Name name, long coolDownMax) : base(game, id, name)
     {
-        this.name = name;
         this.coolDownMax = coolDownMax;
         children = new Spell[childrenNumber[name]];
     }

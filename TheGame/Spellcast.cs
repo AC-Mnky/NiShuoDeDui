@@ -15,7 +15,7 @@ public class Spellcast : Thing
         if (cast.type == CastType.Dependent) return cast.subject.coordinate;
         else return cast.coordinate;
     }
-    public Spellcast(Game1 game, long id, Spell spell, Cast cast) : base(game,id)
+    public Spellcast(Game1 game, long id, Spell spell, Cast cast) : base(game,id,spell.name)
     {
         this.spell = spell;
         this.cast = cast;
@@ -43,21 +43,21 @@ public class Spellcast : Thing
         else
             switch(spell.name)
             {
-                case SpellName.SummonEnemy1:
+                case Name.SummonEnemy1:
                 {
-                    Entity x = game.NewEnemy(EntityName.Enemy1, CurrentCoordinate(), Vector2.Zero);
+                    Entity x = game.NewEnemy(Name.Enemy1, CurrentCoordinate(), Vector2.Zero);
                     spell.children[0]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
                 }
-                case SpellName.SummonProjectile1:
+                case Name.SummonProjectile1:
                 {
-                    Entity x = game.NewProjectile(EntityName.Projectile1, CurrentCoordinate(), Vector2.Zero);
+                    Entity x = game.NewProjectile(Name.Projectile1, CurrentCoordinate(), Vector2.Zero);
                     spell.children[0]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
                 }
-                case SpellName.AddYVelocity:
+                case Name.AddYVelocity:
                 {
                     ++cast.subject.velocity.Y;
                     alive = false;

@@ -53,10 +53,10 @@ public class Game1 : Game
     {
         // ToggleBorderless(); // 先全屏 // 但是全屏不方便debug所以先关掉了
 
-        NewEnemy(EntityName.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
-        Spell x = NewSpell(SpellName.SummonProjectile1, 60);
+        NewEnemy(Name.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
+        Spell x = NewSpell(Name.SummonProjectile1, 60);
         x.AffiliateAsMap(3,0);
-        Spell y = NewSpell(SpellName.AddYVelocity, 0);
+        Spell y = NewSpell(Name.AddYVelocity, 0);
         y.AffiliateAsChild(x, 0);
 
         for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
@@ -74,23 +74,23 @@ public class Game1 : Game
 
         _lightgrey = Content.Load<Texture2D>("lightgrey");
         _darkgrey = Content.Load<Texture2D>("darkgrey");
-        Entity.Texture[EntityName.Enemy1] = Content.Load<Texture2D>("enemy1");
-        Entity.Texture[EntityName.Projectile1] = Content.Load<Texture2D>("projectile1");
+        Entity.Texture[Name.Enemy1] = Content.Load<Texture2D>("enemy1");
+        Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
 
         _mapShader = Content.Load<Effect>("map-shader");
     }
 
 
 
-    public Enemy NewEnemy(EntityName name, Vector2 coordinate, Vector2 velocity)
+    public Enemy NewEnemy(Name name, Vector2 coordinate, Vector2 velocity)
     {
         return (Enemy)(entities[entities.Count] = new Enemy(this, entities.Count, name, coordinate, velocity));
     }
-    public Projectile NewProjectile(EntityName name, Vector2 coordinate, Vector2 velocity)
+    public Projectile NewProjectile(Name name, Vector2 coordinate, Vector2 velocity)
     {
         return (Projectile)(entities[entities.Count] = new Projectile(this, entities.Count, name, coordinate, velocity));
     }
-    public Spell NewSpell(SpellName name, long coolDownMax)
+    public Spell NewSpell(Name name, long coolDownMax)
     {
         return spells[spells.Count] = new Spell(this, spells.Count, name, coolDownMax);
     }
@@ -118,7 +118,7 @@ public class Game1 : Game
         foreach(Spell s in spells.Values)
             s.TickUpdate(); // 法术更新（其实只有地图上的法术会发生变化）
         ++tick;
-        
+
         // Debug.Print(tick.ToString());
         // Debug.Print(spellcasts.Count.ToString());
     }
