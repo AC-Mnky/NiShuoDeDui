@@ -12,7 +12,7 @@ public class Cast : ICloneable
     public Vector2 coordinate = new();
     public Entity subject = null;
     public Vector2 direction = Vector2.Zero;
-    public Cast( Vector2 coordinate)
+    public Cast(Vector2 coordinate)
     {
         type = CastType.Independent;
         this.coordinate = coordinate;
@@ -29,6 +29,6 @@ public class Cast : ICloneable
     }
     public bool IsDependent()
     {
-        return type == CastType.Independent && subject.exist;
+        return type == CastType.Dependent && subject.exist;
     }
 }
