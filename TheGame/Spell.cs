@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace TheGame;
 
-public enum SpellName {SummonEnemy1, SummonProjectile1, AddYSpeed};
+public enum SpellName {SummonEnemy1, SummonProjectile1, AddYVelocity};
 
 public class Spell : Thing
 {
@@ -23,24 +23,23 @@ public class Spell : Thing
     protected static Dictionary<SpellName, int> childrenNumber = new() {
         {SpellName.SummonEnemy1, 1},
         {SpellName.SummonProjectile1, 1},
-        {SpellName.AddYSpeed, 0}
+        {SpellName.AddYVelocity, 0}
     };
     public static Dictionary<SpellName, bool> dependentOnly = new() {
         {SpellName.SummonEnemy1, false},
         {SpellName.SummonProjectile1, false},
-        {SpellName.AddYSpeed, true}
+        {SpellName.AddYVelocity, true}
     };
     public Spell[] children; // 子法术是谁
     public Spell suffix = null; // 后继法术是谁
     public ArrayList toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public long coolDownMax;
     public long coolDown;
-    public Spell(Game1 game, SpellName name, long coolDownMax) : base(game)
+    public Spell(Game1 game, long id, SpellName name, long coolDownMax) : base(game, id)
     {
-        id = game.spells.Count;
         this.name = name;
         this.coolDownMax = coolDownMax;
-        children = new Spell[Spell.childrenNumber[name]];
+        children = new Spell[childrenNumber[name]];
     }
 
 
@@ -126,7 +125,7 @@ public class Spell : Thing
     public void TickCast()
     {
         foreach(Cast c in toCastNextTick)
-            game.spellcasts[game.spellcasts.Count] = new Spellcast(game, this, c); // 其实不一定成功，所以以后要加上if
+            game.NewSpellcast(this, c); // 其实不一定成功，所以以后要加上if
         toCastNextTick.Clear();
     }
 

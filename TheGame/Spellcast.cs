@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 
@@ -7,20 +8,17 @@ namespace TheGame;
 
 public class Spellcast : Thing
 {
-    public Spell origin;
-    public SpellName name;
+    public Spell spell;
     public Cast cast;
     public Vector2 CurrentCoordinate()
     {
-        if (cast.type != CastType.Independent) return cast.subject.coordinate;
+        if (cast.type == CastType.Dependent) return cast.subject.coordinate;
         else return cast.coordinate;
     }
-    public Spellcast(Game1 game, Spell origin, Cast cast) : base(game)
+    public Spellcast(Game1 game, long id, Spell spell, Cast cast) : base(game,id)
     {
-        id = game.spellcasts.Count;
-        this.origin = origin;
-        name = origin.name; 
-        this.cast = cast; // 这里直接把引用传过去了，以后可能会出bug。
+        this.spell = spell;
+        this.cast = cast;
     }
 
 
@@ -29,27 +27,42 @@ public class Spellcast : Thing
 
     public override void TickUpdate()
     {
-        if(Spell.dependentOnly[name] && !cast.IsDependent())
+        if(Spell.dependentOnly[spell.name] && cast.type == CastType.Independent) // 这种情况根本不该发生，因为这个施术会失败。
         {
-            game.spellcasts.Remove(id);
-            exist = false;
+            alive = false;
+            Debug.Print("Something is wrong");
         }
-        if(!exist) return;
-        switch(name)
-        {
-            case SpellName.SummonEnemy1:
+        if(cast.type == CastType.Dependent && !cast.subject.alive) // 分类：亡语
             {
-                Entity x = game.entities[game.entities.Count] = new Enemy(game, EntityName.Enemy1, CurrentCoordinate(), new Vector2(1,0));
-                origin.children[0]?.toCastNextTick.Add(new Cast(x));
-                game.spellcasts.Remove(id);
-                break;
+                // switch(spell.name)
+                // {
+
+                // }
+                alive = false;
             }
-            case SpellName.AddYSpeed:
+        else
+            switch(spell.name)
             {
-                ++cast.subject.velocity.Y;
-                game.spellcasts.Remove(id);
-                break;
+                case SpellName.SummonEnemy1:
+                {
+                    Entity x = game.NewEnemy(EntityName.Enemy1, CurrentCoordinate(), Vector2.Zero);
+                    spell.children[0]?.toCastNextTick.Add(new Cast(x));
+                    alive = false;
+                    break;
+                }
+                case SpellName.SummonProjectile1:
+                {
+                    Entity x = game.NewProjectile(EntityName.Projectile1, CurrentCoordinate(), Vector2.Zero);
+                    spell.children[0]?.toCastNextTick.Add(new Cast(x));
+                    alive = false;
+                    break;
+                }
+                case SpellName.AddYVelocity:
+                {
+                    ++cast.subject.velocity.Y;
+                    alive = false;
+                    break;
+                }
             }
-        }
     }
 }

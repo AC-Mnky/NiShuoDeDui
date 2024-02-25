@@ -6,7 +6,7 @@ namespace TheGame;
 
 public class Enemy : Entity
 {
-    public Enemy(Game1 game, EntityName name, Vector2 coordinate, Vector2 velocity) : base(game, name, coordinate, velocity)
+    public Enemy(Game1 game, long id, EntityName name, Vector2 coordinate, Vector2 velocity) : base(game, id, name, coordinate, velocity)
     {
     }
 

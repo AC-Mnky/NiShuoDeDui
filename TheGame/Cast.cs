@@ -25,10 +25,21 @@ public class Cast : ICloneable
 
     public object Clone()
     {
-        throw new NotImplementedException();
-    }
-    public bool IsDependent()
-    {
-        return type == CastType.Dependent && subject.exist;
+        if(type == CastType.Independent)
+        {
+            Cast clone = new(coordinate)
+            {
+                direction = direction
+            };
+            return clone;
+        }
+        else
+        {
+            Cast clone = new(subject)
+            {
+                direction = direction
+            };
+            return clone;
+        }
     }
 }

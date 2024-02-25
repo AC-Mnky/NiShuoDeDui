@@ -30,9 +30,9 @@ public class Game1 : Game
     private double timeBank = 0d;
     private GameStatus status = GameStatus.Running; // 是不是暂停
     private int tps = 60; // 每秒多少刻（控制倍速，60刻是一倍速）
-    public Dictionary<long, Entity> entities = new(); // 十分关键的字典，其中每个实体都有一个唯一的id
-    public Dictionary<long, Spell> spells = new(); // 十分关键的字典，其中每个spell都有一个唯一的id
-    public Dictionary<long, Spellcast> spellcasts = new(); // 十分关键的字典，其中每个spellcast都有一个唯一的id
+    private Dictionary<long, Entity> entities = new(); // 十分关键的字典，其中每个实体都有一个唯一的id
+    private Dictionary<long, Spell> spells = new(); // 十分关键的字典，其中每个spell都有一个唯一的id
+    private Dictionary<long, Spellcast> spellcasts = new(); // 十分关键的字典，其中每个spellcast都有一个唯一的id
     private const int gridI = 32;
     private const int gridJ = 20;
     private bool[,] isLight = new bool[gridI,gridJ];
@@ -51,13 +51,13 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        // ToggleBorderless(); // 先全屏
+        // ToggleBorderless(); // 先全屏 // 但是全屏不方便debug所以先关掉了
 
-        entities[0] = new Enemy(this, EntityName.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
-        spells[0] = new Spell(this, SpellName.SummonEnemy1, 60);
-        spells[0].AffiliateAsMap(3,3);
-        spells[1] = new Spell(this, SpellName.AddYSpeed, 0);
-        spells[1].AffiliateAsChild(spells[0], 0);
+        NewEnemy(EntityName.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
+        Spell x = NewSpell(SpellName.SummonProjectile1, 60);
+        x.AffiliateAsMap(3,0);
+        Spell y = NewSpell(SpellName.AddYVelocity, 0);
+        y.AffiliateAsChild(x, 0);
 
         for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
         {
@@ -80,22 +80,51 @@ public class Game1 : Game
         _mapShader = Content.Load<Effect>("map-shader");
     }
 
+
+
+    public Enemy NewEnemy(EntityName name, Vector2 coordinate, Vector2 velocity)
+    {
+        return (Enemy)(entities[entities.Count] = new Enemy(this, entities.Count, name, coordinate, velocity));
+    }
+    public Projectile NewProjectile(EntityName name, Vector2 coordinate, Vector2 velocity)
+    {
+        return (Projectile)(entities[entities.Count] = new Projectile(this, entities.Count, name, coordinate, velocity));
+    }
+    public Spell NewSpell(SpellName name, long coolDownMax)
+    {
+        return spells[spells.Count] = new Spell(this, spells.Count, name, coolDownMax);
+    }
+    public Spellcast NewSpellcast(Spell spell, Cast cast)
+    {
+        return spellcasts[spellcasts.Count] = new Spellcast(this, spellcasts.Count, spell, cast);
+    }
+
+
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
+        // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
         foreach(Spell s in spells.Values)
             s.TickCast(); // 待施放的法术进行施放
         foreach(Spellcast sc in spellcasts.Values)
             sc.TickUpdate(); // 被施法术更新
         foreach(Entity e in entities.Values)
-            e.TickUpdate(); // 实体更新
+            if(!e.alive) entities.Remove(e.id); // 移除被标记为死亡的实体
         foreach(Entity e in entities.Values)
             e.TickUpdateCoordinate(); // 实体移动
+        foreach(Entity e in entities.Values)
+            e.TickUpdate(); // 实体更新（期间不应该移动！）
+        foreach(Spellcast sc in spellcasts.Values)
+            if(!sc.alive) spellcasts.Remove(sc.id); // 移除被标记为死亡的Spellcast
         foreach(Spell s in spells.Values)
             s.TickUpdate(); // 法术更新（其实只有地图上的法术会发生变化）
         ++tick;
+        
         // Debug.Print(tick.ToString());
         // Debug.Print(spellcasts.Count.ToString());
     }
+
+
+
     protected override void Update(GameTime gameTime) // 窗口每帧更新（和暂停或倍速无关），这里主要负责一些输入输出的计算
     {
         Keyboard.GetState();
@@ -145,6 +174,8 @@ public class Game1 : Game
 
         base.Update(gameTime);
     }
+
+
 
     protected override void Draw(GameTime gameTime) // 显示
     {
