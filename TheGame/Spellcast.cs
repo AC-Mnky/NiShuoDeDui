@@ -1,15 +1,15 @@
 using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace TheGame;
 
-public enum SpellName {SummonEnemy1, SummonProjectile1};
-public enum CastType {Independent, Dependent};
-
 
 public class Spellcast : Thing
 {
+    public Spell origin;
     public SpellName name;
+    public Cast cast;
     public long tickBirth;
     public CastType dependence;
     public Vector2 coordinate;
@@ -20,11 +20,12 @@ public class Spellcast : Thing
     }
     public long subjectId;
     public Vector2 direction = Vector2.Zero;
-    public Spellcast(Game1 game, SpellName name, CastType dependence, Vector2 coordinate, long subjectId) : base(game)
+    public Spellcast(Game1 game, Spell origin, CastType dependence, Vector2 coordinate, long subjectId) : base(game)
     {
         id = game.spellcasts.Count;
         tickBirth = game.tick;
-        this.name = name;
+        this.origin = origin;
+        name = origin.name;
         this.dependence = dependence;
         this.coordinate = coordinate;
         this.subjectId = subjectId;
@@ -40,8 +41,20 @@ public class Spellcast : Thing
         {
             case SpellName.SummonEnemy1:
             {
-                game.entities[game.entities.Count] = new Enemy(game, EntityName.Enemy1, currentCoordinate(), new Vector2(1,0));
+                Entity x = game.entities[game.entities.Count] = new Enemy(game, EntityName.Enemy1, currentCoordinate(), new Vector2(1,0));
+                if(origin.children[0] != null)
+                    // origin.children[0].Cast(CastType.Dependent,new Vector2(), x.id);
                 game.spellcasts.Remove(id);
+                break;
+            }
+            case SpellName.AddYSpeed:
+            {
+                if(dependence == CastType.Independent || !game.entities.ContainsKey(subjectId)) game.spellcasts.Remove(id);
+                else
+                {
+                    ++game.entities[subjectId].velocity.Y;
+                    game.spellcasts.Remove(id);
+                }
                 break;
             }
         }

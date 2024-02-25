@@ -51,10 +51,13 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        ToggleBorderless(); // 先全屏
+        // ToggleBorderless(); // 先全屏
 
         entities[0] = new Enemy(this, EntityName.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
-        spells[0] = new Spell(this, SpellName.SummonEnemy1, Spell.Affiliation.Map, 60);
+        spells[0] = new Spell(this, SpellName.SummonEnemy1, 60);
+        spells[0].AffiliateAsMap(3,3);
+        spells[1] = new Spell(this, SpellName.AddYSpeed, 0);
+        spells[1].AffiliateAsChild(spells[0], 0);
 
         for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
         {
@@ -73,7 +76,7 @@ public class Game1 : Game
         _darkgrey = Content.Load<Texture2D>("darkgrey");
         Entity.Texture[EntityName.Enemy1] = Content.Load<Texture2D>("enemy1");
         Entity.Texture[EntityName.Projectile1] = Content.Load<Texture2D>("projectile1");
-        
+
         _mapShader = Content.Load<Effect>("map-shader");
     }
 
