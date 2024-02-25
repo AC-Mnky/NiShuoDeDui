@@ -10,51 +10,44 @@ public class Spellcast : Thing
     public Spell origin;
     public SpellName name;
     public Cast cast;
-    public long tickBirth;
-    public CastType dependence;
-    public Vector2 coordinate;
-    public Vector2 currentCoordinate()
+    public Vector2 CurrentCoordinate()
     {
-        if(dependence == CastType.Independent) return coordinate;
-        else return game.entities[subjectId].coordinate;
+        if (cast.type != CastType.Independent) return cast.subject.coordinate;
+        else return cast.coordinate;
     }
-    public long subjectId;
-    public Vector2 direction = Vector2.Zero;
-    public Spellcast(Game1 game, Spell origin, CastType dependence, Vector2 coordinate, long subjectId) : base(game)
+    public Spellcast(Game1 game, Spell origin, Cast cast) : base(game)
     {
         id = game.spellcasts.Count;
-        tickBirth = game.tick;
         this.origin = origin;
-        name = origin.name;
-        this.dependence = dependence;
-        this.coordinate = coordinate;
-        this.subjectId = subjectId;
+        name = origin.name; 
+        this.cast = cast; // 这里直接把引用传过去了，以后可能会出bug。
     }
 
 
 
 
 
-    public void TickUpdate(long tick)
+    public override void TickUpdate()
     {
+        if(Spell.dependentOnly[name] && !cast.IsDependent())
+        {
+            game.spellcasts.Remove(id);
+            exist = false;
+        }
+        if(!exist) return;
         switch(name)
         {
             case SpellName.SummonEnemy1:
             {
-                Entity x = game.entities[game.entities.Count] = new Enemy(game, EntityName.Enemy1, currentCoordinate(), new Vector2(1,0));
-                if(origin.children[0] != null)
-                    // origin.children[0].Cast(CastType.Dependent,new Vector2(), x.id);
+                Entity x = game.entities[game.entities.Count] = new Enemy(game, EntityName.Enemy1, CurrentCoordinate(), new Vector2(1,0));
+                origin.children[0]?.toCastNextTick.Add(new Cast(x));
                 game.spellcasts.Remove(id);
                 break;
             }
             case SpellName.AddYSpeed:
             {
-                if(dependence == CastType.Independent || !game.entities.ContainsKey(subjectId)) game.spellcasts.Remove(id);
-                else
-                {
-                    ++game.entities[subjectId].velocity.Y;
-                    game.spellcasts.Remove(id);
-                }
+                ++cast.subject.velocity.Y;
+                game.spellcasts.Remove(id);
                 break;
             }
         }

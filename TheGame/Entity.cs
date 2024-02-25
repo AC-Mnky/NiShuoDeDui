@@ -26,6 +26,5 @@ abstract public class Entity : Thing
     public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;
     public double health;
-    abstract public void TickUpdate();
     
 }

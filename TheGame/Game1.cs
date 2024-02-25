@@ -82,14 +82,16 @@ public class Game1 : Game
 
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
-        foreach(Entity e in entities.Values)
-            e.TickUpdate();
-        foreach(Entity e in entities.Values)
-            e.TickUpdateCoordinate();
-        foreach(Spellcast sc in spellcasts.Values)
-            sc.TickUpdate(tick);
         foreach(Spell s in spells.Values)
-            s.TickUpdate(tick);
+            s.TickCast(); // 待施放的法术进行施放
+        foreach(Spellcast sc in spellcasts.Values)
+            sc.TickUpdate(); // 被施法术更新
+        foreach(Entity e in entities.Values)
+            e.TickUpdate(); // 实体更新
+        foreach(Entity e in entities.Values)
+            e.TickUpdateCoordinate(); // 实体移动
+        foreach(Spell s in spells.Values)
+            s.TickUpdate(); // 法术更新（其实只有地图上的法术会发生变化）
         ++tick;
         // Debug.Print(tick.ToString());
         // Debug.Print(spellcasts.Count.ToString());
@@ -127,16 +129,16 @@ public class Game1 : Game
             tps = 120; // 二倍速
         if (Keyboard.HasBeenPressed(Keys.D3))
             tps = 180; // 三倍速
-        timeBank += gameTime.ElapsedGameTime.TotalSeconds;
-        if (status == GameStatus.Paused) timeBank = 0d;
+        TimeBank += gameTime.ElapsedGameTime.TotalSeconds;
+        if (status == GameStatus.Paused) TimeBank = 0d;
         else 
         {
             int TickUpdateMax = 5;
-            while(timeBank > 0d && TickUpdateMax > 0)
+            while(TimeBank > 0d && TickUpdateMax > 0)
             {
                 TickUpdate();
                 --TickUpdateMax;
-                timeBank -= 1d / tps;
+                TimeBank -= 1d / tps;
             }
         }
         // 采用的倍速使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过五倍速
@@ -174,6 +176,10 @@ public class Game1 : Game
     bool _isBorderless = false;
     int _width = 0;
     int _height = 0;
+
+    public global::System.Double TimeBank { get => TimeBank1; set => TimeBank1 = value; }
+    public global::System.Double TimeBank1 { get => timeBank; set => timeBank = value; }
+
     public void ToggleFullscreen() {
         bool oldIsFullscreen = _isFullscreen;
 

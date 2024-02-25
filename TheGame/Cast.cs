@@ -6,17 +6,29 @@ namespace TheGame;
 
 public enum CastType {Independent, Dependent};
 
-public struct Cast
+public class Cast : ICloneable
 {
-    CastType type;
-    long tickBirth;
-    CastType dependence;
-    Vector2 coordinate;
-    Vector2 currentCoordinate()
+    public CastType type;
+    public Vector2 coordinate = new();
+    public Entity subject = null;
+    public Vector2 direction = Vector2.Zero;
+    public Cast( Vector2 coordinate)
     {
-        if(dependence == CastType.Independent) return coordinate;
-        else return game.entities[subjectId].coordinate;
+        type = CastType.Independent;
+        this.coordinate = coordinate;
     }
-    long subjectId;
-    Vector2 direction = Vector2.Zero;
+    public Cast(Entity subject)
+    {
+        type = CastType.Dependent;
+        this.subject = subject;
+    }
+
+    public object Clone()
+    {
+        throw new NotImplementedException();
+    }
+    public bool IsDependent()
+    {
+        return type == CastType.Independent && subject.exist;
+    }
 }

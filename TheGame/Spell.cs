@@ -16,7 +16,7 @@ public class Spell : Thing
     public enum Affiliation {Desk, Map, Child, Suffix, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术，还是某个法术的后继法术
     public Affiliation affiliation = Affiliation.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号
-    public int mapI, mapJ; // 如果在图上，它的坐标
+    public int mapI, mapJ; // 如果在地图上，它的坐标
     public Vector2 Coordinate() {return new Vector2(mapI*64f+32f, mapJ*64f+32f);}
     public Spell parent = null; // 如果是子法术或后继法术，那么它挂在哪个法术身上
     public int rank = -1; // 如果是子法术，那么是第几个
@@ -25,8 +25,14 @@ public class Spell : Thing
         {SpellName.SummonProjectile1, 1},
         {SpellName.AddYSpeed, 0}
     };
+    public static Dictionary<SpellName, bool> dependentOnly = new() {
+        {SpellName.SummonEnemy1, false},
+        {SpellName.SummonProjectile1, false},
+        {SpellName.AddYSpeed, true}
+    };
     public Spell[] children; // 子法术是谁
     public Spell suffix = null; // 后继法术是谁
+    public ArrayList toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public long coolDownMax;
     public long coolDown;
     public Spell(Game1 game, SpellName name, long coolDownMax) : base(game)
@@ -105,20 +111,23 @@ public class Spell : Thing
 
 
 
-    public void Cast(CastType dependence, Vector2 coordinate, long subjectId)
-    {
-        game.spellcasts[game.spellcasts.Count] = new Spellcast(game, this, dependence, coordinate, subjectId);
-    }
-    public void TickUpdate(long tick)
+    public override void TickUpdate()
     {
         if(affiliation == Affiliation.Map)
         {
             if(coolDown > 1) --coolDown;
             else
             {
-                Cast(CastType.Independent, Coordinate(), -1);
+                toCastNextTick.Add(new Cast(Coordinate()));
                 coolDown = coolDownMax;
             }
         }
     }
+    public void TickCast()
+    {
+        foreach(Cast c in toCastNextTick)
+            game.spellcasts[game.spellcasts.Count] = new Spellcast(game, this, c); // 其实不一定成功，所以以后要加上if
+        toCastNextTick.Clear();
+    }
+
 }
