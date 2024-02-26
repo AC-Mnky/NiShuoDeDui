@@ -63,6 +63,15 @@ public class Spellcast : Thing
                     alive = false;
                     break;
                 }
+                case Name.Wait60Ticks:
+                {
+                    if(game.tick - tickBirth >= 60) alive = false;
+                    break;
+                }
             }
+        if(!alive)
+        {
+            spell.suffix?.toCastNextTick.Add(cast.Clone());
+        }
     }
 }

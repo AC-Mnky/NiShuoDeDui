@@ -21,12 +21,14 @@ public class Spell : Thing
     protected static Dictionary<Name, int> childrenNumber = new() {
         {Name.SummonEnemy1, 1},
         {Name.SummonProjectile1, 1},
-        {Name.AddYVelocity, 0}
+        {Name.AddYVelocity, 0},
+        {Name.Wait60Ticks, 0}
     };
     public static Dictionary<Name, bool> dependentOnly = new() {
         {Name.SummonEnemy1, false},
         {Name.SummonProjectile1, false},
-        {Name.AddYVelocity, true}
+        {Name.AddYVelocity, true},
+        {Name.Wait60Ticks, false}
     };
     public Spell[] children; // 子法术是谁
     public Spell suffix = null; // 后继法术是谁

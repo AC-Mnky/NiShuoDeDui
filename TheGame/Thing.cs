@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 namespace TheGame;
 
 public enum Name {Enemy1, Projectile1,
-SummonEnemy1, SummonProjectile1, AddYVelocity};
+SummonEnemy1, SummonProjectile1, AddYVelocity, Wait60Ticks};
 
 abstract public class Thing
 {

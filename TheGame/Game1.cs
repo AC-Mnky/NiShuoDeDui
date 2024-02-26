@@ -56,8 +56,12 @@ public class Game1 : Game
         NewEnemy(Name.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
         Spell x = NewSpell(Name.SummonProjectile1, 60);
         x.AffiliateAsMap(3,0);
-        Spell y = NewSpell(Name.AddYVelocity, 0);
+        Spell y = NewSpell(Name.AddYVelocity, -1);
         y.AffiliateAsChild(x, 0);
+        Spell z = NewSpell(Name.Wait60Ticks, -1);
+        z.AffiliateAsSuffix(y);
+        Spell w = NewSpell(Name.SummonEnemy1, -1);
+        w.AffiliateAsSuffix(z);
 
         for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
         {
