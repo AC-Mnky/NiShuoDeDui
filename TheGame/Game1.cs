@@ -27,6 +27,7 @@ public class Game1 : Game
     private Matrix view = Matrix.Identity;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
     public long tick = 0; // 游戏从开始经过的刻数
+    private long thingCount = 0; // 游戏从开始产生的Entity, Spell, Spellcast总数
     private double timeBank = 0d;
     private GameStatus status = GameStatus.Running; // 是不是暂停
     private int tps = 60; // 每秒多少刻（控制倍速，60刻是一倍速）
@@ -54,14 +55,20 @@ public class Game1 : Game
         // ToggleBorderless(); // 先全屏 // 但是全屏不方便debug所以先关掉了
 
         NewEnemy(Name.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
-        Spell x = NewSpell(Name.SummonProjectile1, 60);
-        x.AffiliateAsMap(3,0);
-        Spell y = NewSpell(Name.AddYVelocity, -1);
-        y.AffiliateAsChild(x, 0);
-        Spell z = NewSpell(Name.Wait60Ticks, -1);
-        z.AffiliateAsSuffix(y);
-        Spell w = NewSpell(Name.SummonEnemy1, -1);
-        w.AffiliateAsSuffix(z);
+        Spell s0 = NewSpell(Name.SummonProjectile1, 60);
+        Spell s1 = NewSpell(Name.AddYVelocity, -1);
+        Spell s2 = NewSpell(Name.TriggerUponDeath, -1);
+        Spell s3 = NewSpell(Name.SummonEnemy1, -1);
+        Spell s4 = NewSpell(Name.AddYVelocity, -1);
+        Spell s5 = NewSpell(Name.Wait60Ticks, -1);
+        Spell s6 = NewSpell(Name.AddYVelocity, -1);
+        s0.AffiliateAsMap(3,0);
+        s1.AffiliateAsChild(s0,1);
+        s2.AffiliateAsChild(s1,0);
+        s3.AffiliateAsChild(s2,0);
+        s4.AffiliateAsChild(s3,1);
+        s5.AffiliateAsChild(s4,0);
+        s6.AffiliateAsChild(s5,0);
 
         for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
         {
@@ -88,19 +95,27 @@ public class Game1 : Game
 
     public Enemy NewEnemy(Name name, Vector2 coordinate, Vector2 velocity)
     {
-        return (Enemy)(entities[entities.Count] = new Enemy(this, entities.Count, name, coordinate, velocity));
+        Enemy e = (Enemy)(entities[thingCount] = new Enemy(this, thingCount, name, coordinate, velocity));
+        ++thingCount;
+        return e;
     }
     public Projectile NewProjectile(Name name, Vector2 coordinate, Vector2 velocity)
     {
-        return (Projectile)(entities[entities.Count] = new Projectile(this, entities.Count, name, coordinate, velocity));
+        Projectile p = (Projectile)(entities[thingCount] = new Projectile(this, thingCount, name, coordinate, velocity));
+        ++thingCount;
+        return p;
     }
     public Spell NewSpell(Name name, long coolDownMax)
     {
-        return spells[spells.Count] = new Spell(this, spells.Count, name, coolDownMax);
+        Spell s = spells[thingCount] = new Spell(this, thingCount, name, coolDownMax);
+        ++thingCount;
+        return s;
     }
     public Spellcast NewSpellcast(Spell spell, Cast cast)
     {
-        return spellcasts[spellcasts.Count] = new Spellcast(this, spellcasts.Count, spell, cast);
+        Spellcast sc = spellcasts[thingCount] = new Spellcast(this, thingCount, spell, cast);
+        ++thingCount;
+        return sc;
     }
 
 
@@ -112,7 +127,8 @@ public class Game1 : Game
         foreach(Spellcast sc in spellcasts.Values)
             sc.TickUpdate(); // 被施法术更新
         foreach(Entity e in entities.Values)
-            if(!e.alive) entities.Remove(e.id); // 移除被标记为死亡的实体
+            if(!e.alive)
+                entities.Remove(e.id); // 移除被标记为死亡的实体
         foreach(Entity e in entities.Values)
             e.TickUpdateCoordinate(); // 实体移动
         foreach(Entity e in entities.Values)
@@ -125,6 +141,7 @@ public class Game1 : Game
 
         // Debug.Print(tick.ToString());
         // Debug.Print(spellcasts.Count.ToString());
+        // Debug.Print(entities.Count.ToString());
     }
 
 

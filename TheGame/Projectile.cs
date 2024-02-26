@@ -11,7 +11,11 @@ public class Projectile : Entity
 
     public override void TickUpdate()
     {
-        // throw new System.NotImplementedException();
+        health -= 0.005d;
+        if(health <= 0d)
+        {
+            alive = false;
+        }
     }
 
 }

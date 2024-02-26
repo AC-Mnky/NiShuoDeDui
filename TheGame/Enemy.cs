@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -16,7 +17,10 @@ public class Enemy : Entity
 
     public override void TickUpdate()
     {
-        // throw new System.NotImplementedException();
+        if(health <= 0d)
+        {
+            alive = false;
+        }
     }
 
 }

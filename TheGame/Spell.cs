@@ -11,7 +11,7 @@ namespace TheGame;
 
 public class Spell : Thing
 {
-    public enum Affiliation {Desk, Map, Child, Suffix, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术，还是某个法术的后继法术
+    public enum Affiliation {Desk, Map, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术或后继法术
     public Affiliation affiliation = Affiliation.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号
     public int mapI, mapJ; // 如果在地图上，它的坐标
@@ -19,19 +19,21 @@ public class Spell : Thing
     public Spell parent = null; // 如果是子法术或后继法术，那么它挂在哪个法术身上
     public int rank = -1; // 如果是子法术，那么是第几个
     protected static Dictionary<Name, int> childrenNumber = new() {
-        {Name.SummonEnemy1, 1},
-        {Name.SummonProjectile1, 1},
-        {Name.AddYVelocity, 0},
-        {Name.Wait60Ticks, 0}
+        {Name.SummonEnemy1, 2},
+        {Name.SummonProjectile1, 2},
+        {Name.AddYVelocity, 1},
+        {Name.TriggerUponDeath, 1},
+        {Name.Wait60Ticks, 1}
     };
     public static Dictionary<Name, bool> dependentOnly = new() {
         {Name.SummonEnemy1, false},
         {Name.SummonProjectile1, false},
         {Name.AddYVelocity, true},
+        {Name.TriggerUponDeath, true},
         {Name.Wait60Ticks, false}
     };
-    public Spell[] children; // 子法术是谁
-    public Spell suffix = null; // 后继法术是谁
+    public Spell[] children; // 子法术列表（第零项是后继法术）
+    // public Spell suffix = null; // 后继法术是谁
     public ArrayList toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public long coolDownMax;
     public long coolDown;
@@ -64,12 +66,12 @@ public class Spell : Thing
                 parent = null;
                 break;
             }
-            case Affiliation.Suffix:
-            {
-                parent.suffix = null;
-                parent = null;
-                break;
-            }
+            // case Affiliation.Suffix:
+            // {
+            //     parent.suffix = null;
+            //     parent = null;
+            //     break;
+            // }
             case Affiliation.Null:
             {
                 break;
@@ -99,13 +101,13 @@ public class Spell : Thing
         parent.children[rank] = this;
         affiliation = Affiliation.Child;
     }
-    public void AffiliateAsSuffix(Spell parent)
-    {
-        Detach();
-        this.parent = parent;
-        parent.suffix = this;
-        affiliation = Affiliation.Suffix;
-    }
+    // public void AffiliateAsSuffix(Spell parent)
+    // {
+    //     Detach();
+    //     this.parent = parent;
+    //     parent.suffix = this;
+    //     affiliation = Affiliation.Suffix;
+    // }
 
 
 

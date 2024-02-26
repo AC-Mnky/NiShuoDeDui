@@ -34,26 +34,31 @@ public class Spellcast : Thing
         }
         if(cast.type == CastType.Dependent && !cast.subject.alive) // 分类：亡语
             {
-                // switch(spell.name)
-                // {
-
-                // }
+                switch(spell.name)
+                {
+                    case Name.TriggerUponDeath:
+                    {
+                        spell.children[0]?.toCastNextTick.Add(new Cast(CurrentCoordinate()));
+                        break;
+                    }
+                }
                 alive = false;
             }
         else
+        {
             switch(spell.name)
             {
                 case Name.SummonEnemy1:
                 {
                     Entity x = game.NewEnemy(Name.Enemy1, CurrentCoordinate(), Vector2.Zero);
-                    spell.children[0]?.toCastNextTick.Add(new Cast(x));
+                    spell.children[1]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
                 }
                 case Name.SummonProjectile1:
                 {
                     Entity x = game.NewProjectile(Name.Projectile1, CurrentCoordinate(), Vector2.Zero);
-                    spell.children[0]?.toCastNextTick.Add(new Cast(x));
+                    spell.children[1]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
                 }
@@ -69,9 +74,10 @@ public class Spellcast : Thing
                     break;
                 }
             }
-        if(!alive)
-        {
-            spell.suffix?.toCastNextTick.Add(cast.Clone());
+            if(!alive) // 结束后施放后继法术
+            {
+                spell.children[0]?.toCastNextTick.Add(cast.Clone());
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ abstract public class Entity : Thing
     {
         this.coordinate = coordinate;
         this.velocity = velocity;
+        health = DefaultHealth[name];
     }
     public static Dictionary<Name, Texture2D> Texture = new();
     protected static Dictionary<Name, Vector2> RenderCoordinateOffset = new() {
@@ -23,4 +24,8 @@ abstract public class Entity : Thing
     public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;
     public double health;
+    protected static Dictionary<Name, double> DefaultHealth = new() {
+        {Name.Enemy1, 10d},
+        {Name.Projectile1, 1d}
+    };
 }
