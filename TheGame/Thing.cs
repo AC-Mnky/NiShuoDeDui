@@ -5,7 +5,8 @@ using Microsoft.Xna.Framework;
 
 namespace TheGame;
 
-public enum Name {Enemy1, Projectile1, SummonEnemy1, SummonProjectile1, AddYVelocity};
+public enum Name {Enemy1, Projectile1,
+SummonEnemy1, SummonProjectile1, AddYVelocity};
 
 abstract public class Thing
 {
