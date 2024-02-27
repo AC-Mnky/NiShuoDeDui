@@ -55,22 +55,31 @@ public class Game1 : Game
     {
         // ToggleBorderless(); // 先全屏 // 但是全屏不方便debug所以先关掉了
 
-        #region sandbox // 在这里尝试这些法术的效果，可以随意修改
-        NewEnemy(Name.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
-        Spell s0 = NewSpell(Name.SummonProjectile1, 60);
-        Spell s1 = NewSpell(Name.AddYVelocity, -1);
-        Spell s2 = NewSpell(Name.TriggerUponDeath, -1);
-        Spell s3 = NewSpell(Name.SummonEnemy1, -1);
-        Spell s4 = NewSpell(Name.AddYVelocity, -1);
-        Spell s5 = NewSpell(Name.Wait60Ticks, -1);
-        Spell s6 = NewSpell(Name.AddYVelocity, -1);
-        s0.AffiliateAsMap(3,0);
+
+        // 在这里尝试这些法术的效果，可以随意修改
+        #region sandbox
+        Spell e0 = NewSpell(Name.SummonEnemy1);
+        Spell e1 = NewSpell(Name.AddXVelocity);
+        e0.AffiliateAsMap(0,5,100);
+        e1.AffiliateAsChild(e0,1);
+        Spell s0 = NewSpell(Name.SummonProjectile1);
+        Spell s1 = NewSpell(Name.AimClosestInSquareD6);
+        Spell s2 = NewSpell(Name.Add5Speed);
+        s0.AffiliateAsMap(6,3,15);
         s1.AffiliateAsChild(s0,1);
         s2.AffiliateAsChild(s1,0);
-        s3.AffiliateAsChild(s2,0);
-        s4.AffiliateAsChild(s3,1);
-        s5.AffiliateAsChild(s4,0);
-        s6.AffiliateAsChild(s5,0);
+        Spell t0 = NewSpell(Name.SummonProjectile1);
+        Spell t1 = NewSpell(Name.AimClosestInSquareD6);
+        Spell t2 = NewSpell(Name.Add5Speed);
+        t0.AffiliateAsMap(9,7,15);
+        t1.AffiliateAsChild(t0,1);
+        t2.AffiliateAsChild(t1,0);
+        Spell u0 = NewSpell(Name.SummonProjectile1);
+        Spell u1 = NewSpell(Name.AimClosestInSquareD6);
+        Spell u2 = NewSpell(Name.Add5Speed);
+        u0.AffiliateAsMap(15,3,30);
+        u1.AffiliateAsChild(u0,1);
+        u2.AffiliateAsChild(u1,0);
         #endregion
 
         for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
@@ -90,6 +99,7 @@ public class Game1 : Game
         _darkgrey = Content.Load<Texture2D>("darkgrey");
         Entity.Texture[Name.Enemy1] = Content.Load<Texture2D>("enemy1");
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
+        Entity.Texture[Name.SquareD6] = null;
 
         _mapShader = Content.Load<Effect>("map-shader");
     }
@@ -108,9 +118,9 @@ public class Game1 : Game
         ++thingCount;
         return p;
     }
-    public Spell NewSpell(Name name, long coolDownMax)
+    public Spell NewSpell(Name name)
     {
-        Spell s = spells[thingCount] = new Spell(this, thingCount, name, coolDownMax);
+        Spell s = spells[thingCount] = new Spell(this, thingCount, name);
         ++thingCount;
         return s;
     }
@@ -195,11 +205,25 @@ public class Game1 : Game
             tps = 120; // 二倍速
         if (Keyboard.HasBeenPressed(Keys.D3))
             tps = 180; // 三倍速
+        if (Keyboard.HasBeenPressed(Keys.D4))
+            tps = 240;
+        if (Keyboard.HasBeenPressed(Keys.D5))
+            tps = 300;
+        if (Keyboard.HasBeenPressed(Keys.D6))
+            tps = 360;
+        if (Keyboard.HasBeenPressed(Keys.D7))
+            tps = 420;
+        if (Keyboard.HasBeenPressed(Keys.D8))
+            tps = 480;
+        if (Keyboard.HasBeenPressed(Keys.D9))
+            tps = 540;
+        if (Keyboard.HasBeenPressed(Keys.D0))
+            tps = 600; // 不是，我为什么要加这么多奇怪的倍速啊[捂脸]
         TimeBank += gameTime.ElapsedGameTime.TotalSeconds;
         if (status == GameStatus.Paused) TimeBank = 0d;
         else 
         {
-            int TickUpdateMax = 5;
+            int TickUpdateMax = 10;
             while(TimeBank > 0d && TickUpdateMax > 0)
             {
                 TickUpdate();
@@ -207,7 +231,7 @@ public class Game1 : Game
                 TimeBank -= 1d / tps;
             }
         }
-        // 采用的倍速使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过五倍速
+        // 采用的倍速使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过十倍速
 
         base.Update(gameTime);
     }
@@ -229,7 +253,7 @@ public class Game1 : Game
         }
         foreach(Entity e in entities.Values) // 画实体
         {
-            _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White);
+            if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White);
         }
 
         _spriteBatch.End();

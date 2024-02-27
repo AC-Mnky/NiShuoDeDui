@@ -62,9 +62,45 @@ public class Spellcast : Thing
                     alive = false;
                     break;
                 }
+                case Name.AddSpeed:
+                {
+                    cast.subject.velocity += Normalized(cast.direction);
+                    alive = false;
+                    break;
+                }
+                case Name.Add5Speed:
+                {
+                    cast.subject.velocity += 5 * Normalized(cast.direction);
+                    alive = false;
+                    break;
+                }
+                case Name.AddXVelocity:
+                {
+                    ++cast.subject.velocity.X;
+                    alive = false;
+                    break;
+                }
                 case Name.AddYVelocity:
                 {
                     ++cast.subject.velocity.Y;
+                    alive = false;
+                    break;
+                }
+                case Name.AimClosestInSquareD6:
+                {
+                    Entity x = game.NewProjectile(Name.SquareD6, CurrentCoordinate(), Vector2.Zero);
+                    float minDistance = float.PositiveInfinity;
+                    foreach(Entity e in x.Collisions()) if(e is Enemy)
+                    {
+                        Vector2 r = e.coordinate-x.coordinate;
+                        float l = r.Length();
+                        if(l < minDistance)
+                        {
+                            minDistance = l;
+                            cast.direction = r;
+                        }
+                    }
+                    x.alive = false;
                     alive = false;
                     break;
                 }

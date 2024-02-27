@@ -19,7 +19,7 @@ public class Enemy : Entity
     {
         if(Collisions().Count > 0)
         {
-            health -= 5d;
+            health -= 1d;
         }
         if(health <= 0d)
         {

@@ -10,6 +10,21 @@ namespace TheGame;
 
 abstract public class Entity : Thing
 {
+    protected static Dictionary<Name, Vector2> RenderCoordinateOffset = new() {
+        {Name.Enemy1, new Vector2(-16f,-16f)},
+        {Name.Projectile1, new Vector2(-8f,-8f)},
+        {Name.SquareD6, new()}
+    };
+    protected static Dictionary<Name, Vector2> Size = new() {
+        {Name.Enemy1, new Vector2(32f,32f)},
+        {Name.Projectile1, new Vector2(16f,16f)},
+        {Name.SquareD6, new Vector2(6*64f,6*64f)}
+    };
+    protected static Dictionary<Name, double> DefaultHealth = new() {
+        {Name.Enemy1, 10d},
+        {Name.Projectile1, 1d},
+        {Name.SquareD6, 0d}
+    };
     public Entity(Game1 game, long id, Name name, Vector2 coordinate, Vector2 velocity) : base(game,id,name)
     {
         this.coordinate = coordinate;
@@ -18,14 +33,6 @@ abstract public class Entity : Thing
         health = DefaultHealth[name];
     }
     public static Dictionary<Name, Texture2D> Texture = new();
-    protected static Dictionary<Name, Vector2> RenderCoordinateOffset = new() {
-        {Name.Enemy1, new Vector2(-16f,-16f)},
-        {Name.Projectile1, new Vector2(-8f,-8f)}
-    };
-    protected static Dictionary<Name, Vector2> Size = new() {
-        {Name.Enemy1, new Vector2(32f,32f)},
-        {Name.Projectile1, new Vector2(16f,16f)}
-    };
     public Vector2 coordinate;
     public Vector2 size;
     public RectangleF Hitbox()
@@ -38,8 +45,4 @@ abstract public class Entity : Thing
     public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;
     public double health;
-    protected static Dictionary<Name, double> DefaultHealth = new() {
-        {Name.Enemy1, 10d},
-        {Name.Projectile1, 1d}
-    };
 }

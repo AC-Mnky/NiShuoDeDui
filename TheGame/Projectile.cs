@@ -12,6 +12,10 @@ public class Projectile : Entity
     public override void TickUpdate()
     {
         health -= 0.005d;
+        if(Collisions().Count > 0)
+        {
+            health -= 1d;
+        }
         if(health <= 0d)
         {
             alive = false;

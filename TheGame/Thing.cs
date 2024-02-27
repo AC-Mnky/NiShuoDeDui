@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework;
 
 namespace TheGame;
 
-public enum Name {Enemy1, Projectile1,
-SummonEnemy1, SummonProjectile1, AddYVelocity, TriggerUponDeath, Wait60Ticks};
+public enum Name {Enemy1, Projectile1, SquareD6,
+SummonEnemy1, SummonProjectile1, AddSpeed, Add5Speed, AddXVelocity, AddYVelocity, TriggerUponDeath, AimClosestInSquareD6, Wait60Ticks};
 
 abstract public class Thing
 {
@@ -23,4 +23,13 @@ abstract public class Thing
         this.id = id;
     }
     abstract public void TickUpdate(); 
+
+
+    public static Vector2 Normalized(Vector2 vector) // 不要问我为什么把这无关的玩意放在这里。我想不到更好的地方放了。
+    {
+        if(vector == Vector2.Zero) return Vector2.Zero;
+        Vector2 v = vector;
+        v.Normalize();
+        return v;
+    }
 }
