@@ -6,6 +6,7 @@
 // 创造新东西使用NewEnemy()这几个方法，如果要删除的话只要将它标记为alive=false，就会在一个周期内被删除。
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -118,6 +119,20 @@ public class Game1 : Game
         Spellcast sc = spellcasts[thingCount] = new Spellcast(this, thingCount, spell, cast);
         ++thingCount;
         return sc;
+    }
+
+
+    public ArrayList Collisions(Entity e) // 简单的碰撞判定算法。之后可能会出现圆形的东西，从而需要修改。另外以后算法上可能会需要优化。
+    {
+        ArrayList ans = new();
+        foreach(Entity f in entities.Values)
+        {
+            if(f!=e && f.Hitbox().IntersectsWith(e.Hitbox()))
+            {
+                ans.Add(f);
+            }
+        }
+        return ans;
     }
 
 

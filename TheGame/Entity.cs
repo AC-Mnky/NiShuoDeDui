@@ -1,4 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,6 +13,7 @@ abstract public class Entity : Thing
     public Entity(Game1 game, long id, Name name, Vector2 coordinate, Vector2 velocity) : base(game,id,name)
     {
         this.coordinate = coordinate;
+        size = Size[name];
         this.velocity = velocity;
         health = DefaultHealth[name];
     }
@@ -18,7 +22,17 @@ abstract public class Entity : Thing
         {Name.Enemy1, new Vector2(-16f,-16f)},
         {Name.Projectile1, new Vector2(-8f,-8f)}
     };
+    protected static Dictionary<Name, Vector2> Size = new() {
+        {Name.Enemy1, new Vector2(32f,32f)},
+        {Name.Projectile1, new Vector2(16f,16f)}
+    };
     public Vector2 coordinate;
+    public Vector2 size;
+    public RectangleF Hitbox()
+    {
+        return new RectangleF(coordinate.X-size.X/2,coordinate.Y-size.Y/2,size.X,size.Y);
+    }
+    public ArrayList Collisions() {return game.Collisions(this);}
     public void TickUpdateCoordinate() {if(alive) coordinate += velocity;}
     public Vector2 RenderCoordinate() {return coordinate + RenderCoordinateOffset[name];}
     public Texture2D RenderTexture() {return Texture[name];}

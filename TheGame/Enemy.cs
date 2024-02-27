@@ -17,6 +17,10 @@ public class Enemy : Entity
 
     public override void TickUpdate()
     {
+        if(Collisions().Count > 0)
+        {
+            health -= 5d;
+        }
         if(health <= 0d)
         {
             alive = false;
