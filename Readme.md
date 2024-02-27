@@ -2,7 +2,7 @@
 
 使用的游戏引擎是.NET 6.0下的MonoGame框架。（严格来说MonoGame算不上游戏引擎，也没有大量复杂的黑盒功能，这使得它的版本不那么重要。）（可以使用最新版本的.NET，反正是向下兼容的。我用的是.NET 8.0.1）
 
-建议使用Visual Studio或VS Code，我自己用的是VS Code（我似乎把配置文件也同步上来了），看的是这个教程https://learn-monogame.github.io/。如果想用Visual Studio的话Monogame官网上应该有教程。
+建议使用Visual Studio或VS Code，我自己用的是VS Code（我似乎把配置文件也同步上来了），看的是这个教程 https://learn-monogame.github.io/ 。如果想用Visual Studio的话Monogame官网上应该有教程。
 
 直接命令行`dotnet run`应该就能跑了。记得先`cd TheGame`。
 
