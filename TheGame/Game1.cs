@@ -3,7 +3,7 @@
 // 另外，游戏中有一些法术Spell，但这些是静态的，并不是被施放出的法术。
 // 被施放出的法术是Spellcast，它们很快出现和消失。一个Spell每次被施放都会产生一个Spellcast。
 // Game1有三个字典entities[]，spells[]，spellcasts[]，存储着游戏里的所有东西。它们十分关键。
-// 如果要删除某个东西的话，直接从字典中移除引用就可以了，C#会自动回收内存的。
+// 创造新东西使用NewEnemy()这几个方法，如果要删除的话只要将它标记为alive=false，就会在一个周期内被删除。
 
 using System;
 using System.Collections.Generic;
@@ -54,6 +54,7 @@ public class Game1 : Game
     {
         // ToggleBorderless(); // 先全屏 // 但是全屏不方便debug所以先关掉了
 
+        #region sandbox // 在这里尝试这些法术的效果，可以随意修改
         NewEnemy(Name.Enemy1, new Vector2(32,32+64), new Vector2(1,0));
         Spell s0 = NewSpell(Name.SummonProjectile1, 60);
         Spell s1 = NewSpell(Name.AddYVelocity, -1);
@@ -69,6 +70,7 @@ public class Game1 : Game
         s4.AffiliateAsChild(s3,1);
         s5.AffiliateAsChild(s4,0);
         s6.AffiliateAsChild(s5,0);
+        #endregion
 
         for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
         {
@@ -127,8 +129,7 @@ public class Game1 : Game
         foreach(Spellcast sc in spellcasts.Values)
             sc.TickUpdate(); // 被施法术更新
         foreach(Entity e in entities.Values)
-            if(!e.alive)
-                entities.Remove(e.id); // 移除被标记为死亡的实体
+            if(!e.alive) entities.Remove(e.id); // 移除被标记为死亡的实体
         foreach(Entity e in entities.Values)
             e.TickUpdateCoordinate(); // 实体移动
         foreach(Entity e in entities.Values)

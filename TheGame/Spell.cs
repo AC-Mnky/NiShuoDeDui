@@ -11,12 +11,12 @@ namespace TheGame;
 
 public class Spell : Thing
 {
-    public enum Affiliation {Desk, Map, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术或后继法术
+    public enum Affiliation {Desk, Map, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术
     public Affiliation affiliation = Affiliation.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号
     public int mapI, mapJ; // 如果在地图上，它的坐标
     public Vector2 Coordinate() {return new Vector2(mapI*64f+32f, mapJ*64f+32f);}
-    public Spell parent = null; // 如果是子法术或后继法术，那么它挂在哪个法术身上
+    public Spell parent = null; // 如果是子法术，那么它挂在哪个法术身上
     public int rank = -1; // 如果是子法术，那么是第几个
     protected static Dictionary<Name, int> childrenNumber = new() {
         {Name.SummonEnemy1, 2},
@@ -101,13 +101,6 @@ public class Spell : Thing
         parent.children[rank] = this;
         affiliation = Affiliation.Child;
     }
-    // public void AffiliateAsSuffix(Spell parent)
-    // {
-    //     Detach();
-    //     this.parent = parent;
-    //     parent.suffix = this;
-    //     affiliation = Affiliation.Suffix;
-    // }
 
 
 
