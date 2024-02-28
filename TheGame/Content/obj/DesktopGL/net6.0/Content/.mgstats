@@ -4,3 +4,5 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/lightgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/lightgrey.xnb","TextureProcessor","Texture2DContent",221,16469,0.0025487
 "D:/Game202402/TheGame/Content/map-shader.fx","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/map-shader.xnb","EffectProcessor","CompiledEffectContent",979,1565,0.2462226
 "D:/Game202402/TheGame/Content/projectile1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/projectile1.xnb","TextureProcessor","Texture2DContent",148,1109,0.0015424
+"D:/Game202402/TheGame/Content/SpellGUI1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI1.xnb","TextureProcessor","Texture2DContent",1799,163925,0.1882909
+"D:/Game202402/TheGame/Content/SpellGUI2.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2.xnb","TextureProcessor","Texture2DContent",2769,294997,0.0131689

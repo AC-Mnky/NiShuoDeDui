@@ -25,6 +25,7 @@ abstract public class Entity : Thing
         {Name.Projectile1, 1d},
         {Name.SquareD6, 0d}
     };
+    public static Dictionary<Name, Texture2D> Texture = new();
     public Entity(Game1 game, long id, Name name, Vector2 coordinate, Vector2 velocity) : base(game,id,name)
     {
         this.coordinate = coordinate;
@@ -32,7 +33,6 @@ abstract public class Entity : Thing
         this.velocity = velocity;
         health = DefaultHealth[name];
     }
-    public static Dictionary<Name, Texture2D> Texture = new();
     public Vector2 coordinate;
     public Vector2 size;
     public RectangleF Hitbox()
@@ -41,7 +41,7 @@ abstract public class Entity : Thing
     }
     public ArrayList Collisions() {return game.Collisions(this);}
     public void TickUpdateCoordinate() {if(alive) coordinate += velocity;}
-    public Vector2 RenderCoordinate() {return coordinate + RenderCoordinateOffset[name];}
+    public Vector2 RenderCoordinate() {return Vector2.Round(coordinate + RenderCoordinateOffset[name]);}
     public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;
     public double health;

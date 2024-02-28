@@ -27,6 +27,8 @@ public class Game1 : Game
     private Effect _mapShader;
     private Matrix view = Matrix.Identity;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
+    public Vector2 MouseCoor = new();
+    public int MouseI = 0, MouseJ = 0;
     public long tick = 0; // 游戏从开始经过的刻数
     private long thingCount = 0; // 游戏从开始产生的Entity, Spell, Spellcast总数
     private double timeBank = 0d;
@@ -35,9 +37,11 @@ public class Game1 : Game
     private Dictionary<long, Entity> entities = new(); // 十分关键的字典，其中每个实体都有一个唯一的id
     private Dictionary<long, Spell> spells = new(); // 十分关键的字典，其中每个spell都有一个唯一的id
     private Dictionary<long, Spellcast> spellcasts = new(); // 十分关键的字典，其中每个spellcast都有一个唯一的id
-    private const int gridI = 32;
-    private const int gridJ = 20;
-    private bool[,] isLight = new bool[gridI,gridJ];
+    private const int maxI = 32;
+    private const int maxJ = 20;
+    private bool[,] isLight = new bool[maxI,maxJ];
+    public Spell[,] spellAt = new Spell[maxI,maxJ];
+    private object mouseOn = null;
 
 
 
@@ -82,7 +86,7 @@ public class Game1 : Game
         u2.AffiliateAsChild(u1,0);
         #endregion
 
-        for(int i=0;i<gridI;++i) for(int j=0;j<gridJ;++j)
+        for(int i=0;i<maxI;++i) for(int j=0;j<maxJ;++j)
         {
             isLight[i,j] = RandomNumberGenerator.GetInt32(2)>0;
             // (i+j)%2==0;
@@ -97,9 +101,20 @@ public class Game1 : Game
 
         _lightgrey = Content.Load<Texture2D>("lightgrey");
         _darkgrey = Content.Load<Texture2D>("darkgrey");
+        
         Entity.Texture[Name.Enemy1] = Content.Load<Texture2D>("enemy1");
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.SquareD6] = null;
+
+        Spell.Texture[Name.SummonEnemy1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.Texture[Name.SummonProjectile1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.Texture[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.Texture[Name.Add5Speed] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.Texture[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.Texture[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.Texture[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.Texture[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.Texture[Name.Wait60Ticks] = Content.Load<Texture2D>("SpellGUI1");
 
         _mapShader = Content.Load<Effect>("map-shader");
     }
@@ -176,6 +191,10 @@ public class Game1 : Game
     {
         Keyboard.GetState();
         Mouse.GetState();
+        MouseCoor = Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(view));
+        MouseI = (int)MathF.Floor(MouseCoor.X / 64f);
+        MouseJ = (int)MathF.Floor(MouseCoor.Y / 64f);
+        // Debug.Print(MousePos.ToString());
 
         if (Keyboard.HasBeenPressed(Keys.Escape))
             ToggleBorderless();
@@ -187,13 +206,16 @@ public class Game1 : Game
             TickUpdate(); // 暂停状态下，按一次T增加一刻
 
         // 这部分是鼠标滚轮缩放
+        #region zoom
         // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
         Matrix newView = view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
         Vector3 scale; Vector3 translation;
         newView.Decompose(out scale, out _, out translation);
         if (scale.X<0.95f) view =  newView;
         else if (scale.X<1.05d) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+        #endregion
 
+        #region tickupdate
         if (Keyboard.HasBeenPressed(Keys.Space))
             if (status == GameStatus.Paused) status = GameStatus.Running;
             else status = GameStatus.Paused;
@@ -223,7 +245,7 @@ public class Game1 : Game
         if (status == GameStatus.Paused) TimeBank = 0d;
         else 
         {
-            int TickUpdateMax = 10;
+            int TickUpdateMax = 10; // 采用的倍速机制使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过十倍速
             while(TimeBank > 0d && TickUpdateMax > 0)
             {
                 TickUpdate();
@@ -231,7 +253,16 @@ public class Game1 : Game
                 TimeBank -= 1d / tps;
             }
         }
-        // 采用的倍速使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过十倍速
+        #endregion
+        
+        #region UI
+        // Spell s = (0 <= MouseI && MouseI < maxI && 0 <= MouseJ && MouseJ < maxJ) ? spellAt[MouseI, MouseJ] : null;
+        // if(mouseOn is Spell) s = (Spell)mouseOn;
+        if(Mouse.LeftClicked())
+        {
+            if(mouseOn is Spell) ((Spell)mouseOn).showUI ^= true;
+        }
+        #endregion
 
         base.Update(gameTime);
     }
@@ -247,7 +278,7 @@ public class Game1 : Game
 
         _spriteBatch.Begin(effect: _mapShader);
 
-        for(int i=0;i<gridI;++i)for(int j=0;j<gridJ;++j) // 画地图
+        for(int i=0;i<maxI;++i)for(int j=0;j<maxJ;++j) // 画地图
         {
             _spriteBatch.Draw(isLight[i,j] ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
         }
@@ -255,10 +286,40 @@ public class Game1 : Game
         {
             if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White);
         }
+        mouseOn = null;
+        foreach(Spell s in spells.Values) // 画法术的UI
+        {
+            if(s.affiliation == Spell.Affiliation.Map) DrawSpellUI(s, s.mapI, s.mapJ);
+        }
 
         _spriteBatch.End();
 
         base.Draw(gameTime);
+    }
+
+    protected void DrawSpellUI(Spell s, int i, int j)
+    {
+        if(MouseI == i && MouseJ == j) mouseOn = s; 
+        if(s.showUI)
+        {
+            Texture2D t = Spell.Texture[s.name];
+            _spriteBatch.Draw(t, new Vector2(i*64, j*64), Color.White);
+            if(i*64 <= MouseCoor.X && MouseCoor.X <= i*64 + t.Width && j*64 <= MouseCoor.Y && MouseCoor.Y <= j*64 + t.Height) mouseOn = s;
+            switch(Spell.childrenNumber[s.name])
+            {
+                case 1:
+                {
+                    if(s.children[0] != null) DrawSpellUI(s.children[0], i, j+1);
+                    break;
+                }
+                case 2:
+                {
+                    if(s.children[0] != null) DrawSpellUI(s.children[0], i, j+2);
+                    if(s.children[1] != null) DrawSpellUI(s.children[1], i+1, j+1);
+                    break;
+                }
+            }
+        }
     }
 
     // 下面是关于全屏显示的东西，不用管

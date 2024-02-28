@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
 
 
 public class Spell : Thing
 {
-    protected static Dictionary<Name, int> childrenNumber = new() {
+    public static Dictionary<Name, int> childrenNumber = new() {
         {Name.SummonEnemy1, 2},
         {Name.SummonProjectile1, 2},
         {Name.AddSpeed, 1},
@@ -33,6 +34,7 @@ public class Spell : Thing
         {Name.AimClosestInSquareD6, false},
         {Name.Wait60Ticks, false}
     };
+    public static Dictionary<Name, Texture2D> Texture = new();
     public enum Affiliation {Desk, Map, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术
     public Affiliation affiliation = Affiliation.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号
@@ -45,6 +47,7 @@ public class Spell : Thing
     public ArrayList toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public long coolDownMax = -1;
     public long coolDown;
+    public bool showUI = false;
     public Spell(Game1 game, long id, Name name) : base(game, id, name)
     {
         children = new Spell[childrenNumber[name]];
@@ -64,6 +67,7 @@ public class Spell : Thing
             }
             case Affiliation.Map:
             {
+                game.spellAt[mapI, mapJ] = null;
                 coolDownMax = -1;
                 break;
             }
@@ -99,6 +103,7 @@ public class Spell : Thing
         this.mapI = mapI;
         this.mapJ = mapJ;
         affiliation = Affiliation.Map;
+        game.spellAt[mapI,mapJ] = this;
         this.coolDownMax = coolDownMax;
         coolDown = coolDownMax;
     }

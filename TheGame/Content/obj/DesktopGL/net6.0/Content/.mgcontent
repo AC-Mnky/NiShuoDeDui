@@ -9,8 +9,12 @@
     <File>D:/Game202402/TheGame/Content/lightgrey.png</File>
     <File>D:/Game202402/TheGame/Content/map-shader.fx</File>
     <File>D:/Game202402/TheGame/Content/projectile1.png</File>
+    <File>D:/Game202402/TheGame/Content/SpellGUI1.png</File>
+    <File>D:/Game202402/TheGame/Content/SpellGUI2.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
