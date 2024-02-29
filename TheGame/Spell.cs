@@ -36,8 +36,9 @@ public class Spell : Thing
     };
     public static Dictionary<Name, Texture2D> TextureUI = new();
     public static Dictionary<Name, Texture2D> TextureIcon = new();
-    public enum Affiliation {Desk, Map, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术
-    public Affiliation affiliation = Affiliation.Null;
+    public static Dictionary<(Name, int), Texture2D> TextureSlot = new();
+    public enum Attachment {Desk, Map, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术
+    public Attachment attachment = Attachment.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号
     public int mapI, mapJ; // 如果在地图上，它的坐标
     public Vector2 Coordinate() {return new Vector2(mapI*64f+32f, mapJ*64f+32f);}
@@ -56,8 +57,12 @@ public class Spell : Thing
     {
         children = new Spell[childrenNumber[name]];
         windowIcon = new Window(this, Window.Type.SpellIcon, TextureIcon[name]);
-        windowUI = new Window(this, Window.Type.SpellIcon, TextureUI[name]);
+        windowUI = new Window(this, Window.Type.SpellUI, TextureUI[name]);
         windowSlots = new Window[childrenNumber[name]];
+        for(int r=0;r<childrenNumber[name];++r)
+        {
+            windowSlots[r] = new Window(this, Window.Type.SpellSlot, TextureSlot[(name,r)]);
+        }
     }
 
 
@@ -65,21 +70,21 @@ public class Spell : Thing
 
     private void Detach()
     {
-        switch(affiliation)
+        switch(attachment)
         {
-            case Affiliation.Desk:
+            case Attachment.Desk:
             {
                 game.desk[deskIndex] = null;
                 deskIndex = -1;
                 break;
             }
-            case Affiliation.Map:
+            case Attachment.Map:
             {
                 game.spellAt[mapI, mapJ] = null;
                 coolDownMax = -1;
                 break;
             }
-            case Affiliation.Child:
+            case Attachment.Child:
             {
                 parent.children[rank] = null;
                 rank = -1;
@@ -92,44 +97,44 @@ public class Spell : Thing
             //     parent = null;
             //     break;
             // }
-            case Affiliation.Null:
+            case Attachment.Null:
             {
                 break;
             }
         }
-        affiliation = Affiliation.Null;
+        attachment = Attachment.Null;
     }
-    public void AffiliateAsDesk(int deskIndex)
+    public void AttachToDesk(int deskIndex)
     {
         Detach();
         this.deskIndex = deskIndex;
         game.desk[deskIndex] = this;
-        affiliation = Affiliation.Desk;
+        attachment = Attachment.Desk;
     }
-    public void AffiliateAsMap(int mapI, int mapJ, long coolDownMax)
+    public void AttachToMap(int mapI, int mapJ, long coolDownMax)
     {
         Detach();
         this.mapI = mapI;
         this.mapJ = mapJ;
-        affiliation = Affiliation.Map;
+        attachment = Attachment.Map;
         game.spellAt[mapI,mapJ] = this;
         this.coolDownMax = coolDownMax;
         coolDown = coolDownMax;
     }
-    public void AffiliateAsChild(Spell parent, int rank)
+    public void AttachAsChild(Spell parent, int rank)
     {
         Detach();
         this.parent = parent;
         this.rank = rank;
         parent.children[rank] = this;
-        affiliation = Affiliation.Child;
+        attachment = Attachment.Child;
     }
 
 
 
     public override void TickUpdate()
     {
-        if(affiliation == Affiliation.Map)
+        if(attachment == Attachment.Map)
         {
             if(coolDown > 1) --coolDown;
             else

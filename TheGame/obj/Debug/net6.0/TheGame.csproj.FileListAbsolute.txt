@@ -34,3 +34,6 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI2.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonenemy1icon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonprojectile1icon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\defaulticon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI1Slot0.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI2slot0.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI2slot1.xnb
