@@ -34,7 +34,8 @@ public class Spell : Thing
         {Name.AimClosestInSquareD6, false},
         {Name.Wait60Ticks, false}
     };
-    public static Dictionary<Name, Texture2D> Texture = new();
+    public static Dictionary<Name, Texture2D> UI = new();
+    public static Dictionary<Name, Texture2D> icon = new();
     public enum Affiliation {Desk, Map, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术
     public Affiliation affiliation = Affiliation.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号

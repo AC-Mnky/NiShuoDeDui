@@ -31,3 +31,6 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\projectile1.xnb
 D:\Game202402\TheGame\obj\Debug\net6.0\TheGame.sourcelink.json
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI1.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonenemy1icon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonprojectile1icon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\defaulticon.xnb

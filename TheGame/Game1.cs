@@ -101,20 +101,30 @@ public class Game1 : Game
 
         _lightgrey = Content.Load<Texture2D>("lightgrey");
         _darkgrey = Content.Load<Texture2D>("darkgrey");
-        
+
         Entity.Texture[Name.Enemy1] = Content.Load<Texture2D>("enemy1");
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.SquareD6] = null;
 
-        Spell.Texture[Name.SummonEnemy1] = Content.Load<Texture2D>("SpellGUI2");
-        Spell.Texture[Name.SummonProjectile1] = Content.Load<Texture2D>("SpellGUI2");
-        Spell.Texture[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.Texture[Name.Add5Speed] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.Texture[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.Texture[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.Texture[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.Texture[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.Texture[Name.Wait60Ticks] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.UI[Name.SummonEnemy1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.UI[Name.SummonProjectile1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.UI[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.UI[Name.Add5Speed] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.UI[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.UI[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.UI[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.UI[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.UI[Name.Wait60Ticks] = Content.Load<Texture2D>("SpellGUI1");
+
+        Spell.icon[Name.SummonEnemy1] = Content.Load<Texture2D>("SummonEnemy1icon");
+        Spell.icon[Name.SummonProjectile1] = Content.Load<Texture2D>("SummonProjectile1icon");
+        Spell.icon[Name.AddSpeed] = Content.Load<Texture2D>("defaulticon");
+        Spell.icon[Name.Add5Speed] = Content.Load<Texture2D>("defaulticon");
+        Spell.icon[Name.AddXVelocity] = Content.Load<Texture2D>("defaulticon");
+        Spell.icon[Name.AddYVelocity] = Content.Load<Texture2D>("defaulticon");
+        Spell.icon[Name.TriggerUponDeath] = Content.Load<Texture2D>("defaulticon");
+        Spell.icon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("defaulticon");
+        Spell.icon[Name.Wait60Ticks] = Content.Load<Texture2D>("defaulticon");
 
         _mapShader = Content.Load<Effect>("map-shader");
     }
@@ -300,10 +310,16 @@ public class Game1 : Game
     protected void DrawSpellUI(Spell s, int i, int j)
     {
         if(MouseI == i && MouseJ == j) mouseOn = s; 
-        if(s.showUI)
+        Texture2D icon = Spell.icon[s.name];
+        if(!s.showUI)
         {
-            Texture2D t = Spell.Texture[s.name];
+            _spriteBatch.Draw(icon, new Vector2(i*64, j*64), Color.White);
+        }
+        else
+        {
+            Texture2D t = Spell.UI[s.name];
             _spriteBatch.Draw(t, new Vector2(i*64, j*64), Color.White);
+            _spriteBatch.Draw(icon, new Vector2(i*64, j*64), Color.White);
             if(i*64 <= MouseCoor.X && MouseCoor.X <= i*64 + t.Width && j*64 <= MouseCoor.Y && MouseCoor.Y <= j*64 + t.Height) mouseOn = s;
             switch(Spell.childrenNumber[s.name])
             {
