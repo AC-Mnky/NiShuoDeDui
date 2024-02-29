@@ -14,6 +14,7 @@ public class Window
     public Rectangle RectMouseCatch;
     public enum Type {SpellIcon, SpellSlot, SpellUI};
     public Type type;
+    public int rank = -1;
     public Window(object parent, Type type, Texture2D texture)
     {
         this.parent = parent;

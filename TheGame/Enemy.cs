@@ -17,9 +17,10 @@ public class Enemy : Entity
 
     public override void TickUpdate()
     {
-        if(Collisions().Count > 0)
+        foreach(Entity e in Collisions())
         {
-            health -= 1d;
+            if(e is Projectile)
+                health -= 1d;
         }
         if(health <= 0d)
         {

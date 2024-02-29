@@ -27,11 +27,7 @@ public class Spellcast : Thing
 
     public override void TickUpdate()
     {
-        if(Spell.dependentOnly[spell.name] && cast.type == CastType.Independent) // 这种情况根本不该发生，因为这个施术会失败。
-        {
-            alive = false;
-            Debug.Print("Something is wrong");
-        }
+        Debug.Assert(!(Spell.dependentOnly[spell.name] && cast.type == CastType.Independent));
         if(cast.type == CastType.Dependent && !cast.subject.alive) // 分类：亡语
             {
                 switch(spell.name)

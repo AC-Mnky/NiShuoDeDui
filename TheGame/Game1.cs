@@ -43,6 +43,8 @@ public class Game1 : Game
     private bool[,] isLight = new bool[maxI,maxJ];
     public Spell[,] spellAt = new Spell[maxI,maxJ];
     private Window mouseOn = null;
+    private Spell holding = null;
+    private Attachment oldAtt = null;
     public Spell[] desk = new Spell[1];
 
 
@@ -78,26 +80,26 @@ public class Game1 : Game
         #region sandbox
         Spell e0 = NewSpell(Name.SummonEnemy1);
         Spell e1 = NewSpell(Name.AddXVelocity);
-        e0.AttachToMap(0,5,100);
-        e1.AttachAsChild(e0,1);
+        e0.ReAttach(new Attachment(0,5,100));
+        e1.ReAttach(new Attachment(e0,1));
         Spell s0 = NewSpell(Name.SummonProjectile1);
         Spell s1 = NewSpell(Name.AimClosestInSquareD6);
         Spell s2 = NewSpell(Name.Add5Speed);
-        s0.AttachToMap(6,3,15);
-        s1.AttachAsChild(s0,1);
-        s2.AttachAsChild(s1,0);
+        s0.ReAttach(new Attachment(6,3,15));
+        s1.ReAttach(new Attachment(s0,1));
+        s2.ReAttach(new Attachment(s1,0));
         Spell t0 = NewSpell(Name.SummonProjectile1);
         Spell t1 = NewSpell(Name.AimClosestInSquareD6);
         Spell t2 = NewSpell(Name.Add5Speed);
-        t0.AttachToMap(9,7,15);
-        t1.AttachAsChild(t0,1);
-        t2.AttachAsChild(t1,0);
+        t0.ReAttach(new Attachment(9,7,15));
+        t1.ReAttach(new Attachment(t0,1));
+        t2.ReAttach(new Attachment(t1,0));
         Spell u0 = NewSpell(Name.SummonProjectile1);
         Spell u1 = NewSpell(Name.AimClosestInSquareD6);
         Spell u2 = NewSpell(Name.Add5Speed);
-        u0.AttachToMap(15,3,30);
-        u1.AttachAsChild(u0,1);
-        u2.AttachAsChild(u1,0);
+        u0.ReAttach(new Attachment(15,3,30));
+        u1.ReAttach(new Attachment(u0,1));
+        u2.ReAttach(new Attachment(u1,0));
         #endregion
     }
     protected override void LoadContent() // 加载材质
@@ -292,12 +294,34 @@ public class Game1 : Game
             if(mouseOn?.parent is Spell)
             {
                 ((Spell)mouseOn.parent).showUI ^= true;
+                if(mouseOn.type == TheGame.Window.Type.SpellIcon)
+                {
+                    holding = (Spell)mouseOn.parent;
+                }
+            }
+        }
+        if(Mouse.LeftDeClicked())
+        {
+            if(desk[0] != null)
+            {
+                if(mouseOn?.parent is Spell && mouseOn.type == TheGame.Window.Type.SpellSlot)
+                {
+                    if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
+                        desk[0].ReAttach(new Attachment((Spell)mouseOn.parent, mouseOn.rank));
+                }
+                else
+                {
+                    desk[0].ReAttach(oldAtt);
+                }
             }
         }
         if(Mouse.LeftDown() && Mouse.FirstMovementSinceLastLeftClick())
         {
             Debug.Print("First move!");
-
+            if(holding != null && desk[0] == null)
+            {
+                oldAtt = holding.ReAttach(new Attachment(0));
+            }
         }
         #endregion
 
@@ -326,8 +350,9 @@ public class Game1 : Game
         }
         foreach(Spell s in spells.Values) // 画法术的UI
         {
-            if(s.attachment == Spell.Attachment.Map) DrawSpellUI(false, s, s.mapI, s.mapJ);
+            if(s.attachment.type == Attachment.Type.Map) DrawSpellUI(false, s, s.attachment.mapI, s.attachment.mapJ);
         }
+        if(desk[0] != null) _spriteBatch.Draw(Spell.TextureIcon[desk[0].name], MouseCoor, Color.Yellow);
 
         _spriteBatch.End();
 
@@ -339,7 +364,7 @@ public class Game1 : Game
         mouseOn = null;
         foreach(Spell s in spells.Values)
         {
-            if(s.attachment == Spell.Attachment.Map) DrawSpellUI(true, s, s.mapI, s.mapJ);
+            if(s.attachment.type == Attachment.Type.Map) DrawSpellUI(true, s, s.attachment.mapI, s.attachment.mapJ);
         }
     }
     protected void DrawSpellUI(bool preDraw, Spell s, int i, int j)

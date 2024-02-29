@@ -1,14 +1,14 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "D:/Game202402/TheGame/Content/darkgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/darkgrey.xnb","TextureProcessor","Texture2DContent",220,16469,0.2059906
 "D:/Game202402/TheGame/Content/defaulticon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/defaulticon.xnb","TextureProcessor","Texture2DContent",236,5269,0.1941831
-"D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",170,4181,0.0030601
+"D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",159,4181,0.2155331
 "D:/Game202402/TheGame/Content/lightgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/lightgrey.xnb","TextureProcessor","Texture2DContent",221,16469,0.0025487
 "D:/Game202402/TheGame/Content/map-shader.fx","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/map-shader.xnb","EffectProcessor","CompiledEffectContent",979,1565,0.2462226
-"D:/Game202402/TheGame/Content/projectile1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/projectile1.xnb","TextureProcessor","Texture2DContent",148,1109,0.0015424
+"D:/Game202402/TheGame/Content/projectile1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/projectile1.xnb","TextureProcessor","Texture2DContent",126,1109,0.0038702
 "D:/Game202402/TheGame/Content/SpellGUI1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI1.xnb","TextureProcessor","Texture2DContent",986,196693,0.1994647
 "D:/Game202402/TheGame/Content/SpellGUI1Slot0.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI1Slot0.xnb","TextureProcessor","Texture2DContent",860,196693,0.220846
 "D:/Game202402/TheGame/Content/SpellGUI2.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2.xnb","TextureProcessor","Texture2DContent",1366,393301,0.1982948
-"D:/Game202402/TheGame/Content/SpellGUI2slot0.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2slot0.xnb","TextureProcessor","Texture2DContent",1220,393301,0.0121445
+"D:/Game202402/TheGame/Content/SpellGUI2slot0.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2slot0.xnb","TextureProcessor","Texture2DContent",1216,393301,0.2389877
 "D:/Game202402/TheGame/Content/SpellGUI2slot1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2slot1.xnb","TextureProcessor","Texture2DContent",1177,393301,0.0121614
 "D:/Game202402/TheGame/Content/summonenemy1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonenemy1icon.xnb","TextureProcessor","Texture2DContent",258,5269,0.0029135
 "D:/Game202402/TheGame/Content/summonprojectile1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonprojectile1icon.xnb","TextureProcessor","Texture2DContent",247,5269,0.0028158
