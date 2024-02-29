@@ -325,8 +325,7 @@ public class Game1 : Game
     {
         if(preDraw)
         {
-            s.windowIcon.RectMouseCatch = new Rectangle(i*64+14, j*64+14, 36, 36); 
-            s.windowIcon.RectRender = new Rectangle(i*64, j*64, 64, 64);
+            s.windowIcon.RectMouseCatch = s.windowIcon.RectRender = new Rectangle(i*64+14, j*64+14, 36, 36); 
             s.windowUI.RectMouseCatch = s.windowUI.RectRender = new Rectangle(i*64, j*64, s.windowUI.texture.Width, s.windowUI.texture.Height);
         }
 
