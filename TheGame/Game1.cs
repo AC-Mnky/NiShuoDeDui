@@ -41,7 +41,8 @@ public class Game1 : Game
     private const int maxJ = 20;
     private bool[,] isLight = new bool[maxI,maxJ];
     public Spell[,] spellAt = new Spell[maxI,maxJ];
-    private object mouseOn = null;
+    private Window mouseOn = null;
+    public Spell[] desk = new Spell[1];
 
 
 
@@ -60,6 +61,18 @@ public class Game1 : Game
         // ToggleBorderless(); // 先全屏 // 但是全屏不方便debug所以先关掉了
 
 
+
+        for(int i=0;i<maxI;++i) for(int j=0;j<maxJ;++j)
+        {
+            isLight[i,j] = RandomNumberGenerator.GetInt32(2)>0;
+            // (i+j)%2==0;
+        }
+
+        base.Initialize();
+    }
+
+    protected void TickZero()
+    {
         // 在这里尝试这些法术的效果，可以随意修改
         #region sandbox
         Spell e0 = NewSpell(Name.SummonEnemy1);
@@ -85,16 +98,7 @@ public class Game1 : Game
         u1.AffiliateAsChild(u0,1);
         u2.AffiliateAsChild(u1,0);
         #endregion
-
-        for(int i=0;i<maxI;++i) for(int j=0;j<maxJ;++j)
-        {
-            isLight[i,j] = RandomNumberGenerator.GetInt32(2)>0;
-            // (i+j)%2==0;
-        }
-
-        base.Initialize();
     }
-
     protected override void LoadContent() // 加载材质
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -106,25 +110,25 @@ public class Game1 : Game
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.SquareD6] = null;
 
-        Spell.UI[Name.SummonEnemy1] = Content.Load<Texture2D>("SpellGUI2");
-        Spell.UI[Name.SummonProjectile1] = Content.Load<Texture2D>("SpellGUI2");
-        Spell.UI[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.UI[Name.Add5Speed] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.UI[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.UI[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.UI[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.UI[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.UI[Name.Wait60Ticks] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.SummonEnemy1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.TextureUI[Name.SummonProjectile1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.TextureUI[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.Add5Speed] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.Wait60Ticks] = Content.Load<Texture2D>("SpellGUI1");
 
-        Spell.icon[Name.SummonEnemy1] = Content.Load<Texture2D>("SummonEnemy1icon");
-        Spell.icon[Name.SummonProjectile1] = Content.Load<Texture2D>("SummonProjectile1icon");
-        Spell.icon[Name.AddSpeed] = Content.Load<Texture2D>("defaulticon");
-        Spell.icon[Name.Add5Speed] = Content.Load<Texture2D>("defaulticon");
-        Spell.icon[Name.AddXVelocity] = Content.Load<Texture2D>("defaulticon");
-        Spell.icon[Name.AddYVelocity] = Content.Load<Texture2D>("defaulticon");
-        Spell.icon[Name.TriggerUponDeath] = Content.Load<Texture2D>("defaulticon");
-        Spell.icon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("defaulticon");
-        Spell.icon[Name.Wait60Ticks] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.SummonEnemy1] = Content.Load<Texture2D>("SummonEnemy1icon");
+        Spell.TextureIcon[Name.SummonProjectile1] = Content.Load<Texture2D>("SummonProjectile1icon");
+        Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.Add5Speed] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("defaulticon");
 
         _mapShader = Content.Load<Effect>("map-shader");
     }
@@ -173,6 +177,8 @@ public class Game1 : Game
 
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
+        if(tick==0) TickZero();
+        
         // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
         foreach(Spell s in spells.Values)
             s.TickCast(); // 待施放的法术进行施放
@@ -270,7 +276,7 @@ public class Game1 : Game
         // if(mouseOn is Spell) s = (Spell)mouseOn;
         if(Mouse.LeftClicked())
         {
-            if(mouseOn is Spell) ((Spell)mouseOn).showUI ^= true;
+            if(mouseOn?.parent is Spell) ((Spell)mouseOn.parent).showUI ^= true;
         }
         #endregion
 
@@ -281,6 +287,7 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime) // 显示
     {
+        PreDraw();
         GraphicsDevice.Clear(Color.Black); // 背景是黑的
 
         projection = Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, 1);
@@ -296,10 +303,9 @@ public class Game1 : Game
         {
             if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White);
         }
-        mouseOn = null;
         foreach(Spell s in spells.Values) // 画法术的UI
         {
-            if(s.affiliation == Spell.Affiliation.Map) DrawSpellUI(s, s.mapI, s.mapJ);
+            if(s.affiliation == Spell.Affiliation.Map) DrawSpellUI(false, s, s.mapI, s.mapJ);
         }
 
         _spriteBatch.End();
@@ -307,35 +313,55 @@ public class Game1 : Game
         base.Draw(gameTime);
     }
 
-    protected void DrawSpellUI(Spell s, int i, int j)
+    protected void PreDraw() // 显示前需要先获取鼠标状态
     {
-        if(MouseI == i && MouseJ == j) mouseOn = s; 
-        Texture2D icon = Spell.icon[s.name];
+        mouseOn = null;
+        foreach(Spell s in spells.Values)
+        {
+            if(s.affiliation == Spell.Affiliation.Map) DrawSpellUI(true, s, s.mapI, s.mapJ);
+        }
+    }
+    protected void DrawSpellUI(bool preDraw, Spell s, int i, int j)
+    {
+        if(preDraw)
+        {
+            s.windowIcon.RectMouseCatch = new Rectangle(i*64+14, j*64+14, 36, 36); 
+            s.windowIcon.RectRender = new Rectangle(i*64, j*64, 64, 64);
+            s.windowUI.RectMouseCatch = s.windowUI.RectRender = new Rectangle(i*64, j*64, s.windowUI.texture.Width, s.windowUI.texture.Height);
+        }
+
         if(!s.showUI)
         {
-            _spriteBatch.Draw(icon, new Vector2(i*64, j*64), Color.White);
+            DrawWindow(preDraw, s.windowIcon);
         }
         else
         {
-            Texture2D t = Spell.UI[s.name];
-            _spriteBatch.Draw(t, new Vector2(i*64, j*64), Color.White);
-            _spriteBatch.Draw(icon, new Vector2(i*64, j*64), Color.White);
-            if(i*64 <= MouseCoor.X && MouseCoor.X <= i*64 + t.Width && j*64 <= MouseCoor.Y && MouseCoor.Y <= j*64 + t.Height) mouseOn = s;
+            DrawWindow(preDraw, s.windowUI);
+            DrawWindow(preDraw, s.windowIcon);
             switch(Spell.childrenNumber[s.name])
             {
                 case 1:
                 {
-                    if(s.children[0] != null) DrawSpellUI(s.children[0], i, j+1);
+                    if(s.children[0] != null) DrawSpellUI(preDraw, s.children[0], i, j+1);
                     break;
                 }
                 case 2:
                 {
-                    if(s.children[0] != null) DrawSpellUI(s.children[0], i, j+2);
-                    if(s.children[1] != null) DrawSpellUI(s.children[1], i+1, j+1);
+                    if(s.children[0] != null) DrawSpellUI(preDraw, s.children[0], i, j+2);
+                    if(s.children[1] != null) DrawSpellUI(preDraw, s.children[1], i+1, j+1);
                     break;
                 }
             }
         }
+    }
+    protected void DrawWindow(bool PreDraw, Window w)
+    {
+        if(PreDraw)
+        {
+            if (w.RectMouseCatch.Contains(MouseCoor)) mouseOn = w;
+        }
+        else
+        _spriteBatch.Draw(w.texture, w.RectRender, mouseOn == w ? Color.Yellow : Color.White);
     }
 
     // 下面是关于全屏显示的东西，不用管

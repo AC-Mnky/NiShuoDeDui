@@ -6,11 +6,19 @@ public class Mouse
 {
     static MouseState currentMouseState;
     static MouseState previousMouseState;
+    // static MouseState lastLeftClickMouseState;
+    // static bool movedSinceLastLeftClick = false;
 
     public static MouseState GetState()
     {
         previousMouseState = currentMouseState;
         currentMouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
+        // if (previousMouseState.Position != currentMouseState.Position) movedSinceLastLeftClick = true;
+        // if (LeftClicked())
+        // {
+        //     lastLeftClickMouseState = currentMouseState;
+        //     movedSinceLastLeftClick = false;
+        // }
         return currentMouseState;
     }
 

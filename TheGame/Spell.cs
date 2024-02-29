@@ -34,8 +34,8 @@ public class Spell : Thing
         {Name.AimClosestInSquareD6, false},
         {Name.Wait60Ticks, false}
     };
-    public static Dictionary<Name, Texture2D> UI = new();
-    public static Dictionary<Name, Texture2D> icon = new();
+    public static Dictionary<Name, Texture2D> TextureUI = new();
+    public static Dictionary<Name, Texture2D> TextureIcon = new();
     public enum Affiliation {Desk, Map, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术
     public Affiliation affiliation = Affiliation.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号
@@ -48,10 +48,16 @@ public class Spell : Thing
     public ArrayList toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public long coolDownMax = -1;
     public long coolDown;
+    public Window windowIcon;
+    public Window windowUI;
+    public Window[] windowSlots;
     public bool showUI = false;
     public Spell(Game1 game, long id, Name name) : base(game, id, name)
     {
         children = new Spell[childrenNumber[name]];
+        windowIcon = new Window(this, Window.Type.SpellIcon, TextureIcon[name]);
+        windowUI = new Window(this, Window.Type.SpellIcon, TextureUI[name]);
+        windowSlots = new Window[childrenNumber[name]];
     }
 
 
@@ -63,6 +69,7 @@ public class Spell : Thing
         {
             case Affiliation.Desk:
             {
+                game.desk[deskIndex] = null;
                 deskIndex = -1;
                 break;
             }
@@ -96,6 +103,7 @@ public class Spell : Thing
     {
         Detach();
         this.deskIndex = deskIndex;
+        game.desk[deskIndex] = this;
         affiliation = Affiliation.Desk;
     }
     public void AffiliateAsMap(int mapI, int mapJ, long coolDownMax)
