@@ -42,3 +42,12 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\addspeedicon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimclosestinsquared6icon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\triggerupondeathicon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\wait60ticksicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockdefault.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockA04.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockA15.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockA26.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockA37.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB02.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB16.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB34.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB57.xnb

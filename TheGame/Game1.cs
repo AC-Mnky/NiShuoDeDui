@@ -23,8 +23,8 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    private Texture2D _lightgrey;
-    private Texture2D _darkgrey;
+    // private Texture2D _lightgrey;
+    // private Texture2D _darkgrey;
     private Effect _mapShader;
     private Matrix view = Matrix.Identity;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
@@ -38,9 +38,10 @@ public class Game1 : Game
     private Dictionary<long, Entity> entities = new(); // 十分关键的字典，其中每个实体都有一个唯一的id
     private Dictionary<long, Spell> spells = new(); // 十分关键的字典，其中每个spell都有一个唯一的id
     private Dictionary<long, Spellcast> spellcasts = new(); // 十分关键的字典，其中每个spellcast都有一个唯一的id
+    private Block[,] blocks;
     private const int maxI = 32;
     private const int maxJ = 20;
-    private bool[,] isLight = new bool[maxI,maxJ];
+    // private bool[,] isLight = new bool[maxI,maxJ];
     public Spell[,] spellAt = new Spell[maxI,maxJ];
     private Window mouseOn = null;
     private Spell holding = null;
@@ -65,17 +66,41 @@ public class Game1 : Game
 
 
 
-        for(int i=0;i<maxI;++i) for(int j=0;j<maxJ;++j)
-        {
-            isLight[i,j] = RandomNumberGenerator.GetInt32(2)>0;
-            // (i+j)%2==0;
-        }
+        // for(int i=0;i<maxI;++i) for(int j=0;j<maxJ;++j)
+        // {
+        //     isLight[i,j] = RandomNumberGenerator.GetInt32(2)>0;
+        //     // (i+j)%2==0;
+        // }
+
+        #region blocks
+        blocks = new Block[Block.numX,Block.numY];
+        for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
+            blocks[x,y] = new(RandomBlockName(), x,y);
+        // blocks = new Block[Block.numX,Block.numY]{
+        //     {new(RandomBlockName(), 0,0), new(RandomBlockName(), 0,1), new(RandomBlockName(), 0,2)},
+        //     {new(RandomBlockName(), 1,0), new(RandomBlockName(), 1,1), new(RandomBlockName(), 1,2)},
+        //     {new(RandomBlockName(), 2,0), new(RandomBlockName(), 2,1), new(RandomBlockName(), 2,2)},
+        //     {new(RandomBlockName(), 3,0), new(RandomBlockName(), 3,1), new(RandomBlockName(), 3,2)}
+        //     };
+
+
+        #endregion
+
 
         base.Initialize();
     }
 
+    private BlockName RandomBlockName(){
+        return RandomNumberGenerator.GetInt32(2) switch
+        {
+            0 => BlockName.A,
+            1 => BlockName.B,
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+    }
+
     protected void TickZero()
-    {
+    {        
         // 在这里尝试这些法术的效果，可以随意修改
         #region sandbox
         Spell e0 = NewSpell(Name.SummonEnemy1);
@@ -113,8 +138,20 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _lightgrey = Content.Load<Texture2D>("lightgrey");
-        _darkgrey = Content.Load<Texture2D>("darkgrey");
+        // _lightgrey = Content.Load<Texture2D>("lightgrey");
+        // _darkgrey = Content.Load<Texture2D>("darkgrey");
+
+        Block.Texture[BlockName.A] = Content.Load<Texture2D>("blockdefault");
+        Block.Texture[BlockName.B] = Content.Load<Texture2D>("blockdefault");
+
+        Road.Texture[RoadName.A04] = Content.Load<Texture2D>("blockA04");
+        Road.Texture[RoadName.A15] = Content.Load<Texture2D>("blockA15");
+        Road.Texture[RoadName.A26] = Content.Load<Texture2D>("blockA26");
+        Road.Texture[RoadName.A37] = Content.Load<Texture2D>("blockA37");
+        Road.Texture[RoadName.B02] = Content.Load<Texture2D>("blockB02");
+        Road.Texture[RoadName.B16] = Content.Load<Texture2D>("blockB16");
+        Road.Texture[RoadName.B34] = Content.Load<Texture2D>("blockB34");
+        Road.Texture[RoadName.B57] = Content.Load<Texture2D>("blockB57");
 
         Entity.Texture[Name.Enemy1] = Content.Load<Texture2D>("enemy1");
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
@@ -185,7 +222,6 @@ public class Game1 : Game
         return sc;
     }
 
-
     public ArrayList Collisions(Entity e) // 简单的碰撞判定算法。之后可能会出现圆形的东西，从而需要修改。另外以后算法上可能会需要优化。
     {
         ArrayList ans = new();
@@ -199,6 +235,40 @@ public class Game1 : Game
         return ans;
     }
 
+    public Block Blocks(int x, int y)
+    {
+        return blocks[x-Block.numX*(int)MathF.Floor(x / (float)Block.numX), y-Block.numY*(int)MathF.Floor(y / (float)Block.numY)];
+    }
+    public Block Neighbour(Block b, int door)
+    {
+        return door switch
+        {
+            0 or 1 => Blocks(b.x, b.y-1),
+            2 or 3 => Blocks(b.x-1, b.y),
+            4 or 5 => Blocks(b.x, b.y+1),
+            6 or 7 => Blocks(b.x+1, b.y),
+            _ => null,
+        };
+
+    }
+    public void RefindPath(Block block, int doorout)
+    {
+        for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y) Debug.Assert(blocks[x,y].x == x && blocks[x,y].y == y);
+        foreach(Block bi in blocks) foreach(Road ri in bi.road) ri.isPath = false;
+        Block b = block;
+        int d = doorout;
+        do
+        {
+            b = Neighbour(b, d);
+            Road r = b.roadOfDoor[(d+4)%8];
+            r.isPath = true;
+            d = b.otherDoor[(d+4)%8];
+            // Debug.Print(new Vector2(b.x,b.y).ToString());
+            // Debug.Print(s.doorin.ToString());
+        } while(b != block || d != doorout);
+
+
+    }
 
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
@@ -245,6 +315,9 @@ public class Game1 : Game
             view = Matrix.Identity; // 恢复视角至初始状态
         if (Keyboard.HasBeenPressed(Keys.T) && status == GameStatus.Paused)
             TickUpdate(); // 暂停状态下，按一次T增加一刻
+        // if (Keyboard.HasBeenPressed(Keys.D))
+        // if (tick > 0)
+            RefindPath(Blocks(0,0),6);
 
         // 这部分是鼠标滚轮缩放
         #region zoom
@@ -351,9 +424,15 @@ public class Game1 : Game
 
         _spriteBatch.Begin(effect: _mapShader);
 
-        for(int i=0;i<maxI;++i)for(int j=0;j<maxJ;++j) // 画地图
+        // for(int i=0;i<maxI;++i)for(int j=0;j<maxJ;++j) // 画地图
+        // {
+        //     _spriteBatch.Draw(isLight[i,j] ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
+        // }
+        foreach(Block b in blocks)
         {
-            _spriteBatch.Draw(isLight[i,j] ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
+            _spriteBatch.Draw(Block.Texture[b.name], new Vector2(b.x*Block.Dgrid*64,b.y*Block.Dgrid*64), Color.White);
+            foreach(Road r in b.road)
+                _spriteBatch.Draw(Road.Texture[r.name], new Vector2(b.x*Block.Dgrid*64,b.y*Block.Dgrid*64), Color.White * (r.isPath ? 0.5f : 0.2f));
         }
         foreach(Entity e in entities.Values) // 画实体
         {
