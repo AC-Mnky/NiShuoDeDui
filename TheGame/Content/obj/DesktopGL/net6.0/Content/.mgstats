@@ -1,4 +1,7 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"D:/Game202402/TheGame/Content/add5speedicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/add5speedicon.xnb","TextureProcessor","Texture2DContent",188,5269,0.1842959
+"D:/Game202402/TheGame/Content/addspeedicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/addspeedicon.xnb","TextureProcessor","Texture2DContent",184,5269,0.0036556
+"D:/Game202402/TheGame/Content/aimclosestinsquared6icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimclosestinsquared6icon.xnb","TextureProcessor","Texture2DContent",222,5269,0.0026284
 "D:/Game202402/TheGame/Content/darkgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/darkgrey.xnb","TextureProcessor","Texture2DContent",220,16469,0.2059906
 "D:/Game202402/TheGame/Content/defaulticon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/defaulticon.xnb","TextureProcessor","Texture2DContent",236,5269,0.1941831
 "D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",159,4181,0.2155331
@@ -10,5 +13,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/SpellGUI2.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2.xnb","TextureProcessor","Texture2DContent",1366,393301,0.1982948
 "D:/Game202402/TheGame/Content/SpellGUI2slot0.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2slot0.xnb","TextureProcessor","Texture2DContent",1216,393301,0.2389877
 "D:/Game202402/TheGame/Content/SpellGUI2slot1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2slot1.xnb","TextureProcessor","Texture2DContent",1177,393301,0.0121614
-"D:/Game202402/TheGame/Content/summonenemy1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonenemy1icon.xnb","TextureProcessor","Texture2DContent",258,5269,0.0029135
+"D:/Game202402/TheGame/Content/summonenemy1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonenemy1icon.xnb","TextureProcessor","Texture2DContent",258,5269,0.0022206
 "D:/Game202402/TheGame/Content/summonprojectile1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonprojectile1icon.xnb","TextureProcessor","Texture2DContent",247,5269,0.0028158
+"D:/Game202402/TheGame/Content/triggerupondeathicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/triggerupondeathicon.xnb","TextureProcessor","Texture2DContent",225,5269,0.1984556
+"D:/Game202402/TheGame/Content/wait60ticksicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/wait60ticksicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.2482763

@@ -15,6 +15,7 @@ public class Spell : Thing
     public static Dictionary<Name, int> childrenNumber = new() {
         {Name.SummonEnemy1, 2},
         {Name.SummonProjectile1, 2},
+        {Name.VelocityZero, 1},
         {Name.AddSpeed, 1},
         {Name.Add5Speed, 1},
         {Name.AddXVelocity, 1},
@@ -26,6 +27,7 @@ public class Spell : Thing
     public static Dictionary<Name, bool> dependentOnly = new() {
         {Name.SummonEnemy1, false},
         {Name.SummonProjectile1, false},
+        {Name.VelocityZero, true},
         {Name.AddSpeed, true},
         {Name.Add5Speed, true},
         {Name.AddXVelocity, true},

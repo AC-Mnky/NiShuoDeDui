@@ -58,6 +58,12 @@ public class Spellcast : Thing
                     alive = false;
                     break;
                 }
+                case Name.VelocityZero:
+                {
+                    cast.subject.velocity = Vector2.Zero;
+                    alive = false;
+                    break;
+                }
                 case Name.AddSpeed:
                 {
                     cast.subject.velocity += Normalized(cast.direction);

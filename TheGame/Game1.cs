@@ -100,6 +100,13 @@ public class Game1 : Game
         u0.ReAttach(new Attachment(15,3,30));
         u1.ReAttach(new Attachment(u0,1));
         u2.ReAttach(new Attachment(u1,0));
+        NewSpell(Name.AddSpeed).ReAttach(new Attachment(0,0,60));
+        NewSpell(Name.Add5Speed).ReAttach(new Attachment(1,0,60));
+        NewSpell(Name.AddXVelocity).ReAttach(new Attachment(2,0,60));
+        NewSpell(Name.AddYVelocity).ReAttach(new Attachment(3,0,60));
+        NewSpell(Name.TriggerUponDeath).ReAttach(new Attachment(4,0,60));
+        NewSpell(Name.Wait60Ticks).ReAttach(new Attachment(5,0,60));
+        NewSpell(Name.VelocityZero).ReAttach(new Attachment(6,0,60));
         #endregion
     }
     protected override void LoadContent() // 加载材质
@@ -115,16 +122,18 @@ public class Game1 : Game
 
         Spell.TextureIcon[Name.SummonEnemy1] = Content.Load<Texture2D>("SummonEnemy1icon");
         Spell.TextureIcon[Name.SummonProjectile1] = Content.Load<Texture2D>("SummonProjectile1icon");
-        Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("defaulticon");
-        Spell.TextureIcon[Name.Add5Speed] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
+        Spell.TextureIcon[Name.Add5Speed] = Content.Load<Texture2D>("add5speedicon");
         Spell.TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("defaulticon");
         Spell.TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("defaulticon");
-        Spell.TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("defaulticon");
-        Spell.TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("defaulticon");
-        Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("triggerupondeathicon");
+        Spell.TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("aimclosestinsquared6icon");
+        Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
 
         Spell.TextureUI[Name.SummonEnemy1] = Content.Load<Texture2D>("SpellGUI2");
         Spell.TextureUI[Name.SummonProjectile1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.TextureUI[Name.VelocityZero] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.Add5Speed] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
@@ -137,6 +146,7 @@ public class Game1 : Game
         Spell.TextureSlot[(Name.SummonEnemy1,1)] = Content.Load<Texture2D>("spellgui2slot1");
         Spell.TextureSlot[(Name.SummonProjectile1,0)] = Content.Load<Texture2D>("spellgui2slot0");
         Spell.TextureSlot[(Name.SummonProjectile1,1)] = Content.Load<Texture2D>("spellgui2slot1");
+        Spell.TextureSlot[(Name.VelocityZero,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AddSpeed,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.Add5Speed,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AddXVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");

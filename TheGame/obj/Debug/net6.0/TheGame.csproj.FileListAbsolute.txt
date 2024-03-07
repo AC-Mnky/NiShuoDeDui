@@ -37,3 +37,8 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\defaulticon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI1Slot0.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI2slot0.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\SpellGUI2slot1.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\add5speedicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\addspeedicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimclosestinsquared6icon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\triggerupondeathicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\wait60ticksicon.xnb
