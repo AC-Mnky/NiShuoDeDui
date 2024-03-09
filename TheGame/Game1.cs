@@ -107,34 +107,34 @@ public class Game1 : Game
         // 在这里尝试这些法术的效果，可以随意修改
         #region sandbox
         Spell e0 = NewSpell(Name.SummonEnemy1);
-        Spell e1 = NewSpell(Name.AddXVelocity);
-        e0.ReAttach(new Attachment(0,5,100));
-        e1.ReAttach(new Attachment(e0,1));
+        // Spell e1 = NewSpell(Name.AddXVelocity);
+        e0.ReAttach(new Attachment(blocks[0,0].tower[0]));
+        // e1.ReAttach(new Attachment(e0,1));
         Spell s0 = NewSpell(Name.SummonProjectile1);
         Spell s1 = NewSpell(Name.AimClosestInSquareD6);
         Spell s2 = NewSpell(Name.Add5Speed);
-        s0.ReAttach(new Attachment(6,3,15));
+        s0.ReAttach(new Attachment(blocks[0,1].tower[0]));
         s1.ReAttach(new Attachment(s0,1));
         s2.ReAttach(new Attachment(s1,0));
         Spell t0 = NewSpell(Name.SummonProjectile1);
         Spell t1 = NewSpell(Name.AimClosestInSquareD6);
         Spell t2 = NewSpell(Name.Add5Speed);
-        t0.ReAttach(new Attachment(9,7,15));
+        t0.ReAttach(new Attachment(blocks[1,0].tower[0]));
         t1.ReAttach(new Attachment(t0,1));
         t2.ReAttach(new Attachment(t1,0));
         Spell u0 = NewSpell(Name.SummonProjectile1);
         Spell u1 = NewSpell(Name.AimClosestInSquareD6);
         Spell u2 = NewSpell(Name.Add5Speed);
-        u0.ReAttach(new Attachment(15,3,30));
+        u0.ReAttach(new Attachment(blocks[1,1].tower[0]));
         u1.ReAttach(new Attachment(u0,1));
         u2.ReAttach(new Attachment(u1,0));
-        NewSpell(Name.AddSpeed).ReAttach(new Attachment(0,0,60));
-        NewSpell(Name.Add5Speed).ReAttach(new Attachment(1,0,60));
-        NewSpell(Name.AddXVelocity).ReAttach(new Attachment(2,0,60));
-        NewSpell(Name.AddYVelocity).ReAttach(new Attachment(3,0,60));
-        NewSpell(Name.TriggerUponDeath).ReAttach(new Attachment(4,0,60));
-        NewSpell(Name.Wait60Ticks).ReAttach(new Attachment(5,0,60));
-        NewSpell(Name.VelocityZero).ReAttach(new Attachment(6,0,60));
+        // NewSpell(Name.AddSpeed).ReAttach(new Attachment(0,0,60));
+        // NewSpell(Name.Add5Speed).ReAttach(new Attachment(1,0,60));
+        // NewSpell(Name.AddXVelocity).ReAttach(new Attachment(2,0,60));
+        // NewSpell(Name.AddYVelocity).ReAttach(new Attachment(3,0,60));
+        // NewSpell(Name.TriggerUponDeath).ReAttach(new Attachment(4,0,60));
+        // NewSpell(Name.Wait60Ticks).ReAttach(new Attachment(5,0,60));
+        // NewSpell(Name.VelocityZero).ReAttach(new Attachment(6,0,60));
         #endregion
     }
     protected override void LoadContent() // 加载材质
@@ -349,7 +349,7 @@ public class Game1 : Game
             TickUpdate(); // 暂停状态下，按一次T增加一刻
         // if (Keyboard.HasBeenPressed(Keys.D))
         // if (tick > 0)
-            Bluedoor = RefindPath(Blocks(0,0),6);
+            Bluedoor = RefindPath(Blocks(2,2),6);
             Reddoor = Bluedoor.succ;
 
         // 这部分是鼠标滚轮缩放
@@ -358,9 +358,14 @@ public class Game1 : Game
         Matrix newView = view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
         Vector3 scale; Vector3 translation;
         newView.Decompose(out scale, out _, out translation);
-        if (scale.X<0.95f && scale.X>0.52f) view =  newView;
-        else if (scale.X<1.05f && scale.X>0.52f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
-        else if (scale.X<0.95f && scale.X>0.48f) view = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+
+        // if (scale.X<0.95f && scale.X>0.52f) view =  newView;
+        // else if (scale.X<1.05f && scale.X>0.52f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+        // else if (scale.X<0.95f && scale.X>0.48f) view = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+
+        if (scale.X<0.95f) view =  newView;
+        else if (scale.X<1.05f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+        
         #endregion
 
         #region tickupdate
@@ -473,7 +478,7 @@ public class Game1 : Game
         }
         foreach(Spell s in spells.Values) // 画法术的UI
         {
-            if(s.attachment.type == Attachment.Type.Map) DrawSpellUI(false, s, s.attachment.mapI, s.attachment.mapJ);
+            if(s.attachment.type == Attachment.Type.Tower) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
         }
         if(desk[0] != null) _spriteBatch.Draw(Spell.TextureIcon[desk[0].name], MouseCoor, Color.Yellow);
 
@@ -487,7 +492,7 @@ public class Game1 : Game
         mouseOn = null;
         foreach(Spell s in spells.Values)
         {
-            if(s.attachment.type == Attachment.Type.Map) DrawSpellUI(true, s, s.attachment.mapI, s.attachment.mapJ);
+            if(s.attachment.type == Attachment.Type.Tower) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
         }
     }
     protected void DrawSpellUI(bool preDraw, Spell s, int i, int j)

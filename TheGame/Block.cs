@@ -13,14 +13,15 @@ public class Block
 {
     public static Dictionary<BlockName, Texture2D> Texture = new();
     public BlockName name;
-    public const int numX = 3;
-    public const int numY = 3;
+    public const int numX = 5;
+    public const int numY = 5;
     public const int Dgrid = 5;
     public int x;
     public int y;
     public Road[] road;
     public Road[] roadOfDoor = new Road[8];
     public int[] otherDoor = new int[8];
+    public Tower[] tower;
     public Vector2 Coordinate()
     {
         return new Vector2(x*Dgrid*64,y*Dgrid*64);
@@ -39,6 +40,7 @@ public class Block
                     new(this, RoadName.A26),
                     new(this, RoadName.A37)
                     };
+                tower = new Tower[1]{new(this,2,2,15)};
                 break;
             }
             case BlockName.B:
@@ -47,6 +49,7 @@ public class Block
                     new(this, RoadName.B16),
                     new(this, RoadName.B34),
                     new(this, RoadName.B57)};
+                tower = new Tower[1]{new(this,2,2,15)};
                 break;
             }
         }

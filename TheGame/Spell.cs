@@ -40,7 +40,7 @@ public class Spell : Thing
     public static Dictionary<Name, Texture2D> TextureIcon = new();
     public static Dictionary<(Name, int), Texture2D> TextureSlot = new();
     public Attachment attachment = new();
-    public Vector2 Coordinate() {return new Vector2(attachment.mapI*64f+32f, attachment.mapJ*64f+32f);}
+    public Vector2 Coordinate() {return attachment.tower.Coordinate();}
     public Spell[] children; // 子法术列表（第零项是后继法术）
     public ArrayList toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public long coolDown;
@@ -74,9 +74,9 @@ public class Spell : Thing
                 game.desk[attachment.deskIndex] = null;
                 break;
             }
-            case Attachment.Type.Map:
+            case Attachment.Type.Tower:
             {
-                game.spellAt[attachment.mapI, attachment.mapJ] = null;
+                game.spellAt[attachment.tower.MapI(), attachment.tower.MapJ()] = null;
                 break;
             }
             case Attachment.Type.Child:
@@ -103,10 +103,10 @@ public class Spell : Thing
                 game.desk[target.deskIndex] = this;
                 break;
             }
-            case Attachment.Type.Map:
+            case Attachment.Type.Tower:
             {
-                game.spellAt[target.mapI, target.mapJ] = this;
-                coolDown = attachment.coolDownMax;
+                game.spellAt[target.tower.MapI(), target.tower.MapJ()] = this;
+                coolDown = attachment.tower.coolDownMax;
                 break;
             }
             case Attachment.Type.Child:
@@ -125,13 +125,13 @@ public class Spell : Thing
 
     public override void TickUpdate()
     {
-        if(attachment.type == Attachment.Type.Map)
+        if(attachment.type == Attachment.Type.Tower)
         {
             if(coolDown > 1) --coolDown;
             else
             {
                 toCastNextTick.Add(new Cast(Coordinate()));
-                coolDown = attachment.coolDownMax;
+                coolDown = attachment.tower.coolDownMax;
             }
         }
     }
