@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "MYGmo3/72hrBIvjxlJy/ZdBkDg+lhDic2Jk/N+3AAYsWEJFdSFCG+a3KfH+ATZtyVAIOdqQ3ci9GdKQ4k0JpzQ==",
+  "dgSpecHash": "R92kQQ4RgiZHhbvPXu7NxlAeGFOPMY+sOoIe05UZfq9tqInUr17R2uCURjw5z+WlMM5UvOFhycSykFrViGWAPA==",
   "success": true,
   "projectFilePath": "D:\\Game202402\\TheGame\\TheGame.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\35100\\.nuget\\packages\\microsoft.net.illink.analyzers\\7.0.100-1.23211.1\\microsoft.net.illink.analyzers.7.0.100-1.23211.1.nupkg.sha512",
+    "C:\\Users\\35100\\.nuget\\packages\\microsoft.net.illink.tasks\\7.0.100-1.23211.1\\microsoft.net.illink.tasks.7.0.100-1.23211.1.nupkg.sha512",
     "C:\\Users\\35100\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
     "C:\\Users\\35100\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512",
     "C:\\Users\\35100\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.26\\microsoft.netcore.app.ref.6.0.26.nupkg.sha512",
