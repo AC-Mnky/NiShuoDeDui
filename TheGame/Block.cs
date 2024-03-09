@@ -13,8 +13,8 @@ public class Block
 {
     public static Dictionary<BlockName, Texture2D> Texture = new();
     public BlockName name;
-    public const int numX = 5;
-    public const int numY = 4;
+    public const int numX = 3;
+    public const int numY = 3;
     public const int Dgrid = 5;
     public int x;
     public int y;

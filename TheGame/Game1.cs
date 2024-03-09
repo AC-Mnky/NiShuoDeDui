@@ -41,6 +41,7 @@ public class Game1 : Game
     private Dictionary<long, Spellcast> spellcasts = new(); // 十分关键的字典，其中每个spellcast都有一个唯一的id
     private Block[,] blocks;
     public Segment Reddoor;
+    public Segment Bluedoor;
     private const int maxI = 32;
     private const int maxJ = 20;
     // private bool[,] isLight = new bool[maxI,maxJ];
@@ -294,7 +295,11 @@ public class Game1 : Game
             // Debug.Print(s.doorin.ToString());
         } while(b != block || d != doorout);
         last.succ = first;
-        return first;
+        return last;
+    }
+    public void Penetrated(int i)
+    {
+        Debug.Print("penetrated: " + i.ToString());
     }
 
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
@@ -344,7 +349,8 @@ public class Game1 : Game
             TickUpdate(); // 暂停状态下，按一次T增加一刻
         // if (Keyboard.HasBeenPressed(Keys.D))
         // if (tick > 0)
-            Reddoor = RefindPath(Blocks(0,0),6);
+            Bluedoor = RefindPath(Blocks(0,0),6);
+            Reddoor = Bluedoor.succ;
 
         // 这部分是鼠标滚轮缩放
         #region zoom

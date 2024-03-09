@@ -27,6 +27,7 @@ public class Enemy : Entity
         while(progress > segment.length)
         {
             progress -= segment.length;
+            if(segment == game.Bluedoor) game.Penetrated(1);
             segment = segment.succ;
         }
         coordinate = segment.CoordinateAtProgress(progress);
