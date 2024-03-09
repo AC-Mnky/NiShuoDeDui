@@ -46,7 +46,7 @@ public class Spellcast : Thing
             {
                 case Name.SummonEnemy1:
                 {
-                    Entity x = game.NewEnemy(Name.Enemy1, CurrentCoordinate(), Vector2.Zero);
+                    Entity x = game.NewEnemy(Name.Enemy1, game.Reddoor, 0f);
                     spell.children[1]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;

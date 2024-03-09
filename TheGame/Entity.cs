@@ -26,11 +26,9 @@ abstract public class Entity : Thing
         {Name.SquareD6, 0d}
     };
     public static Dictionary<Name, Texture2D> Texture = new();
-    public Entity(Game1 game, long id, Name name, Vector2 coordinate, Vector2 velocity) : base(game,id,name)
+    public Entity(Game1 game, long id, Name name) : base(game,id,name)
     {
-        this.coordinate = coordinate;
         size = Size[name];
-        this.velocity = velocity;
         health = DefaultHealth[name];
     }
     public Vector2 coordinate;

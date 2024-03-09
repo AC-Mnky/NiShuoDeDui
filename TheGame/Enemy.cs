@@ -7,8 +7,14 @@ namespace TheGame;
 
 public class Enemy : Entity
 {
-    public Enemy(Game1 game, long id, Name name, Vector2 coordinate, Vector2 velocity) : base(game, id, name, coordinate, velocity)
+    public Segment segment;
+    public float progress;
+    public float speed = 1;
+    public Enemy(Game1 game, long id, Name name, Segment segment, float progress) : base(game, id, name)
     {
+        this.segment = segment;
+        this.progress = progress;
+        coordinate = segment.CoordinateAtProgress(progress);
     }
 
 
@@ -16,7 +22,14 @@ public class Enemy : Entity
 
     public override void TickUpdateCoordinate()
     {
-        if(alive) coordinate += velocity;
+        if(!alive) return;
+        progress += speed;
+        while(progress > segment.length)
+        {
+            progress -= segment.length;
+            segment = segment.succ;
+        }
+        coordinate = segment.CoordinateAtProgress(progress);
     }
 
     public override void TickUpdate()

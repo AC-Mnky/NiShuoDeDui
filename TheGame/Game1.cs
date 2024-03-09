@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using Microsoft.Xna.Framework;
@@ -39,6 +40,7 @@ public class Game1 : Game
     private Dictionary<long, Spell> spells = new(); // 十分关键的字典，其中每个spell都有一个唯一的id
     private Dictionary<long, Spellcast> spellcasts = new(); // 十分关键的字典，其中每个spellcast都有一个唯一的id
     private Block[,] blocks;
+    public Segment Reddoor;
     private const int maxI = 32;
     private const int maxJ = 20;
     // private bool[,] isLight = new bool[maxI,maxJ];
@@ -197,9 +199,9 @@ public class Game1 : Game
 
 
 
-    public Enemy NewEnemy(Name name, Vector2 coordinate, Vector2 velocity)
+    public Enemy NewEnemy(Name name, Segment segment, float progress)
     {
-        Enemy e = (Enemy)(entities[thingCount] = new Enemy(this, thingCount, name, coordinate, velocity));
+        Enemy e = (Enemy)(entities[thingCount] = new Enemy(this, thingCount, name, segment, progress));
         ++thingCount;
         return e;
     }
@@ -251,23 +253,48 @@ public class Game1 : Game
         };
 
     }
-    public void RefindPath(Block block, int doorout)
+    public Segment RefindPath(Block block, int doorout)
     {
         for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y) Debug.Assert(blocks[x,y].x == x && blocks[x,y].y == y);
         foreach(Block bi in blocks) foreach(Road ri in bi.road) ri.isPath = false;
         Block b = block;
         int d = doorout;
+        Segment first = null;
+        Segment last = null;
         do
         {
             b = Neighbour(b, d);
             Road r = b.roadOfDoor[(d+4)%8];
             r.isPath = true;
+            if((d+4)%8 == r.door1)
+            {
+                if(last == null) first = r.segments[0];
+                else last.succ = r.segments[0];
+                for(int i=0;i<r.segments.Length;++i)
+                {
+                    r.segments[i].forward = true;
+                    if(i<r.segments.Length-1) r.segments[i].succ = r.segments[i+1];
+                }
+                last = r.segments.Last();
+            }
+            else
+            {
+                if(last == null) first = r.segments.Last();
+                else last.succ = r.segments.Last();
+                for(int i=0;i<r.segments.Length;++i)
+                {
+                    r.segments[i].forward = false;
+                    if(i>0) r.segments[i].succ = r.segments[i-1];
+                }
+                last = r.segments[0];
+
+            }
             d = b.otherDoor[(d+4)%8];
             // Debug.Print(new Vector2(b.x,b.y).ToString());
             // Debug.Print(s.doorin.ToString());
         } while(b != block || d != doorout);
-
-
+        last.succ = first;
+        return first;
     }
 
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
@@ -317,7 +344,7 @@ public class Game1 : Game
             TickUpdate(); // 暂停状态下，按一次T增加一刻
         // if (Keyboard.HasBeenPressed(Keys.D))
         // if (tick > 0)
-            RefindPath(Blocks(0,0),6);
+            Reddoor = RefindPath(Blocks(0,0),6);
 
         // 这部分是鼠标滚轮缩放
         #region zoom
