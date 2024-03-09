@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
@@ -20,6 +21,10 @@ public class Block
     public Road[] road;
     public Road[] roadOfDoor = new Road[8];
     public int[] otherDoor = new int[8];
+    public Vector2 Coordinate()
+    {
+        return new Vector2(x*Dgrid*64,y*Dgrid*64);
+    }
     public Block(BlockName name, int x, int y)
     {
         this.name = name;

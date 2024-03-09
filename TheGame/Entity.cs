@@ -40,7 +40,7 @@ abstract public class Entity : Thing
         return new RectangleF(coordinate.X-size.X/2,coordinate.Y-size.Y/2,size.X,size.Y);
     }
     public ArrayList Collisions() {return game.Collisions(this);}
-    public void TickUpdateCoordinate() {if(alive) coordinate += velocity;}
+    abstract public void TickUpdateCoordinate();
     public Vector2 RenderCoordinate() {return Vector2.Round(coordinate + RenderCoordinateOffset[name]);}
     public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;

@@ -430,9 +430,9 @@ public class Game1 : Game
         // }
         foreach(Block b in blocks)
         {
-            _spriteBatch.Draw(Block.Texture[b.name], new Vector2(b.x*Block.Dgrid*64,b.y*Block.Dgrid*64), Color.White);
+            _spriteBatch.Draw(Block.Texture[b.name], b.Coordinate(), Color.White);
             foreach(Road r in b.road)
-                _spriteBatch.Draw(Road.Texture[r.name], new Vector2(b.x*Block.Dgrid*64,b.y*Block.Dgrid*64), Color.White * (r.isPath ? 0.5f : 0.2f));
+                _spriteBatch.Draw(Road.Texture[r.name], b.Coordinate(), Color.White * (r.isPath ? 0.5f : 0.2f));
         }
         foreach(Entity e in entities.Values) // 画实体
         {

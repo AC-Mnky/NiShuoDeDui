@@ -14,6 +14,10 @@ public class Enemy : Entity
 
 
 
+    public override void TickUpdateCoordinate()
+    {
+        if(alive) coordinate += velocity;
+    }
 
     public override void TickUpdate()
     {

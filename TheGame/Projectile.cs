@@ -9,6 +9,12 @@ public class Projectile : Entity
     {
     }
 
+
+    public override void TickUpdateCoordinate()
+    {
+        if(alive) coordinate += velocity;
+    }
+
     public override void TickUpdate()
     {
         health -= 0.005d;
