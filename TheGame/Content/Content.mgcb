@@ -193,6 +193,13 @@
 /processorParam:TextureFormat=Color
 /build:enemy1.png
 
+#begin Fonts/File.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/File.spritefont;Fonts/untitledfont.spritefont
+
 #begin lightgrey.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -210,6 +217,18 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:map-shader.fx
+
+#begin newgame.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:newgame.png
 
 #begin projectile1.png
 /importer:TextureImporter
@@ -318,6 +337,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:triggerupondeathicon.png
+
+#begin Untitled.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Untitled.png
 
 #begin wait60ticksicon.png
 /importer:TextureImporter

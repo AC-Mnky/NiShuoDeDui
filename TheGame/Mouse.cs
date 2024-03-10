@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace TheGame;
@@ -62,5 +63,9 @@ public class Mouse
     public static int Y()
     {
         return currentMouseState.Y;
+    }
+    public static Vector2 Pos()
+    {
+        return currentMouseState.Position.ToVector2();
     }
 }

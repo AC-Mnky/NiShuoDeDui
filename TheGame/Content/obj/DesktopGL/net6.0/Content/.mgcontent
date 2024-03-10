@@ -19,8 +19,10 @@
     <File>D:/Game202402/TheGame/Content/darkgrey.png</File>
     <File>D:/Game202402/TheGame/Content/defaulticon.png</File>
     <File>D:/Game202402/TheGame/Content/enemy1.png</File>
+    <File>D:/Game202402/TheGame/Content/Fonts/File.spritefont</File>
     <File>D:/Game202402/TheGame/Content/lightgrey.png</File>
     <File>D:/Game202402/TheGame/Content/map-shader.fx</File>
+    <File>D:/Game202402/TheGame/Content/newgame.png</File>
     <File>D:/Game202402/TheGame/Content/projectile1.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI1.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI1Slot0.png</File>
@@ -30,6 +32,7 @@
     <File>D:/Game202402/TheGame/Content/summonenemy1icon.png</File>
     <File>D:/Game202402/TheGame/Content/summonprojectile1icon.png</File>
     <File>D:/Game202402/TheGame/Content/triggerupondeathicon.png</File>
+    <File>D:/Game202402/TheGame/Content/Untitled.png</File>
     <File>D:/Game202402/TheGame/Content/wait60ticksicon.png</File>
   </SourceFiles>
   <DestFiles>
@@ -46,6 +49,9 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File>Fonts/untitledfont.spritefont</File>
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

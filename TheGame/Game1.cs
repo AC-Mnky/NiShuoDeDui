@@ -19,14 +19,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TheGame;
 
+public enum GameScene {Title, Build, Battle, Options}
 public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    // private Texture2D _lightgrey;
-    // private Texture2D _darkgrey;
     private Effect _mapShader;
+    // private Effect _guiShader;
     private Matrix view = Matrix.Identity;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
     public Vector2 MouseCoor = new();
@@ -34,7 +34,8 @@ public class Game1 : Game
     public long tick = 0; // 游戏从开始经过的刻数
     private long thingCount = 0; // 游戏从开始产生的Entity, Spell, Spellcast总数
     private double timeBank = 0d;
-    private GameStatus status = GameStatus.Running; // 是不是暂停
+    private GameStatus gamestatus = GameStatus.Running; // 是不是暂停
+    private GameScene gamescene = GameScene.Title;
     private int tps = 60; // 每秒多少刻（控制倍速，60刻是一倍速）
     private Dictionary<long, Entity> entities = new(); // 十分关键的字典，其中每个实体都有一个唯一的id
     private Dictionary<long, Spell> spells = new(); // 十分关键的字典，其中每个spell都有一个唯一的id
@@ -50,6 +51,8 @@ public class Game1 : Game
     private Spell holding = null;
     private Attachment oldAtt = null;
     public Spell[] desk = new Spell[1];
+    private Window newGame;
+    private Window title;
 
 
 
@@ -74,6 +77,10 @@ public class Game1 : Game
         //     isLight[i,j] = RandomNumberGenerator.GetInt32(2)>0;
         //     // (i+j)%2==0;
         // }
+
+        title = new Window(this, WindowType.Title, Content.Load<Texture2D>("untitled"),false);
+        newGame = new Window(this, WindowType.NewGame, Content.Load<Texture2D>("newGame"),true);
+
 
         #region blocks
         blocks = new Block[Block.numX,Block.numY];
@@ -337,116 +344,128 @@ public class Game1 : Game
         MouseCoor = Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(view));
         MouseI = (int)MathF.Floor(MouseCoor.X / 64f);
         MouseJ = (int)MathF.Floor(MouseCoor.Y / 64f);
-        // Debug.Print(MousePos.ToString());
-
         if (Keyboard.HasBeenPressed(Keys.Escape))
             ToggleBorderless();
         if (Keyboard.HasBeenPressed(Keys.Q))
             Exit();
-        if (Keyboard.HasBeenPressed(Keys.R))
-            view = Matrix.Identity; // 恢复视角至初始状态
-        if (Keyboard.HasBeenPressed(Keys.T) && status == GameStatus.Paused)
-            TickUpdate(); // 暂停状态下，按一次T增加一刻
-        // if (Keyboard.HasBeenPressed(Keys.D))
-        // if (tick > 0)
-            Bluedoor = RefindPath(Blocks(2,2),6);
-            Reddoor = Bluedoor.succ;
-
-        // 这部分是鼠标滚轮缩放
-        #region zoom
-        // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
-        Matrix newView = view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
-        Vector3 scale; Vector3 translation;
-        newView.Decompose(out scale, out _, out translation);
-
-        // if (scale.X<0.95f && scale.X>0.52f) view =  newView;
-        // else if (scale.X<1.05f && scale.X>0.52f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
-        // else if (scale.X<0.95f && scale.X>0.48f) view = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
-
-        if (scale.X<0.95f) view =  newView;
-        else if (scale.X<1.05f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
-        
-        #endregion
-
-        #region tickupdate
-        if (Keyboard.HasBeenPressed(Keys.Space))
-            if (status == GameStatus.Paused) status = GameStatus.Running;
-            else status = GameStatus.Paused;
-        if (Keyboard.HasBeenPressed(Keys.OemTilde))
-            tps = 30; // 半速
-        if (Keyboard.HasBeenPressed(Keys.D1))
-            tps = 60; // 一倍速
-        if (Keyboard.HasBeenPressed(Keys.D2))
-            tps = 120; // 二倍速
-        if (Keyboard.HasBeenPressed(Keys.D3))
-            tps = 180; // 三倍速
-        if (Keyboard.HasBeenPressed(Keys.D4))
-            tps = 240;
-        if (Keyboard.HasBeenPressed(Keys.D5))
-            tps = 300;
-        if (Keyboard.HasBeenPressed(Keys.D6))
-            tps = 360;
-        if (Keyboard.HasBeenPressed(Keys.D7))
-            tps = 420;
-        if (Keyboard.HasBeenPressed(Keys.D8))
-            tps = 480;
-        if (Keyboard.HasBeenPressed(Keys.D9))
-            tps = 540;
-        if (Keyboard.HasBeenPressed(Keys.D0))
-            tps = 600; // 不是，我为什么要加这么多奇怪的倍速啊[捂脸]
-        TimeBank += gameTime.ElapsedGameTime.TotalSeconds;
-        if (status == GameStatus.Paused) TimeBank = 0d;
-        else 
+        switch (gamescene)
         {
-            int TickUpdateMax = 10; // 采用的倍速机制使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过十倍速
-            while(TimeBank > 0d && TickUpdateMax > 0)
-            {
-                TickUpdate();
-                --TickUpdateMax;
-                TimeBank -= 1d / tps;
-            }
-        }
-        #endregion
-        
-        #region UI
-        // Spell s = (0 <= MouseI && MouseI < maxI && 0 <= MouseJ && MouseJ < maxJ) ? spellAt[MouseI, MouseJ] : null;
-        // if(mouseOn is Spell) s = (Spell)mouseOn;
-        if(Mouse.LeftClicked())
-        {
-            if(mouseOn?.parent is Spell)
-            {
-                ((Spell)mouseOn.parent).showUI ^= true;
-                if(mouseOn.type == TheGame.Window.Type.SpellIcon)
+            case GameScene.Build or GameScene.Battle:
+                if (Keyboard.HasBeenPressed(Keys.R))
+                    view = Matrix.Identity; // 恢复视角至初始状态
+                if (Keyboard.HasBeenPressed(Keys.T) && gamestatus == GameStatus.Paused)
+                    TickUpdate(); // 暂停状态下，按一次T增加一刻
+                // if (Keyboard.HasBeenPressed(Keys.D))
+                // if (tick > 0)
+                    Bluedoor = RefindPath(Blocks(2,2),6);
+                    Reddoor = Bluedoor.succ;
+
+                // 这部分是鼠标滚轮缩放
+                #region zoom
+                // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
+                Matrix newView = view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
+                Vector3 scale; Vector3 translation;
+                newView.Decompose(out scale, out _, out translation);
+
+                // if (scale.X<0.95f && scale.X>0.52f) view =  newView;
+                // else if (scale.X<1.05f && scale.X>0.52f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+                // else if (scale.X<0.95f && scale.X>0.48f) view = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+
+                if (scale.X<0.95f) view =  newView;
+                else if (scale.X<1.05f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+                
+                #endregion
+
+                #region tickupdate
+                if (Keyboard.HasBeenPressed(Keys.Space))
+                    if (gamestatus == GameStatus.Paused) gamestatus = GameStatus.Running;
+                    else gamestatus = GameStatus.Paused;
+                if (Keyboard.HasBeenPressed(Keys.OemTilde))
+                    tps = 30; // 半速
+                if (Keyboard.HasBeenPressed(Keys.D1))
+                    tps = 60; // 一倍速
+                if (Keyboard.HasBeenPressed(Keys.D2))
+                    tps = 120; // 二倍速
+                if (Keyboard.HasBeenPressed(Keys.D3))
+                    tps = 180; // 三倍速
+                if (Keyboard.HasBeenPressed(Keys.D4))
+                    tps = 240;
+                if (Keyboard.HasBeenPressed(Keys.D5))
+                    tps = 300;
+                if (Keyboard.HasBeenPressed(Keys.D6))
+                    tps = 360;
+                if (Keyboard.HasBeenPressed(Keys.D7))
+                    tps = 420;
+                if (Keyboard.HasBeenPressed(Keys.D8))
+                    tps = 480;
+                if (Keyboard.HasBeenPressed(Keys.D9))
+                    tps = 540;
+                if (Keyboard.HasBeenPressed(Keys.D0))
+                    tps = 600; // 不是，我为什么要加这么多奇怪的倍速啊[捂脸]
+                timeBank += gameTime.ElapsedGameTime.TotalSeconds;
+                if (gamestatus == GameStatus.Paused) timeBank = 0d;
+                else 
                 {
-                    holding = (Spell)mouseOn.parent;
+                    int TickUpdateMax = 10; // 采用的倍速机制使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过十倍速
+                    while(timeBank > 0d && TickUpdateMax > 0)
+                    {
+                        TickUpdate();
+                        --TickUpdateMax;
+                        timeBank -= 1d / tps;
+                    }
                 }
-            }
-        }
-        if(Mouse.LeftDeClicked())
-        {
-            if(desk[0] != null)
-            {
-                if(mouseOn?.parent is Spell && mouseOn.type == TheGame.Window.Type.SpellSlot)
+                #endregion
+                
+                #region UI
+                // Spell s = (0 <= MouseI && MouseI < maxI && 0 <= MouseJ && MouseJ < maxJ) ? spellAt[MouseI, MouseJ] : null;
+                // if(mouseOn is Spell) s = (Spell)mouseOn;
+                if(Mouse.LeftClicked())
                 {
-                    if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
-                        desk[0].ReAttach(new Attachment((Spell)mouseOn.parent, mouseOn.rank));
+                    if(mouseOn?.parent is Spell)
+                    {
+                        ((Spell)mouseOn.parent).showUI ^= true;
+                        if(mouseOn.type == WindowType.SpellIcon)
+                        {
+                            holding = (Spell)mouseOn.parent;
+                        }
+                    }
                 }
-                else
+                if(Mouse.LeftDeClicked())
                 {
-                    desk[0].ReAttach(oldAtt);
+                    if(desk[0] != null)
+                    {
+                        if(mouseOn?.parent is Spell && mouseOn.type == WindowType.SpellSlot)
+                        {
+                            if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
+                                desk[0].ReAttach(new Attachment((Spell)mouseOn.parent, mouseOn.rank));
+                        }
+                        else
+                        {
+                            desk[0].ReAttach(oldAtt);
+                        }
+                    }
                 }
-            }
+                if(Mouse.LeftDown() && Mouse.FirstMovementSinceLastLeftClick())
+                {
+                    // Debug.Print("First move!");
+                    if(holding != null && desk[0] == null)
+                    {
+                        oldAtt = holding.ReAttach(new Attachment(0));
+                    }
+                }
+                #endregion
+                break;
+            case GameScene.Title:
+                if(Mouse.LeftClicked())
+                {
+                    if(mouseOn == newGame)
+                    {
+                        gamescene = GameScene.Build;
+                        view = Matrix.Identity;
+                    }
+                }
+                break;
         }
-        if(Mouse.LeftDown() && Mouse.FirstMovementSinceLastLeftClick())
-        {
-            Debug.Print("First move!");
-            if(holding != null && desk[0] == null)
-            {
-                oldAtt = holding.ReAttach(new Attachment(0));
-            }
-        }
-        #endregion
-
         base.Update(gameTime);
     }
 
@@ -454,45 +473,72 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime) // 显示
     {
+        int width = GraphicsDevice.Viewport.Width;
+        int height = GraphicsDevice.Viewport.Height;
         PreDraw();
-        GraphicsDevice.Clear(Color.Black); // 背景是黑的
-
-        projection = Matrix.CreateOrthographicOffCenter(0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, 1);
-        _mapShader.Parameters["view_projection"].SetValue(view * projection);
-
-        _spriteBatch.Begin(effect: _mapShader);
-
-        // for(int i=0;i<maxI;++i)for(int j=0;j<maxJ;++j) // 画地图
-        // {
-        //     _spriteBatch.Draw(isLight[i,j] ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
-        // }
-        foreach(Block b in blocks)
+        switch(gamescene)
         {
-            _spriteBatch.Draw(Block.Texture[b.name], b.Coordinate(), Color.White);
-            foreach(Road r in b.road)
-                _spriteBatch.Draw(Road.Texture[r.name], b.Coordinate(), Color.White * (r.isPath ? 0.5f : 0.2f));
-        }
-        foreach(Entity e in entities.Values) // 画实体
-        {
-            if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White);
-        }
-        foreach(Spell s in spells.Values) // 画法术的UI
-        {
-            if(s.attachment.type == Attachment.Type.Tower) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
-        }
-        if(desk[0] != null) _spriteBatch.Draw(Spell.TextureIcon[desk[0].name], MouseCoor, Color.Yellow);
+            case GameScene.Build or GameScene.Battle:
+                GraphicsDevice.Clear(Color.Black); // 背景是黑的
 
-        _spriteBatch.End();
+                projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
+                _mapShader.Parameters["view_projection"].SetValue(view * projection);
 
+                _spriteBatch.Begin(effect: _mapShader);
+
+                // for(int i=0;i<maxI;++i)for(int j=0;j<maxJ;++j) // 画地图
+                // {
+                //     _spriteBatch.Draw(isLight[i,j] ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
+                // }
+                foreach(Block b in blocks)
+                {
+                    _spriteBatch.Draw(Block.Texture[b.name], b.Coordinate(), Color.White);
+                    foreach(Road r in b.road)
+                        _spriteBatch.Draw(Road.Texture[r.name], b.Coordinate(), Color.White * (r.isPath ? 0.5f : 0.2f));
+                }
+                foreach(Entity e in entities.Values) // 画实体
+                {
+                    if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White);
+                }
+                foreach(Spell s in spells.Values) // 画法术的UI
+                {
+                    if(s.attachment.type == Attachment.Type.Tower) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
+                }
+                if(desk[0] != null) _spriteBatch.Draw(Spell.TextureIcon[desk[0].name], MouseCoor, Color.Yellow);
+
+                _spriteBatch.End();
+                break;
+            case GameScene.Title:
+                _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                // _spriteBatch.Draw(_untitled, new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4), Color.White);
+                DrawWindow(false, Mouse.Pos(), title, Color.White);
+                DrawWindow(false, Mouse.Pos(), newGame, Color.White);
+                _spriteBatch.End();
+                break;
+        }
         base.Draw(gameTime);
     }
 
     protected void PreDraw() // 显示前需要先获取鼠标状态
     {
         mouseOn = null;
-        foreach(Spell s in spells.Values)
+        int width = GraphicsDevice.Viewport.Width;
+        int height = GraphicsDevice.Viewport.Height;
+        switch(gamescene)
         {
-            if(s.attachment.type == Attachment.Type.Tower) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
+            case GameScene.Build or GameScene.Battle:
+                foreach(Spell s in spells.Values)
+                {
+                    if(s.attachment.type == Attachment.Type.Tower) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
+                }
+                break;
+            case GameScene.Title:
+                newGame.RectRender = new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2);
+                newGame.RectMouseCatch = new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20);
+                title.RectRender = title.RectMouseCatch = new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4);
+                DrawWindow(true, Mouse.Pos(), title, Color.White);
+                DrawWindow(true, Mouse.Pos(), newGame, Color.White);
+                break;
         }
     }
     protected void DrawSpellUI(bool preDraw, Spell s, int i, int j)
@@ -505,12 +551,12 @@ public class Game1 : Game
 
         if(!s.showUI)
         {
-            DrawWindow(preDraw, s.windowIcon, Color.White);
+            DrawWindow(preDraw, MouseCoor, s.windowIcon, Color.White);
         }
         else
         {
-            DrawWindow(preDraw, s.windowUI, Color.White);
-            DrawWindow(preDraw, s.windowIcon, Color.White);
+            DrawWindow(preDraw, MouseCoor, s.windowUI, Color.White);
+            DrawWindow(preDraw, MouseCoor, s.windowIcon, Color.White);
             switch(Spell.childrenNumber[s.name])
             {
                 case 1:
@@ -520,7 +566,7 @@ public class Game1 : Game
                         s.windowSlots[0].RectRender = new Rectangle(i*64, j*64, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height);
                         s.windowSlots[0].RectMouseCatch = new Rectangle(i*64+10, (j+1)*64+10, 44, 44);
                     }
-                    DrawWindow(preDraw, s.windowSlots[0], Color.Aqua);
+                    DrawWindow(preDraw, MouseCoor, s.windowSlots[0], Color.Aqua);
                     if(s.children[0] != null) DrawSpellUI(preDraw, s.children[0], i, j+1);
 
                     break;
@@ -532,7 +578,7 @@ public class Game1 : Game
                         s.windowSlots[0].RectRender = new Rectangle(i*64, j*64, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height);
                         s.windowSlots[0].RectMouseCatch = new Rectangle(i*64+10, (j+2)*64+10, 44, 44);
                     }
-                    DrawWindow(preDraw, s.windowSlots[0], Color.Aqua);
+                    DrawWindow(preDraw, MouseCoor, s.windowSlots[0], Color.Aqua);
                     if(s.children[0] != null) DrawSpellUI(preDraw, s.children[0], i, j+2);
                     
                     if(preDraw)
@@ -540,7 +586,7 @@ public class Game1 : Game
                         s.windowSlots[1].RectRender = new Rectangle(i*64, j*64, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height);
                         s.windowSlots[1].RectMouseCatch = new Rectangle((i+1)*64+10, (j+1)*64+10, 44, 44);
                     }
-                    DrawWindow(preDraw, s.windowSlots[1], Color.BlueViolet);
+                    DrawWindow(preDraw, MouseCoor, s.windowSlots[1], Color.BlueViolet);
                     if(s.children[1] != null) DrawSpellUI(preDraw, s.children[1], i+1, j+1);
 
                     break;
@@ -548,14 +594,14 @@ public class Game1 : Game
             }
         }
     }
-    protected void DrawWindow(bool PreDraw, Window w, Color color)
+    protected void DrawWindow(bool PreDraw, Vector2 MouseCoor, Window w, Color color)
     {
         if(PreDraw)
         {
             if (w.RectMouseCatch.Contains(MouseCoor)) mouseOn = w;
         }
         else
-        _spriteBatch.Draw(w.texture, w.RectRender, mouseOn == w ? Color.Yellow : color);
+        _spriteBatch.Draw(w.texture, w.RectRender, (w.clickable && mouseOn == w) ? Color.Yellow : color);
     }
 
     // 下面是关于全屏显示的东西，不用管
@@ -565,9 +611,6 @@ public class Game1 : Game
     bool _isBorderless = false;
     int _width = 0;
     int _height = 0;
-
-    public global::System.Double TimeBank { get => TimeBank1; set => TimeBank1 = value; }
-    public global::System.Double TimeBank1 { get => timeBank; set => timeBank = value; }
 
     public void ToggleFullscreen() {
         bool oldIsFullscreen = _isFullscreen;

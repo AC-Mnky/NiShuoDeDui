@@ -51,3 +51,6 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB02.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB16.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB34.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB57.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\Fonts\untitledfont.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\Untitled.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\newgame.xnb
