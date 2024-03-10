@@ -79,7 +79,8 @@ public class Spell : Thing
             }
             case Attachment.Type.Tower:
             {
-                game.spellAt[attachment.tower.MapI(), attachment.tower.MapJ()] = null;
+                // game.spellAt[attachment.tower.MapI(), attachment.tower.MapJ()] = null;
+                attachment.tower.spell = null;
                 break;
             }
             case Attachment.Type.Child:
@@ -108,7 +109,8 @@ public class Spell : Thing
             }
             case Attachment.Type.Tower:
             {
-                game.spellAt[target.tower.MapI(), target.tower.MapJ()] = this;
+                // game.spellAt[target.tower.MapI(), target.tower.MapJ()] = this;
+                target.tower.spell = this;
                 coolDown = attachment.tower.coolDownMax;
                 break;
             }

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
-public enum WindowType {SpellIcon, SpellSlot, SpellUI, NewGame, Title};
+public enum WindowType {SpellIcon, SpellSlot, SpellUI, NewGame, Title, Tower};
 
 public class Window
 {

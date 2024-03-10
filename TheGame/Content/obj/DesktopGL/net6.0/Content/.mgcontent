@@ -33,6 +33,7 @@
     <File>D:/Game202402/TheGame/Content/SpellGUI2slot1.png</File>
     <File>D:/Game202402/TheGame/Content/summonenemy1icon.png</File>
     <File>D:/Game202402/TheGame/Content/summonprojectile1icon.png</File>
+    <File>D:/Game202402/TheGame/Content/towerGUI.png</File>
     <File>D:/Game202402/TheGame/Content/triggerupondeathicon.png</File>
     <File>D:/Game202402/TheGame/Content/Untitled.png</File>
     <File>D:/Game202402/TheGame/Content/wait60ticksicon.png</File>
@@ -56,6 +57,7 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Fonts/untitledfont.spritefont</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

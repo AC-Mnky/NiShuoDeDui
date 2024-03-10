@@ -46,7 +46,7 @@ public class Game1 : Game
     private const int maxI = 32;
     private const int maxJ = 20;
     // private bool[,] isLight = new bool[maxI,maxJ];
-    public Spell[,] spellAt = new Spell[maxI,maxJ];
+    // public Spell[,] spellAt = new Spell[maxI,maxJ];
     private Window mouseOn = null;
     private Spell holding = null;
     private Attachment oldAtt = null;
@@ -57,6 +57,7 @@ public class Game1 : Game
     private Spell summonenemyEasy;
     private Spell summonenemyFast;
     private Spell summonenemyVeryFast;
+    public static Texture2D towerGUI;
 
 
 
@@ -84,6 +85,7 @@ public class Game1 : Game
 
         title = new Window(this, WindowType.Title, Content.Load<Texture2D>("untitled"),false);
         newGame = new Window(this, WindowType.NewGame, Content.Load<Texture2D>("newGame"),true);
+        towerGUI = Content.Load<Texture2D>("towergui");
 
 
         #region blocks
@@ -372,8 +374,8 @@ public class Game1 : Game
                     TickUpdate(); // 暂停状态下，按一次T增加一刻
                 // if (Keyboard.HasBeenPressed(Keys.D))
                 // if (tick > 0)
-                    Bluedoor = RefindPath(Blocks(2,2),6);
-                    Reddoor = Bluedoor.succ;
+                Bluedoor = RefindPath(Blocks(2,2),6);
+                Reddoor = Bluedoor.succ;
 
                 // 这部分是鼠标滚轮缩放
                 #region zoom
@@ -454,6 +456,11 @@ public class Game1 : Game
                             if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
                                 desk[0].ReAttach(new Attachment((Spell)mouseOn.parent, mouseOn.rank));
                         }
+                        else if (mouseOn?.parent is Tower)
+                        {
+                            if(((Tower)mouseOn.parent).spell == null)
+                                desk[0].ReAttach(new Attachment((Tower)mouseOn.parent));
+                        }
                         else
                         {
                             desk[0].ReAttach(oldAtt);
@@ -515,6 +522,10 @@ public class Game1 : Game
                 {
                     if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White * (float)(0.25+0.75*e.health/e.maxhealth));
                 }
+                foreach(Block b in blocks) foreach(Tower t in b.tower)
+                {
+                    DrawWindow(false, MouseCoor, t.window, Color.White);
+                }
                 foreach(Spell s in spells.Values) // 画法术的UI
                 {
                     if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
@@ -546,6 +557,12 @@ public class Game1 : Game
         switch(gamescene)
         {
             case GameScene.Build or GameScene.Battle:
+                foreach(Block b in blocks) foreach(Tower t in b.tower)
+                {
+                    Window w = t.window;
+                    w.RectRender = w.RectMouseCatch = new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44);
+                    DrawWindow(true, MouseCoor, w, Color.White);
+                }
                 foreach(Spell s in spells.Values)
                 {
                     if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());

@@ -28,6 +28,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/SpellGUI2slot1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2slot1.xnb","TextureProcessor","Texture2DContent",1177,393301,0.0121614
 "D:/Game202402/TheGame/Content/summonenemy1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonenemy1icon.xnb","TextureProcessor","Texture2DContent",258,5269,0.0022206
 "D:/Game202402/TheGame/Content/summonprojectile1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonprojectile1icon.xnb","TextureProcessor","Texture2DContent",247,5269,0.0028158
+"D:/Game202402/TheGame/Content/towerGUI.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/towerGUI.xnb","TextureProcessor","Texture2DContent",200,7829,0.2304031
 "D:/Game202402/TheGame/Content/triggerupondeathicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/triggerupondeathicon.xnb","TextureProcessor","Texture2DContent",225,5269,0.1984556
 "D:/Game202402/TheGame/Content/Untitled.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/Untitled.xnb","TextureProcessor","Texture2DContent",273,5461,0.1027015
 "D:/Game202402/TheGame/Content/wait60ticksicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/wait60ticksicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.2482763
