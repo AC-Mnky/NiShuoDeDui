@@ -45,3 +45,8 @@ D:\Game202402\TheGame\obj\Debug\net6.0\win-x64\refint\TheGame.dll
 D:\Game202402\TheGame\obj\Debug\net6.0\win-x64\TheGame.pdb
 D:\Game202402\TheGame\obj\Debug\net6.0\win-x64\TheGame.genruntimeconfig.cache
 D:\Game202402\TheGame\obj\Debug\net6.0\win-x64\ref\TheGame.dll
+D:\Game202402\TheGame\bin\Debug\net6.0\win-x64\Content\enemyfast.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\win-x64\Content\enemyveryfast.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\win-x64\Content\Fonts\untitledfont.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\win-x64\Content\newgame.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\win-x64\Content\Untitled.xnb

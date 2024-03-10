@@ -14,8 +14,12 @@ D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/blockdefault.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/darkgrey.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/defaulticon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/enemy1.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/enemyfast.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/enemyveryfast.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/Fonts\untitledfont.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/lightgrey.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/map-shader.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/newgame.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/projectile1.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/SpellGUI1.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/SpellGUI1Slot0.xnb
@@ -25,6 +29,7 @@ D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/SpellGUI2slot1.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/summonenemy1icon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/summonprojectile1icon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/triggerupondeathicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/Untitled.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\Content/wait60ticksicon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\TheGame.dll
 D:\Game202402\TheGame\bin\Debug\net6.0\publish\TheGame.deps.json

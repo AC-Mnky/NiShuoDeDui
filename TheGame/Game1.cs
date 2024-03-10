@@ -105,10 +105,10 @@ public class Game1 : Game
     }
 
     private BlockName RandomBlockName(){
-        return RandomNumberGenerator.GetInt32(2) switch
+        return RandomNumberGenerator.GetInt32(3) switch
         {
-            0 => BlockName.A,
-            1 => BlockName.B,
+            0 or 1 => BlockName.A,
+            2 => BlockName.B,
             _ => throw new ArgumentOutOfRangeException(),
         };
     }
