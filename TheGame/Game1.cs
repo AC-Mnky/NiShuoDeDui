@@ -53,6 +53,7 @@ public class Game1 : Game
     public Spell[] desk = new Spell[1];
     private Window newGame;
     private Window title;
+    private Spell summonenemy1;
 
 
 
@@ -113,9 +114,10 @@ public class Game1 : Game
     {        
         // 在这里尝试这些法术的效果，可以随意修改
         #region sandbox
-        Spell e0 = NewSpell(Name.SummonEnemy1);
+        summonenemy1 = NewSpell(Name.SummonEnemy1);
+        // Spell e0 = NewSpell(Name.SummonEnemy1);
         // Spell e1 = NewSpell(Name.AddXVelocity);
-        e0.ReAttach(new Attachment(blocks[0,0].tower[0]));
+        // e0.ReAttach(new Attachment(blocks[0,0].tower[0]));
         // e1.ReAttach(new Attachment(e0,1));
         Spell s0 = NewSpell(Name.SummonProjectile1);
         Spell s1 = NewSpell(Name.AimClosestInSquareD6);
@@ -312,6 +314,7 @@ public class Game1 : Game
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
         if(tick==0) TickZero();
+        if(RandomNumberGenerator.GetInt32(60) == 0) NewSpellcast(summonenemy1, new Cast(new Vector2()));
         
         // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
         foreach(Spell s in spells.Values)
@@ -498,7 +501,7 @@ public class Game1 : Game
                 }
                 foreach(Entity e in entities.Values) // 画实体
                 {
-                    if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White);
+                    if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White * (float)(0.25+0.75*e.health/e.maxhealth));
                 }
                 foreach(Spell s in spells.Values) // 画法术的UI
                 {

@@ -2,10 +2,10 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/add5speedicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/add5speedicon.xnb","TextureProcessor","Texture2DContent",188,5269,0.1842959
 "D:/Game202402/TheGame/Content/addspeedicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/addspeedicon.xnb","TextureProcessor","Texture2DContent",184,5269,0.0036556
 "D:/Game202402/TheGame/Content/aimclosestinsquared6icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimclosestinsquared6icon.xnb","TextureProcessor","Texture2DContent",222,5269,0.0026284
-"D:/Game202402/TheGame/Content/blockA04.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA04.xnb","TextureProcessor","Texture2DContent",1199,409685,0.1946395
-"D:/Game202402/TheGame/Content/blockA15.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA15.xnb","TextureProcessor","Texture2DContent",1197,409685,0.0116782
-"D:/Game202402/TheGame/Content/blockA26.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA26.xnb","TextureProcessor","Texture2DContent",656,409685,0.0109808
-"D:/Game202402/TheGame/Content/blockA37.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA37.xnb","TextureProcessor","Texture2DContent",662,409685,0.0108974
+"D:/Game202402/TheGame/Content/blockA04.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA04.xnb","TextureProcessor","Texture2DContent",1152,409685,0.1890316
+"D:/Game202402/TheGame/Content/blockA15.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA15.xnb","TextureProcessor","Texture2DContent",1152,409685,0.0132768
+"D:/Game202402/TheGame/Content/blockA26.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA26.xnb","TextureProcessor","Texture2DContent",596,409685,0.0137884
+"D:/Game202402/TheGame/Content/blockA37.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA37.xnb","TextureProcessor","Texture2DContent",603,409685,0.0125329
 "D:/Game202402/TheGame/Content/blockB02.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockB02.xnb","TextureProcessor","Texture2DContent",763,409685,0.1895907
 "D:/Game202402/TheGame/Content/blockB16.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockB16.xnb","TextureProcessor","Texture2DContent",768,409685,0.0124268
 "D:/Game202402/TheGame/Content/blockB34.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockB34.xnb","TextureProcessor","Texture2DContent",770,409685,0.0114419

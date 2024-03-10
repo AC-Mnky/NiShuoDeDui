@@ -29,7 +29,7 @@ abstract public class Entity : Thing
     public Entity(Game1 game, long id, Name name) : base(game,id,name)
     {
         size = Size[name];
-        health = DefaultHealth[name];
+        health = maxhealth = DefaultHealth[name];
     }
     public Vector2 coordinate;
     public Vector2 size;
@@ -42,5 +42,6 @@ abstract public class Entity : Thing
     public Vector2 RenderCoordinate() {return Vector2.Round(coordinate + RenderCoordinateOffset[name]);}
     public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;
+    public double maxhealth;
     public double health;
 }
