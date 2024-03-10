@@ -19,6 +19,8 @@
     <File>D:/Game202402/TheGame/Content/darkgrey.png</File>
     <File>D:/Game202402/TheGame/Content/defaulticon.png</File>
     <File>D:/Game202402/TheGame/Content/enemy1.png</File>
+    <File>D:/Game202402/TheGame/Content/enemyfast.png</File>
+    <File>D:/Game202402/TheGame/Content/enemyveryfast.png</File>
     <File>D:/Game202402/TheGame/Content/Fonts/File.spritefont</File>
     <File>D:/Game202402/TheGame/Content/lightgrey.png</File>
     <File>D:/Game202402/TheGame/Content/map-shader.fx</File>
@@ -36,6 +38,8 @@
     <File>D:/Game202402/TheGame/Content/wait60ticksicon.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

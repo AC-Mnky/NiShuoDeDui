@@ -6,8 +6,8 @@ using System.Security.Cryptography;
 
 namespace TheGame;
 
-public enum Name {Enemy1, Projectile1, SquareD6,
-SummonEnemy1, SummonProjectile1, VelocityZero, AddSpeed, Add5Speed, AddXVelocity, AddYVelocity, TriggerUponDeath, AimClosestInSquareD6, Wait60Ticks};
+public enum Name {Enemy1, EnemyEasy, EnemyFast, EnemyVeryFast, Projectile1, SquareD6,
+SummonEnemy, SummonProjectile1, VelocityZero, AddSpeed, Add10Speed, AddXVelocity, AddYVelocity, TriggerUponDeath, AimClosestInSquareD6, Wait60Ticks};
 
 abstract public class Thing
 {

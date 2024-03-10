@@ -44,9 +44,9 @@ public class Spellcast : Thing
         {
             switch(spell.name)
             {
-                case Name.SummonEnemy1:
+                case Name.SummonEnemy:
                 {
-                    Entity x = game.NewEnemy(Name.Enemy1, game.Reddoor, 0f);
+                    Entity x = game.NewEnemy(spell.summonedEnemy, game.Reddoor, 0f);
                     spell.children[1]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
@@ -70,9 +70,9 @@ public class Spellcast : Thing
                     alive = false;
                     break;
                 }
-                case Name.Add5Speed:
+                case Name.Add10Speed:
                 {
-                    cast.subject.velocity += 5 * Normalized(cast.direction);
+                    cast.subject.velocity += 10 * Normalized(cast.direction);
                     alive = false;
                     break;
                 }

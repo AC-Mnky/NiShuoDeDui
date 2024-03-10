@@ -9,12 +9,13 @@ public class Enemy : Entity
 {
     public Segment segment;
     public float progress;
-    public float speed = 1;
+    public float speed;
     public Enemy(Game1 game, long id, Name name, Segment segment, float progress) : base(game, id, name)
     {
         this.segment = segment;
         this.progress = progress;
         coordinate = segment.CoordinateAtProgress(progress);
+        speed = DefaultSpeed[name];
     }
 
 

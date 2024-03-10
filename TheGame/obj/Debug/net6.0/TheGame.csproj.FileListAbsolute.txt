@@ -54,3 +54,5 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB57.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\Fonts\untitledfont.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\Untitled.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\newgame.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemyfast.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemyveryfast.xnb

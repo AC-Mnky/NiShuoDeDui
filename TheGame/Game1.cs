@@ -54,6 +54,9 @@ public class Game1 : Game
     private Window newGame;
     private Window title;
     private Spell summonenemy1;
+    private Spell summonenemyEasy;
+    private Spell summonenemyFast;
+    private Spell summonenemyVeryFast;
 
 
 
@@ -114,26 +117,29 @@ public class Game1 : Game
     {        
         // 在这里尝试这些法术的效果，可以随意修改
         #region sandbox
-        summonenemy1 = NewSpell(Name.SummonEnemy1);
+        (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.Enemy1;
+        (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyEasy;
+        (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyFast;
+        (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyVeryFast;
         // Spell e0 = NewSpell(Name.SummonEnemy1);
         // Spell e1 = NewSpell(Name.AddXVelocity);
         // e0.ReAttach(new Attachment(blocks[0,0].tower[0]));
         // e1.ReAttach(new Attachment(e0,1));
         Spell s0 = NewSpell(Name.SummonProjectile1);
         Spell s1 = NewSpell(Name.AimClosestInSquareD6);
-        Spell s2 = NewSpell(Name.Add5Speed);
+        Spell s2 = NewSpell(Name.Add10Speed);
         s0.ReAttach(new Attachment(blocks[0,1].tower[0]));
         s1.ReAttach(new Attachment(s0,1));
         s2.ReAttach(new Attachment(s1,0));
         Spell t0 = NewSpell(Name.SummonProjectile1);
         Spell t1 = NewSpell(Name.AimClosestInSquareD6);
-        Spell t2 = NewSpell(Name.Add5Speed);
+        Spell t2 = NewSpell(Name.Add10Speed);
         t0.ReAttach(new Attachment(blocks[1,0].tower[0]));
         t1.ReAttach(new Attachment(t0,1));
         t2.ReAttach(new Attachment(t1,0));
         Spell u0 = NewSpell(Name.SummonProjectile1);
         Spell u1 = NewSpell(Name.AimClosestInSquareD6);
-        Spell u2 = NewSpell(Name.Add5Speed);
+        Spell u2 = NewSpell(Name.Add10Speed);
         u0.ReAttach(new Attachment(blocks[1,1].tower[0]));
         u1.ReAttach(new Attachment(u0,1));
         u2.ReAttach(new Attachment(u1,0));
@@ -166,38 +172,41 @@ public class Game1 : Game
         Road.Texture[RoadName.B57] = Content.Load<Texture2D>("blockB57");
 
         Entity.Texture[Name.Enemy1] = Content.Load<Texture2D>("enemy1");
+        Entity.Texture[Name.EnemyEasy] = Content.Load<Texture2D>("enemy1");
+        Entity.Texture[Name.EnemyFast] = Content.Load<Texture2D>("enemyfast");
+        Entity.Texture[Name.EnemyVeryFast] = Content.Load<Texture2D>("enemyveryfast");
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.SquareD6] = null;
 
-        Spell.TextureIcon[Name.SummonEnemy1] = Content.Load<Texture2D>("SummonEnemy1icon");
+        Spell.TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
         Spell.TextureIcon[Name.SummonProjectile1] = Content.Load<Texture2D>("SummonProjectile1icon");
         Spell.TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("defaulticon");
         Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
-        Spell.TextureIcon[Name.Add5Speed] = Content.Load<Texture2D>("add5speedicon");
+        Spell.TextureIcon[Name.Add10Speed] = Content.Load<Texture2D>("add5speedicon");
         Spell.TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("defaulticon");
         Spell.TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("defaulticon");
         Spell.TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("triggerupondeathicon");
         Spell.TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("aimclosestinsquared6icon");
         Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
 
-        Spell.TextureUI[Name.SummonEnemy1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.TextureUI[Name.SummonEnemy] = Content.Load<Texture2D>("SpellGUI2");
         Spell.TextureUI[Name.SummonProjectile1] = Content.Load<Texture2D>("SpellGUI2");
         Spell.TextureUI[Name.VelocityZero] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.Add5Speed] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.Add10Speed] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.Wait60Ticks] = Content.Load<Texture2D>("SpellGUI1");
 
-        Spell.TextureSlot[(Name.SummonEnemy1,0)] = Content.Load<Texture2D>("spellgui2slot0");
-        Spell.TextureSlot[(Name.SummonEnemy1,1)] = Content.Load<Texture2D>("spellgui2slot1");
+        Spell.TextureSlot[(Name.SummonEnemy,0)] = Content.Load<Texture2D>("spellgui2slot0");
+        Spell.TextureSlot[(Name.SummonEnemy,1)] = Content.Load<Texture2D>("spellgui2slot1");
         Spell.TextureSlot[(Name.SummonProjectile1,0)] = Content.Load<Texture2D>("spellgui2slot0");
         Spell.TextureSlot[(Name.SummonProjectile1,1)] = Content.Load<Texture2D>("spellgui2slot1");
         Spell.TextureSlot[(Name.VelocityZero,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AddSpeed,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.Add5Speed,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.Add10Speed,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AddXVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AddYVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.TriggerUponDeath,0)] = Content.Load<Texture2D>("spellgui1slot0");
@@ -314,7 +323,10 @@ public class Game1 : Game
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
         if(tick==0) TickZero();
-        if(RandomNumberGenerator.GetInt32(60) == 0) NewSpellcast(summonenemy1, new Cast(new Vector2()));
+        // if(RandomNumberGenerator.GetInt32(60) == 0) NewSpellcast(summonenemy1, new Cast(new Vector2()));
+        if(RandomNumberGenerator.GetInt32(120) == 0) NewSpellcast(summonenemyEasy, new Cast(new Vector2()));
+        // if(RandomNumberGenerator.GetInt32(240) == 0) NewSpellcast(summonenemyFast, new Cast(new Vector2()));
+        // if(RandomNumberGenerator.GetInt32(480) == 0) NewSpellcast(summonenemyVeryFast, new Cast(new Vector2()));
         
         // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
         foreach(Spell s in spells.Values)
