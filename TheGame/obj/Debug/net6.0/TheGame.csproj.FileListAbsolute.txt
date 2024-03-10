@@ -57,3 +57,8 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\newgame.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemyfast.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemyveryfast.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\towerGUI.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\addxvelocityicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\addyvelocityicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\reducexvelocityicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\reduceyvelocityicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\velocityzeroicon.xnb

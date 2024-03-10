@@ -1,6 +1,8 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
 "D:/Game202402/TheGame/Content/add5speedicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/add5speedicon.xnb","TextureProcessor","Texture2DContent",188,5269,0.1842959
 "D:/Game202402/TheGame/Content/addspeedicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/addspeedicon.xnb","TextureProcessor","Texture2DContent",184,5269,0.0036556
+"D:/Game202402/TheGame/Content/addxvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/addxvelocityicon.xnb","TextureProcessor","Texture2DContent",229,5269,0.2002347
+"D:/Game202402/TheGame/Content/addyvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/addyvelocityicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.0031025
 "D:/Game202402/TheGame/Content/aimclosestinsquared6icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimclosestinsquared6icon.xnb","TextureProcessor","Texture2DContent",222,5269,0.0026284
 "D:/Game202402/TheGame/Content/blockA04.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA04.xnb","TextureProcessor","Texture2DContent",1152,409685,0.1890316
 "D:/Game202402/TheGame/Content/blockA15.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA15.xnb","TextureProcessor","Texture2DContent",1152,409685,0.0132768
@@ -21,6 +23,8 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/map-shader.fx","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/map-shader.xnb","EffectProcessor","CompiledEffectContent",979,1565,0.2462226
 "D:/Game202402/TheGame/Content/newgame.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/newgame.xnb","TextureProcessor","Texture2DContent",186,1989,0.2306679
 "D:/Game202402/TheGame/Content/projectile1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/projectile1.xnb","TextureProcessor","Texture2DContent",126,1109,0.0038702
+"D:/Game202402/TheGame/Content/reducexvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/reducexvelocityicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.0030651
+"D:/Game202402/TheGame/Content/reduceyvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/reduceyvelocityicon.xnb","TextureProcessor","Texture2DContent",237,5269,0.002097
 "D:/Game202402/TheGame/Content/SpellGUI1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI1.xnb","TextureProcessor","Texture2DContent",986,196693,0.1994647
 "D:/Game202402/TheGame/Content/SpellGUI1Slot0.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI1Slot0.xnb","TextureProcessor","Texture2DContent",860,196693,0.220846
 "D:/Game202402/TheGame/Content/SpellGUI2.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2.xnb","TextureProcessor","Texture2DContent",1366,393301,0.1982948
@@ -31,4 +35,5 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/towerGUI.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/towerGUI.xnb","TextureProcessor","Texture2DContent",200,7829,0.2304031
 "D:/Game202402/TheGame/Content/triggerupondeathicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/triggerupondeathicon.xnb","TextureProcessor","Texture2DContent",225,5269,0.1984556
 "D:/Game202402/TheGame/Content/Untitled.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/Untitled.xnb","TextureProcessor","Texture2DContent",273,5461,0.1027015
+"D:/Game202402/TheGame/Content/velocityzeroicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/velocityzeroicon.xnb","TextureProcessor","Texture2DContent",239,5269,0.0024026
 "D:/Game202402/TheGame/Content/wait60ticksicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/wait60ticksicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.2482763

@@ -88,6 +88,18 @@ public class Spellcast : Thing
                     alive = false;
                     break;
                 }
+                case Name.ReduceXVelocity:
+                {
+                    --cast.subject.velocity.X;
+                    alive = false;
+                    break;
+                }
+                case Name.ReduceYVelocity:
+                {
+                    --cast.subject.velocity.Y;
+                    alive = false;
+                    break;
+                }
                 case Name.AimClosestInSquareD6:
                 {
                     Entity x = game.NewProjectile(Name.SquareD6, CurrentCoordinate(), Vector2.Zero);

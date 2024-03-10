@@ -6,6 +6,8 @@
   <SourceFiles>
     <File>D:/Game202402/TheGame/Content/add5speedicon.png</File>
     <File>D:/Game202402/TheGame/Content/addspeedicon.png</File>
+    <File>D:/Game202402/TheGame/Content/addxvelocityicon.png</File>
+    <File>D:/Game202402/TheGame/Content/addyvelocityicon.png</File>
     <File>D:/Game202402/TheGame/Content/aimclosestinsquared6icon.png</File>
     <File>D:/Game202402/TheGame/Content/blockA04.png</File>
     <File>D:/Game202402/TheGame/Content/blockA15.png</File>
@@ -26,6 +28,8 @@
     <File>D:/Game202402/TheGame/Content/map-shader.fx</File>
     <File>D:/Game202402/TheGame/Content/newgame.png</File>
     <File>D:/Game202402/TheGame/Content/projectile1.png</File>
+    <File>D:/Game202402/TheGame/Content/reducexvelocityicon.png</File>
+    <File>D:/Game202402/TheGame/Content/reduceyvelocityicon.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI1.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI1Slot0.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI2.png</File>
@@ -36,6 +40,7 @@
     <File>D:/Game202402/TheGame/Content/towerGUI.png</File>
     <File>D:/Game202402/TheGame/Content/triggerupondeathicon.png</File>
     <File>D:/Game202402/TheGame/Content/Untitled.png</File>
+    <File>D:/Game202402/TheGame/Content/velocityzeroicon.png</File>
     <File>D:/Game202402/TheGame/Content/wait60ticksicon.png</File>
   </SourceFiles>
   <DestFiles>
@@ -56,7 +61,12 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File>Fonts/untitledfont.spritefont</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

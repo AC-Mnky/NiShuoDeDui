@@ -20,6 +20,8 @@ public class Spell : Thing
         {Name.Add10Speed, 1},
         {Name.AddXVelocity, 1},
         {Name.AddYVelocity, 1},
+        {Name.ReduceXVelocity, 1},
+        {Name.ReduceYVelocity, 1},
         {Name.TriggerUponDeath, 1},
         {Name.AimClosestInSquareD6, 1},
         {Name.Wait60Ticks, 1}
@@ -32,6 +34,8 @@ public class Spell : Thing
         {Name.Add10Speed, true},
         {Name.AddXVelocity, true},
         {Name.AddYVelocity, true},
+        {Name.ReduceXVelocity, true},
+        {Name.ReduceYVelocity, true},
         {Name.TriggerUponDeath, true},
         {Name.AimClosestInSquareD6, false},
         {Name.Wait60Ticks, false}

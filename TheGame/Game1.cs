@@ -114,6 +114,23 @@ public class Game1 : Game
             _ => throw new ArgumentOutOfRangeException(),
         };
     }
+    private Name RandomSpellName(){
+        return RandomNumberGenerator.GetInt32(15) switch
+        {
+            0 or 1 or 2 or 3 => Name.SummonProjectile1,
+            4 or 5 => Name.Add10Speed,
+            6 => Name.AddSpeed,
+            7 => Name.AddXVelocity,
+            8 => Name.AddYVelocity,
+            9 => Name.ReduceXVelocity,
+            10 => Name.ReduceYVelocity,
+            11 => Name.AimClosestInSquareD6,
+            12 => Name.TriggerUponDeath,
+            13 => Name.VelocityZero,
+            14 => Name.Wait60Ticks,
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+    }
 
     protected void TickZero()
     {        
@@ -123,35 +140,29 @@ public class Game1 : Game
         (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyEasy;
         (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyFast;
         (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyVeryFast;
-        // Spell e0 = NewSpell(Name.SummonEnemy1);
-        // Spell e1 = NewSpell(Name.AddXVelocity);
-        // e0.ReAttach(new Attachment(blocks[0,0].tower[0]));
-        // e1.ReAttach(new Attachment(e0,1));
-        Spell s0 = NewSpell(Name.SummonProjectile1);
-        Spell s1 = NewSpell(Name.AimClosestInSquareD6);
-        Spell s2 = NewSpell(Name.Add10Speed);
-        s0.ReAttach(new Attachment(blocks[0,1].tower[0]));
-        s1.ReAttach(new Attachment(s0,1));
-        s2.ReAttach(new Attachment(s1,0));
-        Spell t0 = NewSpell(Name.SummonProjectile1);
-        Spell t1 = NewSpell(Name.AimClosestInSquareD6);
-        Spell t2 = NewSpell(Name.Add10Speed);
-        t0.ReAttach(new Attachment(blocks[1,0].tower[0]));
-        t1.ReAttach(new Attachment(t0,1));
-        t2.ReAttach(new Attachment(t1,0));
-        Spell u0 = NewSpell(Name.SummonProjectile1);
-        Spell u1 = NewSpell(Name.AimClosestInSquareD6);
-        Spell u2 = NewSpell(Name.Add10Speed);
-        u0.ReAttach(new Attachment(blocks[1,1].tower[0]));
-        u1.ReAttach(new Attachment(u0,1));
-        u2.ReAttach(new Attachment(u1,0));
-        // NewSpell(Name.AddSpeed).ReAttach(new Attachment(0,0,60));
-        // NewSpell(Name.Add5Speed).ReAttach(new Attachment(1,0,60));
-        // NewSpell(Name.AddXVelocity).ReAttach(new Attachment(2,0,60));
-        // NewSpell(Name.AddYVelocity).ReAttach(new Attachment(3,0,60));
-        // NewSpell(Name.TriggerUponDeath).ReAttach(new Attachment(4,0,60));
-        // NewSpell(Name.Wait60Ticks).ReAttach(new Attachment(5,0,60));
-        // NewSpell(Name.VelocityZero).ReAttach(new Attachment(6,0,60));
+        // Spell s0 = NewSpell(Name.SummonProjectile1);
+        // Spell s1 = NewSpell(Name.AimClosestInSquareD6);
+        // Spell s2 = NewSpell(Name.Add10Speed);
+        // s0.ReAttach(new Attachment(blocks[0,1].tower[0]));
+        // s1.ReAttach(new Attachment(s0,1));
+        // s2.ReAttach(new Attachment(s1,0));
+        // Spell t0 = NewSpell(Name.SummonProjectile1);
+        // Spell t1 = NewSpell(Name.AimClosestInSquareD6);
+        // Spell t2 = NewSpell(Name.Add10Speed);
+        // t0.ReAttach(new Attachment(blocks[1,0].tower[0]));
+        // t1.ReAttach(new Attachment(t0,1));
+        // t2.ReAttach(new Attachment(t1,0));
+        // Spell u0 = NewSpell(Name.SummonProjectile1);
+        // Spell u1 = NewSpell(Name.AimClosestInSquareD6);
+        // Spell u2 = NewSpell(Name.Add10Speed);
+        // u0.ReAttach(new Attachment(blocks[1,1].tower[0]));
+        // u1.ReAttach(new Attachment(u0,1));
+        // u2.ReAttach(new Attachment(u1,0));
+
+        foreach(Block b in blocks) foreach(Tower t in b.tower)
+        {
+            NewSpell(RandomSpellName()).ReAttach(new(t));
+        }
         #endregion
     }
     protected override void LoadContent() // 加载材质
@@ -182,11 +193,13 @@ public class Game1 : Game
 
         Spell.TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
         Spell.TextureIcon[Name.SummonProjectile1] = Content.Load<Texture2D>("SummonProjectile1icon");
-        Spell.TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("velocityzeroicon");
         Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
         Spell.TextureIcon[Name.Add10Speed] = Content.Load<Texture2D>("add5speedicon");
-        Spell.TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("defaulticon");
-        Spell.TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("defaulticon");
+        Spell.TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("addxvelocityicon");
+        Spell.TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("addyvelocityicon");
+        Spell.TextureIcon[Name.ReduceXVelocity] = Content.Load<Texture2D>("reducexvelocityicon");
+        Spell.TextureIcon[Name.ReduceYVelocity] = Content.Load<Texture2D>("reduceyvelocityicon");
         Spell.TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("triggerupondeathicon");
         Spell.TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("aimclosestinsquared6icon");
         Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
@@ -196,6 +209,8 @@ public class Game1 : Game
         Spell.TextureUI[Name.VelocityZero] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.Add10Speed] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.ReduceXVelocity] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.ReduceYVelocity] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
@@ -211,6 +226,8 @@ public class Game1 : Game
         Spell.TextureSlot[(Name.Add10Speed,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AddXVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AddYVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.ReduceXVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.ReduceYVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.TriggerUponDeath,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AimClosestInSquareD6,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.Wait60Ticks,0)] = Content.Load<Texture2D>("spellgui1slot0");
