@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Security.Cryptography;
 
 namespace TheGame;
 
@@ -24,10 +25,14 @@ abstract public class Thing
     }
     abstract public void TickUpdate(); 
 
-
+    public static Vector2 Randomdirection()
+    {
+        int a = RandomNumberGenerator.GetInt32(2147483647);
+        return new(MathF.Cos(a),MathF.Sin(a));
+    }
     public static Vector2 Normalized(Vector2 vector) // 不要问我为什么把这无关的玩意放在这里。我想不到更好的地方放了。
     {
-        if(vector == Vector2.Zero) return Vector2.Zero;
+        if(vector == Vector2.Zero) return Randomdirection();
         Vector2 v = vector;
         v.Normalize();
         return v;

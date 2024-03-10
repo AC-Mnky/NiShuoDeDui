@@ -25,11 +25,17 @@ abstract public class Entity : Thing
         {Name.Projectile1, 1d},
         {Name.SquareD6, 0d}
     };
+    protected static Dictionary<Name, double> DefaultDamage = new() {
+        {Name.Enemy1, 1d},
+        {Name.Projectile1, 1d},
+        {Name.SquareD6, 0d}
+    };
     public static Dictionary<Name, Texture2D> Texture = new();
     public Entity(Game1 game, long id, Name name) : base(game,id,name)
     {
         size = Size[name];
         health = maxhealth = DefaultHealth[name];
+        damage = DefaultDamage[name];
     }
     public Vector2 coordinate;
     public Vector2 size;
@@ -44,4 +50,5 @@ abstract public class Entity : Thing
     public Vector2 velocity;
     public double maxhealth;
     public double health;
+    public double damage;
 }

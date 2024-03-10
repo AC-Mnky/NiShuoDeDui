@@ -23,7 +23,7 @@ public class Projectile : Entity
         foreach(Entity e in Collisions())
         {
             if(e is Enemy)
-                health -= 1d;
+                health -= e.damage;
         }
         if(health <= 0d)
         {

@@ -38,7 +38,7 @@ public class Enemy : Entity
         foreach(Entity e in Collisions())
         {
             if(e is Projectile)
-                health -= 1d;
+                health -= e.damage;
         }
         if(health <= 0d)
         {
