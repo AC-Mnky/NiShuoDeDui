@@ -517,7 +517,11 @@ public class Game1 : Game
                 }
                 foreach(Spell s in spells.Values) // 画法术的UI
                 {
-                    if(s.attachment.type == Attachment.Type.Tower) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
+                    if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
+                }
+                foreach(Spell s in spells.Values)
+                {
+                    if(s.attachment.type == Attachment.Type.Tower && s.showUI) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
                 }
                 if(desk[0] != null) _spriteBatch.Draw(Spell.TextureIcon[desk[0].name], MouseCoor, Color.Yellow);
 
@@ -544,7 +548,11 @@ public class Game1 : Game
             case GameScene.Build or GameScene.Battle:
                 foreach(Spell s in spells.Values)
                 {
-                    if(s.attachment.type == Attachment.Type.Tower) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
+                    if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
+                }
+                foreach(Spell s in spells.Values)
+                {
+                    if(s.attachment.type == Attachment.Type.Tower && s.showUI) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
                 }
                 break;
             case GameScene.Title:
