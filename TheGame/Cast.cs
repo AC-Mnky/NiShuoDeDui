@@ -27,18 +27,14 @@ public class Cast : ICloneable
     {
         if(type == CastType.Independent)
         {
-            Cast clone = new(coordinate)
-            {
-                direction = direction
-            };
+            Cast clone = new(coordinate);
+            clone.direction = direction;
             return clone;
         }
         else
         {
-            Cast clone = new(subject)
-            {
-                direction = direction
-            };
+            Cast clone = new(subject);
+            clone.direction = direction;
             return clone;
         }
     }

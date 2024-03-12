@@ -47,67 +47,49 @@ public class Spellcast : Thing
             }
         else
         {
+            Entity x;
             switch(spell.name)
             {
                 case Name.SummonEnemy:
-                {
-                    Entity x = game.NewEnemy(spell.summonedEnemy, game.Reddoor, 0f);
+                    x = game.NewEnemy(spell.summonedEnemy, game.Reddoor, 0f);
                     spell.children[1]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
-                }
                 case Name.SummonProjectile1:
-                {
-                    Entity x = game.NewProjectile(Name.Projectile1, CurrentCoordinate(), Vector2.Zero);
+                    x = game.NewProjectile(Name.Projectile1, CurrentCoordinate(), Vector2.Zero);
                     spell.children[1]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
-                }
                 case Name.VelocityZero:
-                {
                     cast.subject.velocity = Vector2.Zero;
                     alive = false;
                     break;
-                }
                 case Name.AddSpeed:
-                {
                     cast.subject.velocity += Normalized(cast.direction);
                     alive = false;
                     break;
-                }
                 case Name.Add10Speed:
-                {
                     cast.subject.velocity += 10 * Normalized(cast.direction);
                     alive = false;
                     break;
-                }
                 case Name.AddXVelocity:
-                {
                     ++cast.subject.velocity.X;
                     alive = false;
                     break;
-                }
                 case Name.AddYVelocity:
-                {
                     ++cast.subject.velocity.Y;
                     alive = false;
                     break;
-                }
                 case Name.ReduceXVelocity:
-                {
                     --cast.subject.velocity.X;
                     alive = false;
                     break;
-                }
                 case Name.ReduceYVelocity:
-                {
                     --cast.subject.velocity.Y;
                     alive = false;
                     break;
-                }
                 case Name.AimClosestInSquareD6:
-                {
-                    Entity x = game.NewProjectile(Name.SquareD6, CurrentCoordinate(), Vector2.Zero);
+                    x = game.NewProjectile(Name.SquareD6, CurrentCoordinate(), Vector2.Zero);
                     float minDistance = float.PositiveInfinity;
                     foreach(Entity e in x.Collisions()) if(e is Enemy)
                     {
@@ -122,12 +104,33 @@ public class Spellcast : Thing
                     x.alive = false;
                     alive = false;
                     break;
-                }
+                case Name.AimBack:
+                    cast.direction = -cast.direction;
+                    alive = false;
+                    break;
+                case Name.AimUp:
+                    cast.direction = new(0,-1);
+                    alive = false;
+                    break;
+                case Name.AimDown:
+                    cast.direction = new(0,1);
+                    alive = false;
+                    break;
+                case Name.AimLeft:
+                    cast.direction = new(-1,0);
+                    alive = false;
+                    break;
+                case Name.AimRight:
+                    cast.direction = new(1,0);
+                    alive = false;
+                    break;
+                case Name.AimMouse:
+                    cast.direction = Closest(game.MouseCoor - CurrentCoordinate()) / 64;
+                    alive = false;
+                    break;
                 case Name.Wait60Ticks:
-                {
                     if(game.tick - tickBirth >= 60) alive = false;
                     break;
-                }
             }
             if(!alive) // 结束后施放后继法术
             {

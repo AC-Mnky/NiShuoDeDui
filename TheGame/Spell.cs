@@ -24,6 +24,12 @@ public class Spell : Thing
         {Name.ReduceYVelocity, 1},
         {Name.TriggerUponDeath, 1},
         {Name.AimClosestInSquareD6, 1},
+        {Name.AimMouse, 1},
+        {Name.AimUp, 1},
+        {Name.AimDown, 1},
+        {Name.AimLeft, 1},
+        {Name.AimRight, 1},
+        {Name.AimBack, 1},
         {Name.Wait60Ticks, 1}
     };
     public static Dictionary<Name, bool> dependentOnly = new() {
@@ -38,6 +44,12 @@ public class Spell : Thing
         {Name.ReduceYVelocity, true},
         {Name.TriggerUponDeath, true},
         {Name.AimClosestInSquareD6, false},
+        {Name.AimMouse, false},
+        {Name.AimUp, false},
+        {Name.AimDown, false},
+        {Name.AimLeft, false},
+        {Name.AimRight, false},
+        {Name.AimBack, false},
         {Name.Wait60Ticks, false}
     };
     public static Dictionary<Name, Texture2D> TextureUI = new();

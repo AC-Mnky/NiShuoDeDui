@@ -68,8 +68,8 @@ abstract public class Entity : Thing
     public ArrayList Collisions() {return game.Collisions(this);}
     virtual public void TickUpdateCoordinate()
     {
-        coordinate.X -= MathF.Floor(coordinate.X/game.xPeriod) * game.xPeriod;
-        coordinate.Y -= MathF.Floor(coordinate.Y/game.yPeriod) * game.yPeriod;
+        coordinate.X -= MathF.Floor(coordinate.X/Game1.xPeriod) * Game1.xPeriod;
+        coordinate.Y -= MathF.Floor(coordinate.Y/Game1.yPeriod) * Game1.yPeriod;
     }
     public Vector2 RenderCoordinate() {return Vector2.Round(coordinate + RenderCoordinateOffset[name]);}
     // public Texture2D RenderTexture() {return Texture[name];}

@@ -8,7 +8,13 @@
     <File>D:/Game202402/TheGame/Content/addspeedicon.png</File>
     <File>D:/Game202402/TheGame/Content/addxvelocityicon.png</File>
     <File>D:/Game202402/TheGame/Content/addyvelocityicon.png</File>
+    <File>D:/Game202402/TheGame/Content/aimback.png</File>
     <File>D:/Game202402/TheGame/Content/aimclosestinsquared6icon.png</File>
+    <File>D:/Game202402/TheGame/Content/aimdown.png</File>
+    <File>D:/Game202402/TheGame/Content/aimleft.png</File>
+    <File>D:/Game202402/TheGame/Content/aimmouse.png</File>
+    <File>D:/Game202402/TheGame/Content/aimright.png</File>
+    <File>D:/Game202402/TheGame/Content/aimup.png</File>
     <File>D:/Game202402/TheGame/Content/blockA04.png</File>
     <File>D:/Game202402/TheGame/Content/blockA15.png</File>
     <File>D:/Game202402/TheGame/Content/blockA26.png</File>
@@ -48,7 +54,13 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
+    <File>aimbackicon.png</File>
     <File xsi:nil="true" />
+    <File>aimdownicon.png</File>
+    <File>aimlefticon.png</File>
+    <File>aimmouseicon.png</File>
+    <File>aimrighticon.png</File>
+    <File>aimupicon.png</File>
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

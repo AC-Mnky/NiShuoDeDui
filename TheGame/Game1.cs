@@ -32,8 +32,8 @@ public class Game1 : Game
     public Vector2 MouseCoor = new();
     public Vector2 LeftTop = new();
     public Vector2 RightBottom = new();
-    public float xPeriod;
-    public float yPeriod;
+    public static float xPeriod;
+    public static float yPeriod;
     public int MouseI = 0, MouseJ = 0;
     public long tick = 0; // 游戏从开始经过的刻数
     private long thingCount = 0; // 游戏从开始产生的Entity, Spell, Spellcast总数
@@ -108,7 +108,7 @@ public class Game1 : Game
         };
     }
     private Name RandomSpellName(){
-        return RandomNumberGenerator.GetInt32(15) switch
+        return RandomNumberGenerator.GetInt32(21) switch
         {
             0 or 1 or 2 or 3 => Name.SummonProjectile1,
             4 or 5 => Name.Add10Speed,
@@ -121,6 +121,12 @@ public class Game1 : Game
             12 => Name.TriggerUponDeath,
             13 => Name.VelocityZero,
             14 => Name.Wait60Ticks,
+            15 => Name.AimMouse,
+            16 => Name.AimBack,
+            17 => Name.AimLeft,
+            18 => Name.AimRight,
+            19 => Name.AimUp,
+            20 => Name.AimDown,
             _ => throw new ArgumentOutOfRangeException(),
         };
     }
@@ -205,6 +211,12 @@ public class Game1 : Game
         Spell.TextureIcon[Name.ReduceYVelocity] = Content.Load<Texture2D>("reduceyvelocityicon");
         Spell.TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("triggerupondeathicon");
         Spell.TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("aimclosestinsquared6icon");
+        Spell.TextureIcon[Name.AimMouse] = Content.Load<Texture2D>("aimmouseicon");
+        Spell.TextureIcon[Name.AimUp] = Content.Load<Texture2D>("aimupicon");
+        Spell.TextureIcon[Name.AimDown] = Content.Load<Texture2D>("aimdownicon");
+        Spell.TextureIcon[Name.AimLeft] = Content.Load<Texture2D>("aimlefticon");
+        Spell.TextureIcon[Name.AimRight] = Content.Load<Texture2D>("aimrighticon");
+        Spell.TextureIcon[Name.AimBack] = Content.Load<Texture2D>("aimbackicon");
         Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
 
         Spell.TextureUI[Name.SummonEnemy] = Content.Load<Texture2D>("SpellGUI2");
@@ -218,6 +230,12 @@ public class Game1 : Game
         Spell.TextureUI[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AimMouse] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AimUp] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AimDown] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AimLeft] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AimRight] = Content.Load<Texture2D>("SpellGUI1");
+        Spell.TextureUI[Name.AimBack] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.Wait60Ticks] = Content.Load<Texture2D>("SpellGUI1");
 
         Spell.TextureSlot[(Name.SummonEnemy,0)] = Content.Load<Texture2D>("spellgui2slot0");
@@ -233,6 +251,12 @@ public class Game1 : Game
         Spell.TextureSlot[(Name.ReduceYVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.TriggerUponDeath,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AimClosestInSquareD6,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.AimMouse,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.AimUp,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.AimDown,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.AimLeft,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.AimRight,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(Name.AimBack,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.Wait60Ticks,0)] = Content.Load<Texture2D>("spellgui1slot0");
 
         _mapShader = Content.Load<Effect>("map-shader");

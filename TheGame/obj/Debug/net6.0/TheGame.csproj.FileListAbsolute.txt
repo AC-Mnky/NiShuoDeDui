@@ -62,3 +62,9 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\addyvelocityicon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\reducexvelocityicon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\reduceyvelocityicon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\velocityzeroicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimbackicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimdownicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimlefticon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimmouseicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimrighticon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimupicon.xnb
