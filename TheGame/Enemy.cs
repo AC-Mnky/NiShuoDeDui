@@ -32,6 +32,7 @@ public class Enemy : Entity
             segment = segment.succ;
         }
         coordinate = segment.CoordinateAtProgress(progress);
+        base.TickUpdateCoordinate();
     }
 
     public override void TickUpdate()

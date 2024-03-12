@@ -18,6 +18,7 @@ public class Projectile : Entity
         {
             coordinate += velocity;
         }
+        base.TickUpdateCoordinate();
     }
 
     public override void TickUpdate()

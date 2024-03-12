@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
@@ -64,7 +66,11 @@ abstract public class Entity : Thing
         return new RectangleF(coordinate.X-size.X/2,coordinate.Y-size.Y/2,size.X,size.Y);
     }
     public ArrayList Collisions() {return game.Collisions(this);}
-    abstract public void TickUpdateCoordinate();
+    virtual public void TickUpdateCoordinate()
+    {
+        coordinate.X -= MathF.Floor(coordinate.X/game.xPeriod) * game.xPeriod;
+        coordinate.Y -= MathF.Floor(coordinate.Y/game.yPeriod) * game.yPeriod;
+    }
     public Vector2 RenderCoordinate() {return Vector2.Round(coordinate + RenderCoordinateOffset[name]);}
     // public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;
