@@ -30,6 +30,10 @@ public class Game1 : Game
     private Matrix view = Matrix.Identity;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
     public Vector2 MouseCoor = new();
+    public Vector2 LeftTop = new();
+    public Vector2 RightBottom = new();
+    public float xPeriod;
+    public float yPeriod;
     public int MouseI = 0, MouseJ = 0;
     public long tick = 0; // 游戏从开始经过的刻数
     private long thingCount = 0; // 游戏从开始产生的Entity, Spell, Spellcast总数
@@ -48,7 +52,7 @@ public class Game1 : Game
     // private bool[,] isLight = new bool[maxI,maxJ];
     // public Spell[,] spellAt = new Spell[maxI,maxJ];
     private Window mouseOn = null;
-    private Spell holding = null;
+    private Spell holdingSpell = null;
     private Attachment oldAtt = null;
     public Spell[] desk = new Spell[1];
     private Window newGame;
@@ -58,6 +62,7 @@ public class Game1 : Game
     private Spell summonenemyFast;
     private Spell summonenemyVeryFast;
     public static Texture2D towerGUI;
+    private bool _predraw = false;
 
 
 
@@ -75,37 +80,25 @@ public class Game1 : Game
     {
         // ToggleBorderless(); // 先全屏 // 但是全屏不方便debug所以先关掉了
 
-
-
         // for(int i=0;i<maxI;++i) for(int j=0;j<maxJ;++j)
         // {
         //     isLight[i,j] = RandomNumberGenerator.GetInt32(2)>0;
         //     // (i+j)%2==0;
         // }
 
-        title = new Window(this, WindowType.Title, Content.Load<Texture2D>("untitled"),false);
-        newGame = new Window(this, WindowType.NewGame, Content.Load<Texture2D>("newGame"),true);
-        towerGUI = Content.Load<Texture2D>("towergui");
-
-
-        #region blocks
-        blocks = new Block[Block.numX,Block.numY];
-        for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
-            blocks[x,y] = new(RandomBlockName(), x,y);
-        // blocks = new Block[Block.numX,Block.numY]{
-        //     {new(RandomBlockName(), 0,0), new(RandomBlockName(), 0,1), new(RandomBlockName(), 0,2)},
-        //     {new(RandomBlockName(), 1,0), new(RandomBlockName(), 1,1), new(RandomBlockName(), 1,2)},
-        //     {new(RandomBlockName(), 2,0), new(RandomBlockName(), 2,1), new(RandomBlockName(), 2,2)},
-        //     {new(RandomBlockName(), 3,0), new(RandomBlockName(), 3,1), new(RandomBlockName(), 3,2)}
-        //     };
-
-
-        #endregion
-
 
         base.Initialize();
     }
 
+    private void InitMap()
+    {
+        #region blocks
+        blocks = new Block[Block.numX,Block.numY];
+        for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
+            blocks[x,y] = new(RandomBlockName(), x,y);
+
+        #endregion
+    }
     private BlockName RandomBlockName(){
         return RandomNumberGenerator.GetInt32(3) switch
         {
@@ -168,6 +161,16 @@ public class Game1 : Game
     protected override void LoadContent() // 加载材质
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        
+        title = new Window(this, WindowType.Title, Content.Load<Texture2D>("untitled"), false)
+        {
+            onMap = false
+        };
+        newGame = new Window(this, WindowType.NewGame, Content.Load<Texture2D>("newGame"),true)
+        {
+            onMap = false
+        };
+        towerGUI = Content.Load<Texture2D>("towergui");
 
         // _lightgrey = Content.Load<Texture2D>("lightgrey");
         // _darkgrey = Content.Load<Texture2D>("darkgrey");
@@ -460,8 +463,12 @@ public class Game1 : Game
                         ((Spell)mouseOn.parent).showUI ^= true;
                         if(mouseOn.type == WindowType.SpellIcon)
                         {
-                            holding = (Spell)mouseOn.parent;
+                            holdingSpell = (Spell)mouseOn.parent;
                         }
+                    }
+                    else
+                    {
+                        holdingSpell = null;
                     }
                 }
                 if(Mouse.LeftDeClicked())
@@ -487,9 +494,9 @@ public class Game1 : Game
                 if(Mouse.LeftDown() && Mouse.FirstMovementSinceLastLeftClick())
                 {
                     // Debug.Print("First move!");
-                    if(holding != null && desk[0] == null)
+                    if(holdingSpell != null && desk[0] == null)
                     {
-                        oldAtt = holding.ReAttach(new Attachment(0));
+                        oldAtt = holdingSpell.ReAttach(new Attachment(0));
                     }
                 }
                 #endregion
@@ -501,6 +508,7 @@ public class Game1 : Game
                     {
                         gamescene = GameScene.Build;
                         view = Matrix.Identity;
+                        InitMap();
                     }
                 }
                 break;
@@ -514,93 +522,97 @@ public class Game1 : Game
     {
         int width = GraphicsDevice.Viewport.Width;
         int height = GraphicsDevice.Viewport.Height;
-        PreDraw();
+        if(!_predraw)
+        {
+            LeftTop = Vector2.Transform(new Vector2(0,0), Matrix.Invert(view));
+            RightBottom = Vector2.Transform(new Vector2(0,0), Matrix.Invert(view));
+            xPeriod = Block.numX*Block.Dgrid*64f;
+            yPeriod = Block.numY*Block.Dgrid*64f;
+            projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
+            _mapShader.Parameters["view_projection"].SetValue(view * projection);
+
+            mouseOn = null;
+
+            _predraw = true;
+            Draw(gameTime);
+            _predraw = false;
+        }
+        
+
+        if(!_predraw) GraphicsDevice.Clear(Color.Black); // 背景是黑的
+
         switch(gamescene)
         {
             case GameScene.Build or GameScene.Battle:
-                GraphicsDevice.Clear(Color.Black); // 背景是黑的
 
-                projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
-                _mapShader.Parameters["view_projection"].SetValue(view * projection);
 
-                _spriteBatch.Begin(effect: _mapShader);
+                if(!_predraw) _spriteBatch.Begin(effect: _mapShader);
 
-                // for(int i=0;i<maxI;++i)for(int j=0;j<maxJ;++j) // 画地图
-                // {
-                //     _spriteBatch.Draw(isLight[i,j] ? _lightgrey : _darkgrey, new Vector2(i*64, j*64), Color.White);
-                // }
+                
                 foreach(Block b in blocks)
                 {
-                    _spriteBatch.Draw(Block.Texture[b.name], b.Coordinate(), Color.White);
+                    // _spriteBatch.Draw(Block.Texture[b.name], b.Coordinate(), Color.White);
+                    if(_predraw) b.window.RectRender = b.window.RectMouseCatch = new(b.Coordinate().ToPoint(),new(Block.Dgrid*64,Block.Dgrid*64));
+                    DrawWindow(b.window, Color.White);
                     foreach(Road r in b.road)
-                        _spriteBatch.Draw(Road.Texture[r.name], b.Coordinate(), Color.White * (r.isPath ? 0.5f : 0.2f));
+                    {
+                        if(_predraw) r.window.RectRender = new(b.Coordinate().ToPoint(), new(Block.Dgrid*64,Block.Dgrid*64));
+                        DrawWindow(r.window, Color.White * (r.isPath ? 0.5f : 0.2f));
+                        // _spriteBatch.Draw(Road.Texture[r.name], b.Coordinate(), Color.White * (r.isPath ? 0.5f : 0.2f));
+                    }
                 }
-                foreach(Entity e in entities.Values) // 画实体
-                {
-                    if(e.RenderTexture()!=null) _spriteBatch.Draw(e.RenderTexture(), e.RenderCoordinate(), Color.White * (float)(0.25+0.75*e.health/e.maxhealth));
-                }
-                foreach(Block b in blocks) foreach(Tower t in b.tower)
-                {
-                    DrawWindow(false, MouseCoor, t.window, Color.White);
-                }
-                foreach(Spell s in spells.Values) // 画法术的UI
-                {
-                    if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
-                }
-                foreach(Spell s in spells.Values)
-                {
-                    if(s.attachment.type == Attachment.Type.Tower && s.showUI) DrawSpellUI(false, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
-                }
-                if(desk[0] != null) _spriteBatch.Draw(Spell.TextureIcon[desk[0].name], MouseCoor, Color.Yellow);
 
-                _spriteBatch.End();
-                break;
-            case GameScene.Title:
-                _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                // _spriteBatch.Draw(_untitled, new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4), Color.White);
-                DrawWindow(false, Mouse.Pos(), title, Color.White);
-                DrawWindow(false, Mouse.Pos(), newGame, Color.White);
-                _spriteBatch.End();
-                break;
-        }
-        base.Draw(gameTime);
-    }
-
-    protected void PreDraw() // 显示前需要先获取鼠标状态
-    {
-        mouseOn = null;
-        int width = GraphicsDevice.Viewport.Width;
-        int height = GraphicsDevice.Viewport.Height;
-        switch(gamescene)
-        {
-            case GameScene.Build or GameScene.Battle:
                 foreach(Block b in blocks) foreach(Tower t in b.tower)
                 {
                     Window w = t.window;
-                    w.RectRender = w.RectMouseCatch = new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44);
-                    DrawWindow(true, MouseCoor, w, Color.White);
+                    if(_predraw) w.RectRender = w.RectMouseCatch = new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44);
+                    DrawWindow(w, Color.White);
+                }
+
+                foreach(Entity e in entities.Values) // 画实体
+                {
+                    if(e.window.texture != null)
+                        {
+                            if(_predraw) e.window.RectRender = e.window.RectMouseCatch = new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height));
+                            DrawWindow(e.window, Color.White * (float)(0.25+0.75*e.health/e.maxhealth));
+                        }
+                }
+                foreach(Spell s in spells.Values) // 画法术的UI
+                {
+                    if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
                 }
                 foreach(Spell s in spells.Values)
                 {
-                    if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
+                    if(s.attachment.type == Attachment.Type.Tower && s.showUI) DrawSpellUI(s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
                 }
-                foreach(Spell s in spells.Values)
-                {
-                    if(s.attachment.type == Attachment.Type.Tower && s.showUI) DrawSpellUI(true, s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
-                }
+
+                if(!_predraw) if(desk[0] != null) _spriteBatch.Draw(Spell.TextureIcon[desk[0].name], MouseCoor, Color.Yellow);
+                if(!_predraw) _spriteBatch.End();
                 break;
             case GameScene.Title:
-                newGame.RectRender = new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2);
-                newGame.RectMouseCatch = new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20);
-                title.RectRender = title.RectMouseCatch = new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4);
-                DrawWindow(true, Mouse.Pos(), title, Color.White);
-                DrawWindow(true, Mouse.Pos(), newGame, Color.White);
+
+                if(_predraw)
+                {
+                    newGame.RectRender = new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2);
+                    newGame.RectMouseCatch = new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20);
+                    title.RectRender = title.RectMouseCatch = new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4);
+                }
+
+                if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                DrawWindow(title, Color.White);
+                DrawWindow(newGame, Color.White);
+                if(!_predraw) _spriteBatch.End();
+
                 break;
         }
+
+
+        if(!_predraw) base.Draw(gameTime);
     }
-    protected void DrawSpellUI(bool preDraw, Spell s, int i, int j)
+
+    protected void DrawSpellUI(Spell s, int i, int j)
     {
-        if(preDraw)
+        if(_predraw)
         {
             s.windowIcon.RectMouseCatch = s.windowIcon.RectRender = new Rectangle(i*64+14, j*64+14, 36, 36); 
             s.windowUI.RectMouseCatch = s.windowUI.RectRender = new Rectangle(i*64, j*64, s.windowUI.texture.Width, s.windowUI.texture.Height);
@@ -608,54 +620,54 @@ public class Game1 : Game
 
         if(!s.showUI)
         {
-            DrawWindow(preDraw, MouseCoor, s.windowIcon, Color.White);
+            DrawWindow(s.windowIcon, Color.White);
         }
         else
         {
-            DrawWindow(preDraw, MouseCoor, s.windowUI, Color.White);
-            DrawWindow(preDraw, MouseCoor, s.windowIcon, Color.White);
+            DrawWindow(s.windowUI, Color.White);
+            DrawWindow(s.windowIcon, Color.White);
             switch(Spell.childrenNumber[s.name])
             {
                 case 1:
                 {
-                    if(preDraw)
+                    if(_predraw)
                     {
                         s.windowSlots[0].RectRender = new Rectangle(i*64, j*64, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height);
                         s.windowSlots[0].RectMouseCatch = new Rectangle(i*64+10, (j+1)*64+10, 44, 44);
                     }
-                    DrawWindow(preDraw, MouseCoor, s.windowSlots[0], Color.Aqua);
-                    if(s.children[0] != null) DrawSpellUI(preDraw, s.children[0], i, j+1);
+                    DrawWindow(s.windowSlots[0], Color.Aqua);
+                    if(s.children[0] != null) DrawSpellUI(s.children[0], i, j+1);
 
                     break;
                 }
                 case 2:
                 {
-                    if(preDraw)
+                    if(_predraw)
                     {
                         s.windowSlots[0].RectRender = new Rectangle(i*64, j*64, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height);
                         s.windowSlots[0].RectMouseCatch = new Rectangle(i*64+10, (j+2)*64+10, 44, 44);
                     }
-                    DrawWindow(preDraw, MouseCoor, s.windowSlots[0], Color.Aqua);
-                    if(s.children[0] != null) DrawSpellUI(preDraw, s.children[0], i, j+2);
+                    DrawWindow(s.windowSlots[0], Color.Aqua);
+                    if(s.children[0] != null) DrawSpellUI(s.children[0], i, j+2);
                     
-                    if(preDraw)
+                    if(_predraw)
                     {
                         s.windowSlots[1].RectRender = new Rectangle(i*64, j*64, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height);
                         s.windowSlots[1].RectMouseCatch = new Rectangle((i+1)*64+10, (j+1)*64+10, 44, 44);
                     }
-                    DrawWindow(preDraw, MouseCoor, s.windowSlots[1], Color.BlueViolet);
-                    if(s.children[1] != null) DrawSpellUI(preDraw, s.children[1], i+1, j+1);
+                    DrawWindow(s.windowSlots[1], Color.BlueViolet);
+                    if(s.children[1] != null) DrawSpellUI(s.children[1], i+1, j+1);
 
                     break;
                 }
             }
         }
     }
-    protected void DrawWindow(bool PreDraw, Vector2 MouseCoor, Window w, Color color)
+    protected void DrawWindow(Window w, Color color)
     {
-        if(PreDraw)
+        if(_predraw)
         {
-            if (w.RectMouseCatch.Contains(MouseCoor)) mouseOn = w;
+            if (w.RectMouseCatch.Contains(w.onMap ? MouseCoor : Mouse.Pos())) mouseOn = w;
         }
         else
         _spriteBatch.Draw(w.texture, w.RectRender, (w.clickable && mouseOn == w) ? Color.Yellow : color);

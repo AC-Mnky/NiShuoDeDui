@@ -37,6 +37,11 @@ public class Spellcast : Thing
                         spell.children[0]?.toCastNextTick.Add(new Cast(CurrentCoordinate()));
                         break;
                     }
+                    case Name.Wait60Ticks:
+                    {
+                        spell.children[0]?.toCastNextTick.Add(new Cast(CurrentCoordinate()));
+                        break;
+                    }
                 }
                 alive = false;
             }

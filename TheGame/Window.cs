@@ -5,10 +5,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
-public enum WindowType {SpellIcon, SpellSlot, SpellUI, NewGame, Title, Tower};
+public enum WindowType {SpellIcon, SpellSlot, SpellUI, NewGame, Title, Tower, Block, Entity, Road};
 
 public class Window
 {
+    public bool onMap = true;
     public bool clickable;
     public object parent;
     public Texture2D texture;

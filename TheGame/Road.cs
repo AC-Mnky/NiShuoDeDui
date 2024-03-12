@@ -14,6 +14,7 @@ public class Road
     public int door2;
     public Segment[] segments;
     public bool isPath = false;
+    public Window window;
     public static Vector2 CoordDoor(int door)
     {
         return door switch
@@ -33,6 +34,7 @@ public class Road
     {
         this.block = block;
         this.name = name;
+        window = new Window(this, WindowType.Road, Texture[name], false);
         switch(name)
         {
             case RoadName.A04:

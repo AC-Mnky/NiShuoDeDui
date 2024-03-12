@@ -54,9 +54,11 @@ abstract public class Entity : Thing
         size = Size[name];
         health = maxhealth = DefaultHealth[name];
         damage = DefaultDamage[name];
+        window = new Window(this, WindowType.Entity, Texture[name], true);
     }
     public Vector2 coordinate;
     public Vector2 size;
+    public Window window;
     public RectangleF Hitbox()
     {
         return new RectangleF(coordinate.X-size.X/2,coordinate.Y-size.Y/2,size.X,size.Y);
@@ -64,7 +66,7 @@ abstract public class Entity : Thing
     public ArrayList Collisions() {return game.Collisions(this);}
     abstract public void TickUpdateCoordinate();
     public Vector2 RenderCoordinate() {return Vector2.Round(coordinate + RenderCoordinateOffset[name]);}
-    public Texture2D RenderTexture() {return Texture[name];}
+    // public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;
     public double maxhealth;
     public double health;

@@ -22,6 +22,7 @@ public class Block
     public Road[] roadOfDoor = new Road[8];
     public int[] otherDoor = new int[8];
     public Tower[] tower;
+    public Window window;
     public Vector2 Coordinate()
     {
         return new Vector2(x*Dgrid*64,y*Dgrid*64);
@@ -53,6 +54,7 @@ public class Block
                 break;
             }
         }
+        window = new(this,WindowType.Block,Texture[name],false);
         foreach(Road r in road)
         {
             roadOfDoor[r.door1] = r;
