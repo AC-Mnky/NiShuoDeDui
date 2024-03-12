@@ -13,8 +13,8 @@ public class Window
     public bool clickable;
     public object parent;
     public Texture2D texture;
-    public Rectangle RectRender;
-    public Rectangle RectMouseCatch;
+    // public Rectangle RectRender;
+    // public Rectangle RectMouseCatch;
     public WindowType type;
     public int rank = -1;
     public Window(object parent, WindowType type, Texture2D texture, bool clickable)

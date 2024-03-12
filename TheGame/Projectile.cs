@@ -14,7 +14,10 @@ public class Projectile : Entity
 
     public override void TickUpdateCoordinate()
     {
-        if(alive) coordinate += velocity;
+        if(alive)
+        {
+            coordinate += velocity;
+        }
     }
 
     public override void TickUpdate()

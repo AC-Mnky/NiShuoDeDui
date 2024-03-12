@@ -525,7 +525,7 @@ public class Game1 : Game
         if(!_predraw)
         {
             LeftTop = Vector2.Transform(new Vector2(0,0), Matrix.Invert(view));
-            RightBottom = Vector2.Transform(new Vector2(0,0), Matrix.Invert(view));
+            RightBottom = Vector2.Transform(new Vector2(width,height), Matrix.Invert(view));
             xPeriod = Block.numX*Block.Dgrid*64f;
             yPeriod = Block.numY*Block.Dgrid*64f;
             projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
@@ -551,30 +551,23 @@ public class Game1 : Game
                 
                 foreach(Block b in blocks)
                 {
-                    // _spriteBatch.Draw(Block.Texture[b.name], b.Coordinate(), Color.White);
-                    if(_predraw) b.window.RectRender = b.window.RectMouseCatch = new(b.Coordinate().ToPoint(),new(Block.Dgrid*64,Block.Dgrid*64));
-                    DrawWindow(b.window, Color.White);
+                    DrawWindow(b.window, new(b.Coordinate().ToPoint(),new(Block.Dgrid*64,Block.Dgrid*64)), null, Color.White);
                     foreach(Road r in b.road)
                     {
-                        if(_predraw) r.window.RectRender = new(b.Coordinate().ToPoint(), new(Block.Dgrid*64,Block.Dgrid*64));
-                        DrawWindow(r.window, Color.White * (r.isPath ? 0.5f : 0.2f));
-                        // _spriteBatch.Draw(Road.Texture[r.name], b.Coordinate(), Color.White * (r.isPath ? 0.5f : 0.2f));
+                        DrawWindow(r.window, new(b.Coordinate().ToPoint(), new(Block.Dgrid*64,Block.Dgrid*64)), new(), Color.White * (r.isPath ? 0.5f : 0.2f));
                     }
                 }
 
                 foreach(Block b in blocks) foreach(Tower t in b.tower)
                 {
-                    Window w = t.window;
-                    if(_predraw) w.RectRender = w.RectMouseCatch = new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44);
-                    DrawWindow(w, Color.White);
+                    DrawWindow(t.window, new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44), null, Color.White);
                 }
 
                 foreach(Entity e in entities.Values) // 画实体
                 {
                     if(e.window.texture != null)
                         {
-                            if(_predraw) e.window.RectRender = e.window.RectMouseCatch = new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height));
-                            DrawWindow(e.window, Color.White * (float)(0.25+0.75*e.health/e.maxhealth));
+                            DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), null, Color.White * (float)(0.25+0.75*e.health/e.maxhealth));
                         }
                 }
                 foreach(Spell s in spells.Values) // 画法术的UI
@@ -591,16 +584,9 @@ public class Game1 : Game
                 break;
             case GameScene.Title:
 
-                if(_predraw)
-                {
-                    newGame.RectRender = new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2);
-                    newGame.RectMouseCatch = new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20);
-                    title.RectRender = title.RectMouseCatch = new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4);
-                }
-
                 if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                DrawWindow(title, Color.White);
-                DrawWindow(newGame, Color.White);
+                DrawWindow(title, new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4), null, Color.White);
+                DrawWindow(newGame, new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2), new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20), Color.White);
                 if(!_predraw) _spriteBatch.End();
 
                 break;
@@ -612,50 +598,29 @@ public class Game1 : Game
 
     protected void DrawSpellUI(Spell s, int i, int j)
     {
-        if(_predraw)
-        {
-            s.windowIcon.RectMouseCatch = s.windowIcon.RectRender = new Rectangle(i*64+14, j*64+14, 36, 36); 
-            s.windowUI.RectMouseCatch = s.windowUI.RectRender = new Rectangle(i*64, j*64, s.windowUI.texture.Width, s.windowUI.texture.Height);
-        }
-
         if(!s.showUI)
         {
-            DrawWindow(s.windowIcon, Color.White);
+            DrawWindow(s.windowIcon, new(i*64+14, j*64+14, 36, 36), null, Color.White);
         }
         else
         {
-            DrawWindow(s.windowUI, Color.White);
-            DrawWindow(s.windowIcon, Color.White);
+            DrawWindow(s.windowUI, new(i*64, j*64, s.windowUI.texture.Width, s.windowUI.texture.Height), null, Color.White);
+            DrawWindow(s.windowIcon, new(i*64+14, j*64+14, 36, 36), null, Color.White);
             switch(Spell.childrenNumber[s.name])
             {
                 case 1:
                 {
-                    if(_predraw)
-                    {
-                        s.windowSlots[0].RectRender = new Rectangle(i*64, j*64, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height);
-                        s.windowSlots[0].RectMouseCatch = new Rectangle(i*64+10, (j+1)*64+10, 44, 44);
-                    }
-                    DrawWindow(s.windowSlots[0], Color.Aqua);
+                    DrawWindow(s.windowSlots[0], new(i*64, j*64, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(i*64+10, (j+1)*64+10, 44, 44), Color.Aqua);
                     if(s.children[0] != null) DrawSpellUI(s.children[0], i, j+1);
 
                     break;
                 }
                 case 2:
                 {
-                    if(_predraw)
-                    {
-                        s.windowSlots[0].RectRender = new Rectangle(i*64, j*64, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height);
-                        s.windowSlots[0].RectMouseCatch = new Rectangle(i*64+10, (j+2)*64+10, 44, 44);
-                    }
-                    DrawWindow(s.windowSlots[0], Color.Aqua);
+                    DrawWindow(s.windowSlots[0], new(i*64, j*64, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(i*64+10, (j+2)*64+10, 44, 44), Color.Aqua);
                     if(s.children[0] != null) DrawSpellUI(s.children[0], i, j+2);
                     
-                    if(_predraw)
-                    {
-                        s.windowSlots[1].RectRender = new Rectangle(i*64, j*64, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height);
-                        s.windowSlots[1].RectMouseCatch = new Rectangle((i+1)*64+10, (j+1)*64+10, 44, 44);
-                    }
-                    DrawWindow(s.windowSlots[1], Color.BlueViolet);
+                    DrawWindow(s.windowSlots[1],new(i*64, j*64, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height), new((i+1)*64+10, (j+1)*64+10, 44, 44), Color.BlueViolet);
                     if(s.children[1] != null) DrawSpellUI(s.children[1], i+1, j+1);
 
                     break;
@@ -663,14 +628,40 @@ public class Game1 : Game
             }
         }
     }
-    protected void DrawWindow(Window w, Color color)
+    protected void DrawWindow(Window w, Rectangle RectRender, Rectangle? RectMouseCatch, Color color)
     {
+        Rectangle rectMouseCatch = RectMouseCatch??RectRender;
+
         if(_predraw)
         {
-            if (w.RectMouseCatch.Contains(w.onMap ? MouseCoor : Mouse.Pos())) mouseOn = w;
+            if(w.onMap)
+            {
+                for(int i = (int)MathF.Ceiling((LeftTop.X-rectMouseCatch.Right)/xPeriod);i<(RightBottom.X-rectMouseCatch.Left)/xPeriod;++i)
+                    for(int j = (int)MathF.Ceiling((LeftTop.Y-rectMouseCatch.Bottom)/yPeriod);j<(RightBottom.Y-rectMouseCatch.Top)/yPeriod;++j)
+                    {
+                        Rectangle r = rectMouseCatch;
+                        r.Offset(i*xPeriod, j*yPeriod);
+                        if (r.Contains(MouseCoor)) mouseOn = w;
+                    }
+            }
+            else
+                if (rectMouseCatch.Contains(Mouse.Pos())) mouseOn = w;
         }
         else
-        _spriteBatch.Draw(w.texture, w.RectRender, (w.clickable && mouseOn == w) ? Color.Yellow : color);
+        {
+            if(w.onMap)
+            {
+                for(int i = (int)MathF.Ceiling((LeftTop.X-RectRender.Right)/xPeriod);i<(RightBottom.X-RectRender.Left)/xPeriod;++i)
+                    for(int j = (int)MathF.Ceiling((LeftTop.Y-RectRender.Bottom)/yPeriod);j<(RightBottom.Y-RectRender.Top)/yPeriod;++j)
+                    {
+                        Rectangle r = RectRender;
+                        r.Offset(i*xPeriod, j*yPeriod);
+                        _spriteBatch.Draw(w.texture, r, (w.clickable && mouseOn == w) ? Color.Yellow : color);
+                    }
+            }
+            else
+                _spriteBatch.Draw(w.texture, RectRender, (w.clickable && mouseOn == w) ? Color.Yellow : color);
+        }
     }
 
     // 下面是关于全屏显示的东西，不用管
