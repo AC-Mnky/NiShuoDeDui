@@ -29,6 +29,7 @@ public class Game1 : Game
     // private Effect _guiShader;
     private Matrix _view = Matrix.Identity;
     private Matrix _zeroview = Matrix.Identity;
+    private bool _zoomEnabled = false;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
     public Vector2 MouseCoor = new();
     public Vector2 LeftTop = new();
@@ -36,26 +37,28 @@ public class Game1 : Game
     public static float xPeriod;
     public static float yPeriod;
     public int MouseI = 0, MouseJ = 0;
-    public long tick = 0; // 游戏从开始经过的刻数
-    private long thingCount = 0; // 游戏从开始产生的Entity, Spell, Spellcast总数
-    private double timeBank = 0d;
-    private GameStatus gamestatus = GameStatus.Running; // 是不是暂停
-    private GameScene gamescene = GameScene.Title;
-    private int tps = 60; // 每秒多少刻（控制倍速，60刻是一倍速）
-    private Dictionary<long, Entity> entities = new(); // 十分关键的字典，其中每个实体都有一个唯一的id
-    private Dictionary<long, Spell> spells = new(); // 十分关键的字典，其中每个spell都有一个唯一的id
-    private Dictionary<long, Spellcast> spellcasts = new(); // 十分关键的字典，其中每个spellcast都有一个唯一的id
+    public long tick; // 游戏从开始经过的刻数
+    private long thingCount; // 游戏从开始产生的Entity, Spell, Spellcast总数
+    private double timeBank;
+    private GameStatus gamestatus; // 是不是暂停
+    private GameScene gamescene;
+    public int life;
+    public int money;
+    private int tps; // 每秒多少刻（控制倍速，60刻是一倍速）
+    private Dictionary<long, Entity> entities; // 十分关键的字典，其中每个实体都有一个唯一的id
+    private Dictionary<long, Spell> spells; // 十分关键的字典，其中每个spell都有一个唯一的id
+    private Dictionary<long, Spellcast> spellcasts; // 十分关键的字典，其中每个spellcast都有一个唯一的id
     private Block[,] blocks;
     public Segment Reddoor;
     public Segment Bluedoor;
-    private const int maxI = 32;
-    private const int maxJ = 20;
+    // private const int maxI = 32;
+    // private const int maxJ = 20;
     // private bool[,] isLight = new bool[maxI,maxJ];
     // public Spell[,] spellAt = new Spell[maxI,maxJ];
-    private Window mouseOn = null;
+    private Window mouseOn;
     private Spell holdingSpell = null;
     private Attachment oldAtt = null;
-    public Spell[] desk = new Spell[1];
+    public Spell[] desk;
     private Window newGame;
     private Window title;
     private Spell summonenemy1;
@@ -78,6 +81,7 @@ public class Game1 : Game
         };
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        gamescene = GameScene.Title;
     }
 
     protected override void Initialize()
@@ -96,6 +100,11 @@ public class Game1 : Game
 
     private void InitMap()
     {
+        ClearMap();
+        (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEntity = Name.Enemy1;
+        (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyEasy;
+        (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyFast;
+        (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyVeryFast;
         #region blocks
         do{
             blocks = new Block[Block.numX,Block.numY];
@@ -107,6 +116,10 @@ public class Game1 : Game
         // } while(_pathRoadNum < 30 || _pathRoadNum > 40);
 
         #endregion
+        foreach(Block b in blocks) foreach(Tower t in b.tower)
+        {
+            RandomNewSpell().ReAttach(new(t));
+        }
     }
     private BlockName RandomBlockName(){
         return RandomNumberGenerator.GetInt32(3) switch
@@ -155,39 +168,6 @@ public class Game1 : Game
         return spell;
     }
 
-    protected void TickZero()
-    {        
-        // 在这里尝试这些法术的效果，可以随意修改
-        #region sandbox
-        (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEntity = Name.Enemy1;
-        (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyEasy;
-        (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyFast;
-        (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyVeryFast;
-        // Spell s0 = NewSpell(Name.SummonProjectile1);
-        // Spell s1 = NewSpell(Name.AimClosestInSquareD6);
-        // Spell s2 = NewSpell(Name.Add10Speed);
-        // s0.ReAttach(new Attachment(blocks[0,1].tower[0]));
-        // s1.ReAttach(new Attachment(s0,1));
-        // s2.ReAttach(new Attachment(s1,0));
-        // Spell t0 = NewSpell(Name.SummonProjectile1);
-        // Spell t1 = NewSpell(Name.AimClosestInSquareD6);
-        // Spell t2 = NewSpell(Name.Add10Speed);
-        // t0.ReAttach(new Attachment(blocks[1,0].tower[0]));
-        // t1.ReAttach(new Attachment(t0,1));
-        // t2.ReAttach(new Attachment(t1,0));
-        // Spell u0 = NewSpell(Name.SummonProjectile1);
-        // Spell u1 = NewSpell(Name.AimClosestInSquareD6);
-        // Spell u2 = NewSpell(Name.Add10Speed);
-        // u0.ReAttach(new Attachment(blocks[1,1].tower[0]));
-        // u1.ReAttach(new Attachment(u0,1));
-        // u2.ReAttach(new Attachment(u1,0));
-
-        foreach(Block b in blocks) foreach(Tower t in b.tower)
-        {
-            RandomNewSpell().ReAttach(new(t));
-        }
-        #endregion
-    }
     protected override void LoadContent() // 加载材质
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -391,16 +371,19 @@ public class Game1 : Game
     }
     public void Penetrated(int i)
     {
-        Debug.Print("penetrated: " + i.ToString());
+        life -= i;
+        Debug.Print("life: " + life.ToString());
     }
 
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
-        if(tick==0) TickZero();
-        // if(RandomNumberGenerator.GetInt32(60) == 0) NewSpellcast(summonenemy1, new Cast(new Vector2()));
-        if(RandomNumberGenerator.GetInt32(120) == 0) NewSpellcast(summonenemyEasy, new Cast(new Vector2()));
-        // if(RandomNumberGenerator.GetInt32(240) == 0) NewSpellcast(summonenemyFast, new Cast(new Vector2()));
-        // if(RandomNumberGenerator.GetInt32(480) == 0) NewSpellcast(summonenemyVeryFast, new Cast(new Vector2()));
+        if(gamescene == GameScene.Battle)
+        {
+            // if(RandomNumberGenerator.GetInt32(60) == 0) NewSpellcast(summonenemy1, new Cast(new Vector2()));
+            if(RandomNumberGenerator.GetInt32(120) == 0) NewSpellcast(summonenemyEasy, new Cast(new Vector2()));
+            // if(RandomNumberGenerator.GetInt32(240) == 0) NewSpellcast(summonenemyFast, new Cast(new Vector2()));
+            // if(RandomNumberGenerator.GetInt32(480) == 0) NewSpellcast(summonenemyVeryFast, new Cast(new Vector2()));
+        }
         
         // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
         foreach(Spell s in spells.Values)
@@ -417,6 +400,8 @@ public class Game1 : Game
             if(!sc.alive) spellcasts.Remove(sc.id); // 移除被标记为死亡的Spellcast
         foreach(Spell s in spells.Values)
             s.TickUpdate(); // 法术更新（其实只有地图上的法术会发生变化）
+        if (money >= 20) Ending();
+        if (life <= 0) GameOver();
         ++tick;
 
         // Debug.Print(tick.ToString());
@@ -424,7 +409,62 @@ public class Game1 : Game
         // Debug.Print(entities.Count.ToString());
     }
 
+    private void ClearMap()
+    {
+        tick = 0;
+        spells = new();
+        entities = new();
+        spellcasts = new();
+    }
+    private void RefreshMap()
+    {
+        tick = 0;
+        timeBank = 0;
+        entities = new();
+        spellcasts = new();
+    }
+    private void BattleBegin()
+    {
+        gamescene = GameScene.Battle;
+        RefreshMap();
+    }
+    private void StageBegin()
+    {
+        // gamescene = GameScene.Battle;
+        // ClearMap();
+        // tick = 0;
+    }
+    private void GameBegin()
+    {
+        gamescene = GameScene.Build;
+        _view = Matrix.Identity;
+        thingCount = 0;
+        gamestatus = GameStatus.Running;
+        tps = 60;
+        InitMap();
+        desk = new Spell[1];
+        life = 20;
+        money = 0;
+        // gamescene = GameScene.Battle;
+        // ClearMap();
+        // tick = 0;
+    }
+    private void GameOver()
+    {
+        Debug.Assert(gamescene == GameScene.Battle);
+        gamescene = GameScene.Lose;
+    }
+    private void Ending()
+    {
+        Debug.Assert(gamescene == GameScene.Battle);
+        gamescene = GameScene.Win;
+    }
 
+    private void BackToTitle()
+    {
+        ClearMap();
+        gamescene = GameScene.Title;
+    }
 
     protected override void Update(GameTime gameTime) // 窗口每帧更新（和暂停或倍速无关），这里主要负责一些输入输出的计算
     {
@@ -450,6 +490,8 @@ public class Game1 : Game
                     _view = Matrix.Identity; // 恢复视角至初始状态
                 if (Keyboard.HasBeenPressed(Keys.T) && gamestatus == GameStatus.Paused)
                     TickUpdate(); // 暂停状态下，按一次T增加一刻
+                if (gamescene == GameScene.Build && (Keyboard.IsPressed(Keys.LeftControl) || Keyboard.IsPressed(Keys.RightControl)) && Keyboard.HasBeenPressed(Keys.Enter))
+                    BattleBegin();
                 // if (Keyboard.HasBeenPressed(Keys.D))
                 // if (tick > 0)
                 // Bluedoor = RefindPath(Blocks(2,2),6);
@@ -457,21 +499,23 @@ public class Game1 : Game
 
                 // 这部分是鼠标滚轮缩放
                 #region zoom
-                // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
-                Matrix newView = _view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
-                Vector3 scale; Vector3 translation;
-                newView.Decompose(out scale, out _, out translation);
+                if(_zoomEnabled)
+                {
+                    // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
+                    Matrix newView = _view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
+                    Vector3 scale; Vector3 translation;
+                    newView.Decompose(out scale, out _, out translation);
 
-                // if (scale.X<0.95f && scale.X>0.52f) view =  newView;
-                // else if (scale.X<1.05f && scale.X>0.52f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
-                // else if (scale.X<0.95f && scale.X>0.48f) view = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+                    // if (scale.X<0.95f && scale.X>0.52f) view =  newView;
+                    // else if (scale.X<1.05f && scale.X>0.52f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+                    // else if (scale.X<0.95f && scale.X>0.48f) view = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
 
-                if (scale.X<0.95f) _view =  newView;
-                else if (scale.X<1.05f) _view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
-                
+                    if (scale.X<0.95f) _view =  newView;
+                    else if (scale.X<1.05f) _view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+                }
                 #endregion
 
-                #region move map
+                #region map dragging
                 if(Mouse.RightClicked())
                 {
                     _zeroview = _view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0);
@@ -575,10 +619,14 @@ public class Game1 : Game
                 {
                     if(mouseOn == newGame)
                     {
-                        gamescene = GameScene.Build;
-                        _view = Matrix.Identity;
-                        InitMap();
+                        GameBegin();
                     }
+                }
+                break;
+            case GameScene.Lose or GameScene.Win:
+                if(Mouse.LeftClicked())
+                {
+                    BackToTitle();
                 }
                 break;
         }
@@ -658,6 +706,9 @@ public class Game1 : Game
                 DrawWindow(newGame, new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2), new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20));
                 if(!_predraw) _spriteBatch.End();
 
+                break;
+            case GameScene.Win:
+                GraphicsDevice.Clear(Color.White);
                 break;
         }
 

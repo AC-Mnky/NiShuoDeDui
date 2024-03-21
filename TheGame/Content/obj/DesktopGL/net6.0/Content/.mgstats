@@ -28,7 +28,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/lightgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/lightgrey.xnb","TextureProcessor","Texture2DContent",221,16469,0.0025487
 "D:/Game202402/TheGame/Content/map-shader.fx","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/map-shader.xnb","EffectProcessor","CompiledEffectContent",979,1565,0.2462226
 "D:/Game202402/TheGame/Content/newgame.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/newgame.xnb","TextureProcessor","Texture2DContent",186,1989,0.2306679
-"D:/Game202402/TheGame/Content/projectile1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/projectile1.xnb","TextureProcessor","Texture2DContent",126,1109,0.0038702
+"D:/Game202402/TheGame/Content/projectile1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/projectile1.xnb","TextureProcessor","Texture2DContent",130,1109,0.2211646
 "D:/Game202402/TheGame/Content/reducexvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/reducexvelocityicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.0030651
 "D:/Game202402/TheGame/Content/reduceyvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/reduceyvelocityicon.xnb","TextureProcessor","Texture2DContent",237,5269,0.002097
 "D:/Game202402/TheGame/Content/SpellGUI1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI1.xnb","TextureProcessor","Texture2DContent",986,196693,0.1994647

@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace TheGame;
 
@@ -56,13 +57,31 @@ abstract public class Entity : Thing
         {Name.Projectile1, 1d},
         {Name.SquareD6, 0d}
     };
+    protected static Dictionary<Name, Color> DefaultColor = new() {
+        {Name.Enemy1, Color.Red},
+        {Name.EnemyEasy, Color.Red},
+        {Name.EnemyFast, Color.Red},
+        {Name.EnemyVeryFast, Color.Red},
+        {Name.Projectile1, Color.Blue},
+        {Name.Stone, Color.Gray},
+        {Name.Arrow, Color.White},
+        {Name.Spike, Color.Black},
+        {Name.SquareD6, Color.Transparent}
+    };
+    protected static Dictionary<Name, int> Money = new() {
+        {Name.Enemy1, 1},
+        {Name.EnemyEasy, 1},
+        {Name.EnemyFast, 1},
+        {Name.EnemyVeryFast, 1},
+
+    };
     public static Dictionary<Name, Texture2D> Texture = new();
     public Entity(Game1 game, long id, Name name) : base(game,id,name)
     {
         size = Size[name];
         health = maxhealth = DefaultHealth[name];
         // Damage = DefaultDamage[name];
-        window = new Window(this, WindowType.Entity, EntityTexture(), Microsoft.Xna.Framework.Color.Red, true);
+        window = new Window(this, WindowType.Entity, EntityTexture(), DefaultColor[name], true);
     }
     public Vector2 coordinate;
     public Vector2 size;
