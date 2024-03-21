@@ -62,6 +62,7 @@ public class Game1 : Game
     private Spell summonenemyFast;
     private Spell summonenemyVeryFast;
     public static Texture2D towerGUI;
+
     private bool _predraw = false;
 
 
