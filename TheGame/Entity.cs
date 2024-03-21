@@ -21,12 +21,15 @@ abstract public class Entity : Thing
         {Name.SquareD6, new()}
     };
     protected static Dictionary<Name, Vector2> Size = new() {
-        {Name.Enemy1, new Vector2(32f,32f)},
-        {Name.EnemyEasy, new Vector2(32f,32f)},
-        {Name.EnemyFast, new Vector2(16f,16f)},
-        {Name.EnemyVeryFast, new Vector2(16f,16f)},
-        {Name.Projectile1, new Vector2(16f,16f)},
-        {Name.SquareD6, new Vector2(6*64f,6*64f)}
+        {Name.Enemy1, new(32f,32f)},
+        {Name.EnemyEasy, new(32f,32f)},
+        {Name.EnemyFast, new(16f,16f)},
+        {Name.EnemyVeryFast, new(16f,16f)},
+        {Name.Projectile1, new(16f,16f)},
+        {Name.Stone, new(16f,16f)},
+        {Name.Arrow, new(16f,16f)},
+        {Name.Spike, new(16f,16f)},
+        {Name.SquareD6, new(6*64f,6*64f)}
     };
     protected static Dictionary<Name, float> DefaultSpeed = new() {
         {Name.Enemy1, 1f},
@@ -40,6 +43,9 @@ abstract public class Entity : Thing
         {Name.EnemyFast, 10d},
         {Name.EnemyVeryFast, 10d},
         {Name.Projectile1, 1d},
+        {Name.Stone, 5d},
+        {Name.Arrow, 1d},
+        {Name.Spike, 1d},
         {Name.SquareD6, 0d}
     };
     protected static Dictionary<Name, double> DefaultDamage = new() {
@@ -55,8 +61,8 @@ abstract public class Entity : Thing
     {
         size = Size[name];
         health = maxhealth = DefaultHealth[name];
-        damage = DefaultDamage[name];
-        window = new Window(this, WindowType.Entity, Texture[name], true);
+        // Damage = DefaultDamage[name];
+        window = new Window(this, WindowType.Entity, EntityTexture(), true);
     }
     public Vector2 coordinate;
     public Vector2 size;
@@ -71,10 +77,26 @@ abstract public class Entity : Thing
         coordinate.X -= MathF.Floor(coordinate.X/Game1.xPeriod) * Game1.xPeriod;
         coordinate.Y -= MathF.Floor(coordinate.Y/Game1.yPeriod) * Game1.yPeriod;
     }
-    public Vector2 RenderCoordinate() {return Vector2.Round(coordinate + RenderCoordinateOffset[name]);}
-    // public Texture2D RenderTexture() {return Texture[name];}
     public Vector2 velocity;
     public double maxhealth;
     public double health;
-    public double damage;
+    public double Damage(Entity e){
+        return name switch{
+            Name.Stone => 0.01d * (velocity - e.velocity).LengthSquared(),
+            Name.Arrow => 0.3d * (velocity - e.velocity).Length(),
+            Name.Spike => 0.2d * (velocity - e.velocity).Length() + 1d,
+            _ => DefaultDamage[name],
+        };
+    }
+    private Texture2D EntityTexture()
+    {
+        if(Texture.ContainsKey(name)) return Texture[name];
+        else return Texture[Name.Projectile1];
+    }
+    public Vector2 RenderCoordinate()
+    {
+        if(Texture.ContainsKey(name)) return Vector2.Round(coordinate + RenderCoordinateOffset[name]);
+        else return Vector2.Round(coordinate + RenderCoordinateOffset[Name.Projectile1]);
+    }
+
 }

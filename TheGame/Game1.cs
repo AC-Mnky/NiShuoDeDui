@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TheGame;
 
-public enum GameScene {Title, Build, Battle, Options}
+public enum GameScene {Title, Perk, Build, Battle, Win, Lose, Options}
 public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
@@ -70,7 +70,9 @@ public class Game1 : Game
     {
         _graphics = new GraphicsDeviceManager(this)
         {
-            GraphicsProfile = GraphicsProfile.HiDef
+            GraphicsProfile = GraphicsProfile.HiDef,
+            PreferredBackBufferWidth = 960,
+            PreferredBackBufferHeight = 540,
         };
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -93,9 +95,14 @@ public class Game1 : Game
     private void InitMap()
     {
         #region blocks
-        blocks = new Block[Block.numX,Block.numY];
-        for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
-            blocks[x,y] = new(RandomBlockName(), x,y);
+        do{
+            blocks = new Block[Block.numX,Block.numY];
+            for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
+                blocks[x,y] = new(RandomBlockName(), x,y);
+            Bluedoor = RefindPath(Blocks(2,2),6);
+            Reddoor = Bluedoor.succ;
+        } while(_pathRoadNum != 35);
+        // } while(_pathRoadNum < 30 || _pathRoadNum > 40);
 
         #endregion
     }
@@ -110,7 +117,7 @@ public class Game1 : Game
     private Name RandomSpellName(){
         return RandomNumberGenerator.GetInt32(21) switch
         {
-            0 or 1 or 2 or 3 => Name.SummonProjectile1,
+            0 or 1 or 2 or 3 => Name.SummonProjectile,
             4 or 5 => Name.Add10Speed,
             6 => Name.AddSpeed,
             7 => Name.AddXVelocity,
@@ -131,14 +138,29 @@ public class Game1 : Game
         };
     }
 
+    private Spell RandomNewSpell()
+    {
+        Spell spell = NewSpell(RandomSpellName());
+        if(spell.name == Name.SummonProjectile)
+            spell.summonedEntity = RandomNumberGenerator.GetInt32(4) switch
+            {
+                0 => Name.Projectile1,
+                1 => Name.Stone,
+                2 => Name.Arrow,
+                3 => Name.Spike,
+                _ => throw new ArgumentOutOfRangeException(),
+            };
+        return spell;
+    }
+
     protected void TickZero()
     {        
         // 在这里尝试这些法术的效果，可以随意修改
         #region sandbox
-        (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.Enemy1;
-        (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyEasy;
-        (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyFast;
-        (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEnemy = Name.EnemyVeryFast;
+        (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEntity = Name.Enemy1;
+        (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyEasy;
+        (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyFast;
+        (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyVeryFast;
         // Spell s0 = NewSpell(Name.SummonProjectile1);
         // Spell s1 = NewSpell(Name.AimClosestInSquareD6);
         // Spell s2 = NewSpell(Name.Add10Speed);
@@ -160,7 +182,7 @@ public class Game1 : Game
 
         foreach(Block b in blocks) foreach(Tower t in b.tower)
         {
-            NewSpell(RandomSpellName()).ReAttach(new(t));
+            RandomNewSpell().ReAttach(new(t));
         }
         #endregion
     }
@@ -201,7 +223,7 @@ public class Game1 : Game
         Entity.Texture[Name.SquareD6] = null;
 
         Spell.TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
-        Spell.TextureIcon[Name.SummonProjectile1] = Content.Load<Texture2D>("SummonProjectile1icon");
+        Spell.TextureIcon[Name.SummonProjectile] = Content.Load<Texture2D>("SummonProjectile1icon");
         Spell.TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("velocityzeroicon");
         Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
         Spell.TextureIcon[Name.Add10Speed] = Content.Load<Texture2D>("add5speedicon");
@@ -220,7 +242,7 @@ public class Game1 : Game
         Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
 
         Spell.TextureUI[Name.SummonEnemy] = Content.Load<Texture2D>("SpellGUI2");
-        Spell.TextureUI[Name.SummonProjectile1] = Content.Load<Texture2D>("SpellGUI2");
+        Spell.TextureUI[Name.SummonProjectile] = Content.Load<Texture2D>("SpellGUI2");
         Spell.TextureUI[Name.VelocityZero] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
         Spell.TextureUI[Name.Add10Speed] = Content.Load<Texture2D>("SpellGUI1");
@@ -240,8 +262,8 @@ public class Game1 : Game
 
         Spell.TextureSlot[(Name.SummonEnemy,0)] = Content.Load<Texture2D>("spellgui2slot0");
         Spell.TextureSlot[(Name.SummonEnemy,1)] = Content.Load<Texture2D>("spellgui2slot1");
-        Spell.TextureSlot[(Name.SummonProjectile1,0)] = Content.Load<Texture2D>("spellgui2slot0");
-        Spell.TextureSlot[(Name.SummonProjectile1,1)] = Content.Load<Texture2D>("spellgui2slot1");
+        Spell.TextureSlot[(Name.SummonProjectile,0)] = Content.Load<Texture2D>("spellgui2slot0");
+        Spell.TextureSlot[(Name.SummonProjectile,1)] = Content.Load<Texture2D>("spellgui2slot1");
         Spell.TextureSlot[(Name.VelocityZero,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.AddSpeed,0)] = Content.Load<Texture2D>("spellgui1slot0");
         Spell.TextureSlot[(Name.Add10Speed,0)] = Content.Load<Texture2D>("spellgui1slot0");
@@ -318,8 +340,10 @@ public class Game1 : Game
         };
 
     }
+    private int _pathRoadNum = 0;
     public Segment RefindPath(Block block, int doorout)
     {
+        _pathRoadNum = 0;
         for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y) Debug.Assert(blocks[x,y].x == x && blocks[x,y].y == y);
         foreach(Block bi in blocks) foreach(Road ri in bi.road) ri.isPath = false;
         Block b = block;
@@ -355,10 +379,12 @@ public class Game1 : Game
 
             }
             d = b.otherDoor[(d+4)%8];
+            ++_pathRoadNum;
             // Debug.Print(new Vector2(b.x,b.y).ToString());
             // Debug.Print(s.doorin.ToString());
         } while(b != block || d != doorout);
         last.succ = first;
+        Debug.Print(_pathRoadNum.ToString());
         return last;
     }
     public void Penetrated(int i)
@@ -409,6 +435,12 @@ public class Game1 : Game
             ToggleBorderless();
         if (Keyboard.HasBeenPressed(Keys.Q))
             Exit();
+        if (Keyboard.HasBeenPressed(Keys.F12))
+        {
+            _graphics.PreferredBackBufferWidth = 1920;
+            _graphics.PreferredBackBufferHeight = 1080;
+            _graphics.ApplyChanges();
+        }
         switch (gamescene)
         {
             case GameScene.Build or GameScene.Battle:
@@ -418,8 +450,8 @@ public class Game1 : Game
                     TickUpdate(); // 暂停状态下，按一次T增加一刻
                 // if (Keyboard.HasBeenPressed(Keys.D))
                 // if (tick > 0)
-                Bluedoor = RefindPath(Blocks(2,2),6);
-                Reddoor = Bluedoor.succ;
+                // Bluedoor = RefindPath(Blocks(2,2),6);
+                // Reddoor = Bluedoor.succ;
 
                 // 这部分是鼠标滚轮缩放
                 #region zoom
@@ -591,7 +623,7 @@ public class Game1 : Game
                 {
                     if(e.window.texture != null)
                         {
-                            DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), null, Color.White * (float)(0.25+0.75*e.health/e.maxhealth));
+                            DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), null, Color.White * (float)(0.5+0.5*e.health/e.maxhealth));
                         }
                 }
                 foreach(Spell s in spells.Values) // 画法术的UI

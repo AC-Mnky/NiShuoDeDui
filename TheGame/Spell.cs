@@ -14,7 +14,7 @@ public class Spell : Thing
 {
     public static Dictionary<Name, int> childrenNumber = new() {
         {Name.SummonEnemy, 2},
-        {Name.SummonProjectile1, 2},
+        {Name.SummonProjectile, 2},
         {Name.VelocityZero, 1},
         {Name.AddSpeed, 1},
         {Name.Add10Speed, 1},
@@ -34,7 +34,7 @@ public class Spell : Thing
     };
     public static Dictionary<Name, bool> dependentOnly = new() {
         {Name.SummonEnemy, false},
-        {Name.SummonProjectile1, false},
+        {Name.SummonProjectile, false},
         {Name.VelocityZero, true},
         {Name.AddSpeed, true},
         {Name.Add10Speed, true},
@@ -60,7 +60,7 @@ public class Spell : Thing
     public Spell[] children; // 子法术列表（第零项是后继法术）
     public ArrayList toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public long coolDown;
-    public Name summonedEnemy = Name.Enemy1;
+    public Name summonedEntity = Name.Enemy1;
     public Window windowIcon;
     public Window windowUI;
     public Window[] windowSlots;
@@ -68,7 +68,7 @@ public class Spell : Thing
     public Spell(Game1 game, long id, Name name) : base(game, id, name)
     {
         children = new Spell[childrenNumber[name]];
-        windowIcon = new Window(this, WindowType.SpellIcon, TextureIcon[name], true);
+        windowIcon = new Window(this, WindowType.SpellIcon, IconTexture(), true);
         windowUI = new Window(this, WindowType.SpellUI, TextureUI[name], true);
         windowSlots = new Window[childrenNumber[name]];
         for(int r=0;r<childrenNumber[name];++r)
@@ -164,4 +164,8 @@ public class Spell : Thing
         toCastNextTick.Clear();
     }
 
+    private Texture2D IconTexture()
+    {
+        return TextureIcon[name];
+    }
 }

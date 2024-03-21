@@ -23,11 +23,31 @@ public class Projectile : Entity
 
     public override void TickUpdate()
     {
-        health -= 0.005d;
+        #region speed and health drain
+        switch(name)
+        {
+            case Name.Projectile1:
+                health -= 0.005d;
+                break;
+            case Name.Stone:
+                velocity -= 0.1f * Normalized(velocity);
+                if(velocity.Length() < 0.1f) health -= 0.1d;
+                break;
+            case Name.Arrow:
+                velocity -= 0.03f * velocity;
+                if(velocity.Length() < 0.1f) health -= 0.05d;
+                break;
+            case Name.Spike:
+                velocity -= 0.1f * Normalized(velocity);
+                health -= 0.005d;
+                break;
+        }
+        #endregion
+
         foreach(Entity e in Collisions())
         {
             if(e is Enemy)
-                health -= e.damage;
+                health -= e.Damage(this);
         }
         if(health <= 0d)
         {

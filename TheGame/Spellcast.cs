@@ -51,12 +51,12 @@ public class Spellcast : Thing
             switch(spell.name)
             {
                 case Name.SummonEnemy:
-                    x = game.NewEnemy(spell.summonedEnemy, game.Reddoor, 0f);
+                    x = game.NewEnemy(spell.summonedEntity, game.Reddoor, 0f);
                     spell.children[1]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
-                case Name.SummonProjectile1:
-                    x = game.NewProjectile(Name.Projectile1, CurrentCoordinate(), Vector2.Zero);
+                case Name.SummonProjectile:
+                    x = game.NewProjectile(spell.summonedEntity, CurrentCoordinate(), Vector2.Zero);
                     spell.children[1]?.toCastNextTick.Add(new Cast(x));
                     alive = false;
                     break;
