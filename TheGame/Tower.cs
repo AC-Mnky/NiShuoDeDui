@@ -22,6 +22,6 @@ public class Tower
         this.relativeI = relativeI;
         this.relativeJ = relativeJ;
         this.coolDownMax = coolDownMax;
-        window = new Window(this, WindowType.Tower, Game1.towerGUI, true);
+        window = new Window(this, WindowType.Tower, Game1.towerGUI, Color.White, true);
     }
 }

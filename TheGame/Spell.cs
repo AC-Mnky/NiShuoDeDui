@@ -68,12 +68,12 @@ public class Spell : Thing
     public Spell(Game1 game, long id, Name name) : base(game, id, name)
     {
         children = new Spell[childrenNumber[name]];
-        windowIcon = new Window(this, WindowType.SpellIcon, IconTexture(), true);
-        windowUI = new Window(this, WindowType.SpellUI, TextureUI[name], true);
+        windowIcon = new Window(this, WindowType.SpellIcon, IconTexture(), Color.White, true);
+        windowUI = new Window(this, WindowType.SpellUI, TextureUI[name], Color.White, true);
         windowSlots = new Window[childrenNumber[name]];
         for(int r=0;r<childrenNumber[name];++r)
         {
-            windowSlots[r] = new Window(this, WindowType.SpellSlot, TextureSlot[(name, r)], true)
+            windowSlots[r] = new Window(this, WindowType.SpellSlot, TextureSlot[(name, r)], r switch{0=>Color.Aqua, 1=>Color.BlueViolet, _=>Color.Violet}, true)
             {
                 rank = r
             };

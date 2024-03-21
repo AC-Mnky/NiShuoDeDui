@@ -34,7 +34,7 @@ public class Road
     {
         this.block = block;
         this.name = name;
-        window = new Window(this, WindowType.Road, Texture[name], false);
+        window = new Window(this, WindowType.Road, Texture[name], Color.White, false);
         switch(name)
         {
             case RoadName.A04:

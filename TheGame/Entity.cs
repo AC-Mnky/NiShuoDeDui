@@ -62,7 +62,7 @@ abstract public class Entity : Thing
         size = Size[name];
         health = maxhealth = DefaultHealth[name];
         // Damage = DefaultDamage[name];
-        window = new Window(this, WindowType.Entity, EntityTexture(), true);
+        window = new Window(this, WindowType.Entity, EntityTexture(), Microsoft.Xna.Framework.Color.Red, true);
     }
     public Vector2 coordinate;
     public Vector2 size;
