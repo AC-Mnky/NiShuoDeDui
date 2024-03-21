@@ -27,7 +27,8 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
     private Effect _mapShader;
     // private Effect _guiShader;
-    private Matrix view = Matrix.Identity;
+    private Matrix _view = Matrix.Identity;
+    private Matrix _zeroview = Matrix.Identity;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
     public Vector2 MouseCoor = new();
     public Vector2 LeftTop = new();
@@ -429,7 +430,7 @@ public class Game1 : Game
     {
         Keyboard.GetState();
         Mouse.GetState();
-        MouseCoor = Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(view));
+        MouseCoor = Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(_view));
         MouseI = (int)MathF.Floor(MouseCoor.X / 64f);
         MouseJ = (int)MathF.Floor(MouseCoor.Y / 64f);
         if (Keyboard.HasBeenPressed(Keys.Escape))
@@ -446,7 +447,7 @@ public class Game1 : Game
         {
             case GameScene.Build or GameScene.Battle:
                 if (Keyboard.HasBeenPressed(Keys.R))
-                    view = Matrix.Identity; // 恢复视角至初始状态
+                    _view = Matrix.Identity; // 恢复视角至初始状态
                 if (Keyboard.HasBeenPressed(Keys.T) && gamestatus == GameStatus.Paused)
                     TickUpdate(); // 暂停状态下，按一次T增加一刻
                 // if (Keyboard.HasBeenPressed(Keys.D))
@@ -457,7 +458,7 @@ public class Game1 : Game
                 // 这部分是鼠标滚轮缩放
                 #region zoom
                 // Debug.Print(new Vector2(Mouse.X(), Mouse.Y()).ToString());
-                Matrix newView = view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
+                Matrix newView = _view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0) * Matrix.CreateScale((float)System.Math.Pow(1.1f,Mouse.Scroll()/120f)) * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
                 Vector3 scale; Vector3 translation;
                 newView.Decompose(out scale, out _, out translation);
 
@@ -465,9 +466,20 @@ public class Game1 : Game
                 // else if (scale.X<1.05f && scale.X>0.52f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
                 // else if (scale.X<0.95f && scale.X>0.48f) view = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
 
-                if (scale.X<0.95f) view =  newView;
-                else if (scale.X<1.05f) view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
+                if (scale.X<0.95f) _view =  newView;
+                else if (scale.X<1.05f) _view = Matrix.CreateTranslation(new Vector3(MathF.Round(translation.X),MathF.Round(translation.Y),MathF.Round(translation.Z)));
                 
+                #endregion
+
+                #region move map
+                if(Mouse.RightClicked())
+                {
+                    _zeroview = _view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0);
+                }
+                if(Mouse.RightDown())
+                {
+                    _view = _zeroview * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
+                }
                 #endregion
 
                 #region tickupdate
@@ -564,7 +576,7 @@ public class Game1 : Game
                     if(mouseOn == newGame)
                     {
                         gamescene = GameScene.Build;
-                        view = Matrix.Identity;
+                        _view = Matrix.Identity;
                         InitMap();
                     }
                 }
@@ -581,12 +593,12 @@ public class Game1 : Game
         int height = GraphicsDevice.Viewport.Height;
         if(!_predraw)
         {
-            LeftTop = Vector2.Transform(new Vector2(0,0), Matrix.Invert(view));
-            RightBottom = Vector2.Transform(new Vector2(width,height), Matrix.Invert(view));
+            LeftTop = Vector2.Transform(new Vector2(0,0), Matrix.Invert(_view));
+            RightBottom = Vector2.Transform(new Vector2(width,height), Matrix.Invert(_view));
             xPeriod = Block.numX*Block.Dgrid*64f;
             yPeriod = Block.numY*Block.Dgrid*64f;
             projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
-            _mapShader.Parameters["view_projection"].SetValue(view * projection);
+            _mapShader.Parameters["view_projection"].SetValue(_view * projection);
 
             mouseOn = null;
 
