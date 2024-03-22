@@ -1,5 +1,5 @@
 <!-- code transition between gamescene -->
-draw reddoor, bluedoor
+<!-- draw reddoor, bluedoor -->
 draw shop, inventory
 code shop
 code inventory

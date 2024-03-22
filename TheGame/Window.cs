@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
-public enum WindowType {SpellIcon, SpellSlot, SpellUI, NewGame, Title, Tower, Block, Entity, Road};
+public enum WindowType {SpellIcon, SpellSlot, SpellUI, NewGame, Title, Tower, Block, Entity, Road, Reddoor, Bluedoor};
 
 public class Window
 {
@@ -19,6 +19,7 @@ public class Window
     public Color color;
     public WindowType type;
     public int rank = -1;
+    public float rotation = 0;
     public Window(object parent, WindowType type, Texture2D texture, Color originalColor, bool clickable)
     {
         this.parent = parent;

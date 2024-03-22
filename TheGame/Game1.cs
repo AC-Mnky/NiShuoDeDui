@@ -34,8 +34,7 @@ public class Game1 : Game
     public Vector2 MouseCoor = new();
     public Vector2 LeftTop = new();
     public Vector2 RightBottom = new();
-    public static float xPeriod;
-    public static float yPeriod;
+    public static float xPeriod, yPeriod;
     public int MouseI = 0, MouseJ = 0;
     public long tick; // 游戏从开始经过的刻数
     private long thingCount; // 游戏从开始产生的Entity, Spell, Spellcast总数
@@ -49,23 +48,19 @@ public class Game1 : Game
     private Dictionary<long, Spell> spells; // 十分关键的字典，其中每个spell都有一个唯一的id
     private Dictionary<long, Spellcast> spellcasts; // 十分关键的字典，其中每个spellcast都有一个唯一的id
     private Block[,] blocks;
-    public Segment Reddoor;
-    public Segment Bluedoor;
-    // private const int maxI = 32;
-    // private const int maxJ = 20;
-    // private bool[,] isLight = new bool[maxI,maxJ];
-    // public Spell[,] spellAt = new Spell[maxI,maxJ];
+    public Segment Reddoor, Bluedoor;
+    public Window ReddoorWindow, BluedoorWindow;
+    public Vector2 ReddoorCoor, BluedoorCoor;
+    public int ReddoorIndex, BluedoorIndex;
     private Window mouseOn;
     private Spell holdingSpell = null;
     private Attachment oldAtt = null;
     public Spell[] desk;
     private Window newGame;
     private Window title;
-    private Spell summonenemy1;
-    private Spell summonenemyEasy;
-    private Spell summonenemyFast;
-    private Spell summonenemyVeryFast;
+    private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
     public static Texture2D towerGUI;
+    public static Texture2D doorGUI;
 
     private bool _predraw = false;
 
@@ -98,76 +93,6 @@ public class Game1 : Game
         base.Initialize();
     }
 
-    private void InitMap()
-    {
-        ClearMap();
-        (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEntity = Name.Enemy1;
-        (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyEasy;
-        (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyFast;
-        (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyVeryFast;
-        #region blocks
-        do{
-            blocks = new Block[Block.numX,Block.numY];
-            for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
-                blocks[x,y] = new(RandomBlockName(), x,y);
-            Bluedoor = RefindPath(Blocks(2,2),6);
-            Reddoor = Bluedoor.succ;
-        } while(_pathRoadNum != 35);
-        // } while(_pathRoadNum < 30 || _pathRoadNum > 40);
-
-        #endregion
-        foreach(Block b in blocks) foreach(Tower t in b.tower)
-        {
-            RandomNewSpell().ReAttach(new(t));
-        }
-    }
-    private BlockName RandomBlockName(){
-        return RandomNumberGenerator.GetInt32(3) switch
-        {
-            0 or 1 => BlockName.A,
-            2 => BlockName.B,
-            _ => throw new ArgumentOutOfRangeException(),
-        };
-    }
-    private Name RandomSpellName(){
-        return RandomNumberGenerator.GetInt32(21) switch
-        {
-            0 or 1 or 2 or 3 => Name.SummonProjectile,
-            4 or 5 => Name.Add10Speed,
-            6 => Name.AddSpeed,
-            7 => Name.AddXVelocity,
-            8 => Name.AddYVelocity,
-            9 => Name.ReduceXVelocity,
-            10 => Name.ReduceYVelocity,
-            11 => Name.AimClosestInSquareD6,
-            12 => Name.TriggerUponDeath,
-            13 => Name.VelocityZero,
-            14 => Name.Wait60Ticks,
-            15 => Name.AimMouse,
-            16 => Name.AimBack,
-            17 => Name.AimLeft,
-            18 => Name.AimRight,
-            19 => Name.AimUp,
-            20 => Name.AimDown,
-            _ => throw new ArgumentOutOfRangeException(),
-        };
-    }
-
-    private Spell RandomNewSpell()
-    {
-        Spell spell = NewSpell(RandomSpellName());
-        if(spell.name == Name.SummonProjectile)
-            spell.summonedEntity = RandomNumberGenerator.GetInt32(4) switch
-            {
-                0 => Name.Projectile1,
-                1 => Name.Stone,
-                2 => Name.Arrow,
-                3 => Name.Spike,
-                _ => throw new ArgumentOutOfRangeException(),
-            };
-        return spell;
-    }
-
     protected override void LoadContent() // 加载材质
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -181,7 +106,7 @@ public class Game1 : Game
             onMap = false
         };
         towerGUI = Content.Load<Texture2D>("towergui");
-
+        doorGUI = Content.Load<Texture2D>("door");
         // _lightgrey = Content.Load<Texture2D>("lightgrey");
         // _darkgrey = Content.Load<Texture2D>("darkgrey");
 
@@ -409,6 +334,106 @@ public class Game1 : Game
         // Debug.Print(entities.Count.ToString());
     }
 
+    private void InitMap()
+    {
+        ClearMap();
+        (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEntity = Name.Enemy1;
+        (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyEasy;
+        (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyFast;
+        (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyVeryFast;
+        #region blocks
+        do{
+            blocks = new Block[Block.numX,Block.numY];
+            for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
+                blocks[x,y] = new(RandomBlockName(), x,y);
+            BluedoorIndex = RandomNumberGenerator.GetInt32(8);
+            Bluedoor = RefindPath(Blocks(RandomNumberGenerator.GetInt32(Block.numX), RandomNumberGenerator.GetInt32(Block.numY)),BluedoorIndex);
+            Reddoor = Bluedoor.succ;
+        } while(_pathRoadNum != 35);
+        // } while(_pathRoadNum < 30 || _pathRoadNum > 40);
+
+        ReddoorIndex = (BluedoorIndex + 4) % 8;
+        BluedoorWindow = new Window(this, WindowType.Bluedoor, doorGUI, Color.Blue, false)
+        {
+            rotation = BluedoorIndex switch
+            {
+                0 or 1 => MathF.PI/2,
+                2 or 3 => 0,
+                4 or 5 => -MathF.PI/2,
+                6 or 7 => MathF.PI,
+                _ => throw new ArgumentOutOfRangeException()              
+            }
+        };
+        ReddoorWindow = new Window(this, WindowType.Reddoor, doorGUI, Color.Red, false)
+        {
+            rotation = ReddoorIndex switch
+            {
+                0 or 1 => MathF.PI/2,
+                2 or 3 => 0,
+                4 or 5 => -MathF.PI/2,
+                6 or 7 => MathF.PI,
+                _ => throw new ArgumentOutOfRangeException()              
+            }
+        };
+        BluedoorCoor = Bluedoor.block.Coordinate() + (BluedoorIndex switch{0 => new(128,0), 1 => new(256,0), 2 => new(0,64), 3 => new(0,192), 4 => new(64,320), 5 => new(192,320), 6 => new(320,128), 7 => new(320,256), _ => throw new ArgumentOutOfRangeException()});
+        ReddoorCoor = Reddoor.block.Coordinate() + (ReddoorIndex switch{0 => new(128,0), 1 => new(256,0), 2 => new(0,64), 3 => new(0,192), 4 => new(64,320), 5 => new(192,320), 6 => new(320,128), 7 => new(320,256), _ => throw new ArgumentOutOfRangeException()});
+        
+
+
+        #endregion
+        foreach(Block b in blocks) foreach(Tower t in b.tower)
+        {
+            RandomNewSpell().ReAttach(new(t));
+        }
+    }
+    private BlockName RandomBlockName(){
+        return RandomNumberGenerator.GetInt32(3) switch
+        {
+            0 or 1 => BlockName.A,
+            2 => BlockName.B,
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+    }
+    private Name RandomSpellName(){
+        return RandomNumberGenerator.GetInt32(21) switch
+        {
+            0 or 1 or 2 or 3 => Name.SummonProjectile,
+            4 or 5 => Name.Add10Speed,
+            6 => Name.AddSpeed,
+            7 => Name.AddXVelocity,
+            8 => Name.AddYVelocity,
+            9 => Name.ReduceXVelocity,
+            10 => Name.ReduceYVelocity,
+            11 => Name.AimClosestInSquareD6,
+            12 => Name.TriggerUponDeath,
+            13 => Name.VelocityZero,
+            14 => Name.Wait60Ticks,
+            15 => Name.AimMouse,
+            16 => Name.AimBack,
+            17 => Name.AimLeft,
+            18 => Name.AimRight,
+            19 => Name.AimUp,
+            20 => Name.AimDown,
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+    }
+
+    private Spell RandomNewSpell()
+    {
+        Spell spell = NewSpell(RandomSpellName());
+        if(spell.name == Name.SummonProjectile)
+            spell.summonedEntity = RandomNumberGenerator.GetInt32(4) switch
+            {
+                0 => Name.Projectile1,
+                1 => Name.Stone,
+                2 => Name.Arrow,
+                3 => Name.Spike,
+                _ => throw new ArgumentOutOfRangeException(),
+            };
+        return spell;
+    }
+
+
     private void ClearMap()
     {
         tick = 0;
@@ -451,12 +476,11 @@ public class Game1 : Game
     }
     private void GameOver()
     {
-        Debug.Assert(gamescene == GameScene.Battle);
-        gamescene = GameScene.Lose;
+        if(gamescene == GameScene.Battle)
+            gamescene = GameScene.Lose;
     }
     private void Ending()
     {
-        Debug.Assert(gamescene == GameScene.Battle);
         gamescene = GameScene.Win;
     }
 
@@ -687,6 +711,8 @@ public class Game1 : Game
                             DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), null);
                         }
                 }
+                DrawWindow(BluedoorWindow, new(BluedoorCoor.ToPoint(), new(64,64)),null);
+                DrawWindow(ReddoorWindow, new(ReddoorCoor.ToPoint(), new(64,64)),null);
                 foreach(Spell s in spells.Values) // 画法术的UI
                 {
                     if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(s, s.attachment.tower.MapI(), s.attachment.tower.MapJ());
@@ -777,11 +803,11 @@ public class Game1 : Game
                     {
                         Rectangle r = RectRender;
                         r.Offset(i*xPeriod, j*yPeriod);
-                        _spriteBatch.Draw(w.texture, r, (w.clickable && mouseOn == w) ? Color.Yellow : w.color);
+                        _spriteBatch.Draw(w.texture, r, null, (w.clickable && mouseOn == w) ? Color.Yellow : w.color, w.rotation, new(), new(), 0);
                     }
             }
             else
-                _spriteBatch.Draw(w.texture, RectRender, (w.clickable && mouseOn == w) ? Color.Yellow : w.color);
+                _spriteBatch.Draw(w.texture, RectRender, null, (w.clickable && mouseOn == w) ? Color.Yellow : w.color, w.rotation, new(), new(), 0);
         }
     }
 

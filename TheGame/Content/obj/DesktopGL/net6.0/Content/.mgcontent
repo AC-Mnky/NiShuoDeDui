@@ -26,6 +26,7 @@
     <File>D:/Game202402/TheGame/Content/blockdefault.png</File>
     <File>D:/Game202402/TheGame/Content/darkgrey.png</File>
     <File>D:/Game202402/TheGame/Content/defaulticon.png</File>
+    <File>D:/Game202402/TheGame/Content/door.png</File>
     <File>D:/Game202402/TheGame/Content/enemy1.png</File>
     <File>D:/Game202402/TheGame/Content/enemyfast.png</File>
     <File>D:/Game202402/TheGame/Content/enemyveryfast.png</File>
@@ -61,6 +62,7 @@
     <File>aimmouseicon.png</File>
     <File>aimrighticon.png</File>
     <File>aimupicon.png</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

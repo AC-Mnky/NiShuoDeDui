@@ -54,7 +54,7 @@ public class Block
                 break;
             }
         }
-        window = new(this, WindowType.Block, Texture[name], Color.White, false);
+        window = new(this, WindowType.Block, Texture[name], Color.White * 0.0f, false);
         foreach(Road r in road)
         {
             roadOfDoor[r.door1] = r;

@@ -21,6 +21,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/blockdefault.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockdefault.xnb","TextureProcessor","Texture2DContent",1181,409685,0.2088542
 "D:/Game202402/TheGame/Content/darkgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/darkgrey.xnb","TextureProcessor","Texture2DContent",220,16469,0.2059906
 "D:/Game202402/TheGame/Content/defaulticon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/defaulticon.xnb","TextureProcessor","Texture2DContent",236,5269,0.1941831
+"D:/Game202402/TheGame/Content/door.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/door.xnb","TextureProcessor","Texture2DContent",231,16469,0.2005765
 "D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",159,4181,0.2155331
 "D:/Game202402/TheGame/Content/enemyfast.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemyfast.xnb","TextureProcessor","Texture2DContent",152,1109,0.2016727
 "D:/Game202402/TheGame/Content/enemyveryfast.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemyveryfast.xnb","TextureProcessor","Texture2DContent",173,1109,0.0046251

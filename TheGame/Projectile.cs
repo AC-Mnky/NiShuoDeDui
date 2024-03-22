@@ -35,7 +35,7 @@ public class Projectile : Entity
                 break;
             case Name.Arrow:
                 velocity -= 0.03f * velocity;
-                if(velocity.Length() < 0.1f) health -= 0.5d;
+                if(velocity.Length() < 0.1f) health -= 0.05d * (game.tick-tickBirth);
                 break;
             case Name.Spike:
                 velocity -= 0.1f * Normalized(velocity);

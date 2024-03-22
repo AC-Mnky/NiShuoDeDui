@@ -68,3 +68,4 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimlefticon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimmouseicon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimrighticon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimupicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\door.xnb
