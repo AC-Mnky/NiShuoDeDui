@@ -25,6 +25,7 @@
     <File>D:/Game202402/TheGame/Content/blockB57.png</File>
     <File>D:/Game202402/TheGame/Content/blockdefault.png</File>
     <File>D:/Game202402/TheGame/Content/darkgrey.png</File>
+    <File>D:/Game202402/TheGame/Content/default.png</File>
     <File>D:/Game202402/TheGame/Content/defaulticon.png</File>
     <File>D:/Game202402/TheGame/Content/door.png</File>
     <File>D:/Game202402/TheGame/Content/enemy1.png</File>
@@ -49,6 +50,7 @@
     <File>D:/Game202402/TheGame/Content/Untitled.png</File>
     <File>D:/Game202402/TheGame/Content/velocityzeroicon.png</File>
     <File>D:/Game202402/TheGame/Content/wait60ticksicon.png</File>
+    <File>D:/Game202402/TheGame/Content/white.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />
@@ -77,7 +79,9 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File>Fonts/untitledfont.spritefont</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

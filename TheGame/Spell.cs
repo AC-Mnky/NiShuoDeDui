@@ -90,7 +90,7 @@ public class Spell : Thing
         {
             case Attachment.Type.Desk:
             {
-                game.desk[attachment.deskIndex] = null;
+                game.inventory[attachment.deskIndex] = null;
                 break;
             }
             case Attachment.Type.Tower:
@@ -120,7 +120,7 @@ public class Spell : Thing
         {
             case Attachment.Type.Desk:
             {
-                game.desk[target.deskIndex] = this;
+                game.inventory[target.deskIndex] = this;
                 break;
             }
             case Attachment.Type.Tower:

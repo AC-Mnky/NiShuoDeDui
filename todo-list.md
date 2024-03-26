@@ -9,3 +9,5 @@ code dummies
 code stage
 (not urgent)improve title : introduction to fullscreen, map dragging, loop space, options
 (not urgent)draw perk, code perk
+(not urgent)better collision
+(not urgent)better map generation

@@ -20,6 +20,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/blockB57.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockB57.xnb","TextureProcessor","Texture2DContent",763,409685,0.0124139
 "D:/Game202402/TheGame/Content/blockdefault.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockdefault.xnb","TextureProcessor","Texture2DContent",1181,409685,0.2088542
 "D:/Game202402/TheGame/Content/darkgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/darkgrey.xnb","TextureProcessor","Texture2DContent",220,16469,0.2059906
+"D:/Game202402/TheGame/Content/default.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/default.xnb","TextureProcessor","Texture2DContent",133,4181,0.1937238
 "D:/Game202402/TheGame/Content/defaulticon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/defaulticon.xnb","TextureProcessor","Texture2DContent",236,5269,0.1941831
 "D:/Game202402/TheGame/Content/door.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/door.xnb","TextureProcessor","Texture2DContent",231,16469,0.2005765
 "D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",159,4181,0.2155331
@@ -44,3 +45,4 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/Untitled.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/Untitled.xnb","TextureProcessor","Texture2DContent",273,5461,0.1027015
 "D:/Game202402/TheGame/Content/velocityzeroicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/velocityzeroicon.xnb","TextureProcessor","Texture2DContent",239,5269,0.0024026
 "D:/Game202402/TheGame/Content/wait60ticksicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/wait60ticksicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.2482763
+"D:/Game202402/TheGame/Content/white.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/white.xnb","TextureProcessor","Texture2DContent",81,89,0.2332725
