@@ -3,7 +3,7 @@ namespace TheGame;
 
 public class Attachment
 {
-    public enum Type {Desk, Tower, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术
+    public enum Type {Inventory, Tower, Child, Null}; // 法术是在台面上（未使用），还是在图上（可以直接触发），还是某个法术的子法术
     public Type type = Type.Null;
     public int deskIndex = -1; // 如果在台面上，它的编号
     // public int mapI, mapJ; // 如果在地图上，它的坐标
@@ -14,7 +14,7 @@ public class Attachment
 
     public Attachment(int deskIndex)
     {
-        type = Type.Desk;
+        type = Type.Inventory;
         this.deskIndex = deskIndex;
     }
     public Attachment(Tower tower)

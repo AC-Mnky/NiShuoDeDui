@@ -89,7 +89,7 @@ public class Spell : Thing
         Attachment old = attachment;
         switch(attachment.type)
         {
-            case Attachment.Type.Desk:
+            case Attachment.Type.Inventory:
             {
                 game.inventory[attachment.deskIndex] = null;
                 break;
@@ -119,7 +119,7 @@ public class Spell : Thing
         attachment = target;
         switch(target.type)
         {
-            case Attachment.Type.Desk:
+            case Attachment.Type.Inventory:
             {
                 game.inventory[target.deskIndex] = this;
                 break;

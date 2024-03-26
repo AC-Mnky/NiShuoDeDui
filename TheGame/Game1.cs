@@ -460,7 +460,7 @@ public class Game1 : Game
         thingCount = 0;
         gamestatus = GameStatus.Running;
         tps = 60;
-        inventory = new Spell[1];
+        inventory = new Spell[11];
         life = 20;
         money = 0;
         shopWidth = 0;
@@ -489,6 +489,7 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime) // 窗口每帧更新（和暂停或倍速无关），这里主要负责一些输入输出的计算
     {
+        double time = gameTime.TotalGameTime.TotalMilliseconds;
         Keyboard.GetState();
         Mouse.GetState();
         MouseCoor = Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(_view));
@@ -587,7 +588,7 @@ public class Game1 : Game
                 }
                 #endregion
                 
-                #region UI
+                #region UI // 此region已成屎山, 勿动
                 // Spell s = (0 <= MouseI && MouseI < maxI && 0 <= MouseJ && MouseJ < maxJ) ? spellAt[MouseI, MouseJ] : null;
                 // if(mouseOn is Spell) s = (Spell)mouseOn;
                 if(Mouse.LeftClicked())
@@ -595,24 +596,38 @@ public class Game1 : Game
                     if(mouseOn?.parent is Spell)
                     {
                         Spell s = (Spell)mouseOn.parent;
-                        if(mouseOn.type == WindowType.SpellIcon)
+                        if(s.showUI && mouseOn.type != WindowType.SpellDescription)
                         {
-                            holdingSpell = s;
+                            s.showUI = false;
+                            s.showLayer = 0;
                         }
-                        else
-                        {
-                            holdingSpell = null;
-                        }
-                        if(s.showUI && mouseOn.type != WindowType.SpellDescription) s.showUI = false;
                         else
                         {
                             s.showUI = true;
-                            double t = gameTime.TotalGameTime.TotalMilliseconds;
-                            s.showLayer = t;
+                            s.showLayer = time;
                             while(s.attachment.type==Attachment.Type.Child)
                             {
                                 s = s.attachment.parent;
-                                s.showLayer = t;
+                                s.showLayer = time;
+                            }
+                        }
+
+
+                        s = (Spell)mouseOn.parent;
+                        if(mouseOn.type == WindowType.SpellIcon)
+                        {
+                            holdingSpell = s;
+                            if(Keyboard.IsPressed(Keys.LeftControl))
+                            {
+                                int index = 1;
+                                while(index < inventory.Length && inventory[index] != null) ++index;
+                                if(index < inventory.Length)
+                                {
+                                    s.ReAttach(new(index));
+                                    holdingSpell = null;
+                                    s.showUI = false;
+                                    s.showLayer = 0;
+                                }
                             }
                         }
                     }
@@ -621,6 +636,8 @@ public class Game1 : Game
                 {
                     if(inventory[0] != null)
                     {
+                        inventory[0].showLayer = time;
+
                         if(mouseOn?.parent is Spell && mouseOn.type == WindowType.SpellSlot)
                         {
                             if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
@@ -646,6 +663,7 @@ public class Game1 : Game
                         holdingSpell.showUI = true;
                     }
                 }
+                if(!Mouse.LeftDown()) holdingSpell = null;
                 #endregion
                 
                 #region shop inventory
@@ -731,54 +749,51 @@ public class Game1 : Game
 
                 if(!_predraw) _spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, effect: _mapShader);
 
-                
-                foreach(Block b in blocks)
-                {
-                    DrawWindow(b.window, new(b.Coordinate().ToPoint(),new(Block.Dgrid*64,Block.Dgrid*64)), null);
-                    foreach(Road r in b.road)
-                    {
-                        DrawWindow(r.window, new(b.Coordinate().ToPoint(), new(Block.Dgrid*64,Block.Dgrid*64)), new());
-                    }
-                }
+                // 区块
+                // foreach(Block b in blocks) DrawWindow(b.window, new(b.Coordinate().ToPoint(),new(Block.Dgrid*64,Block.Dgrid*64)), null);
 
-                foreach(Block b in blocks) foreach(Tower t in b.tower)
-                {
-                    DrawWindow(t.window, new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44), null);
-                }
+                // 路
+                foreach(Block b in blocks) foreach(Road r in b.road) DrawWindow(r.window, new(b.Coordinate().ToPoint(), new(Block.Dgrid*64,Block.Dgrid*64)), new());
 
-                foreach(Entity e in entities.Values) // 画实体
-                {
-                    if(e.window.texture != null)
-                        {
-                            DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), null);
-                        }
-                }
+                // 塔
+                foreach(Block b in blocks) foreach(Tower t in b.tower) DrawWindow(t.window, new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44), null);
+
+                // 实体
+                foreach(Entity e in entities.Values)  if(e.window.texture != null) DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), null);
+
+                // 蓝门红门
                 DrawWindow(BluedoorWindow, new(BluedoorCoor.ToPoint(), new(64,64)),null);
                 DrawWindow(ReddoorWindow, new(ReddoorCoor.ToPoint(), new(64,64)),null);
 
-                foreach(Spell s in spells.Values) // 画法术的UI
-                {
-                    if(s.attachment.type == Attachment.Type.Tower && !s.showUI) DrawSpellUI(s, s.attachment.tower.MapI()*64, s.attachment.tower.MapJ()*64);
-                }
-                foreach(Spell s in spells.Values)
-                {
-                    if(s.attachment.type == Attachment.Type.Tower && s.showUI) DrawSpellUI(s, s.attachment.tower.MapI()*64, s.attachment.tower.MapJ()*64);
-                }
+                // 法术
+                var l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
+                foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null) l.Add(t.spell.showLayer, (t.spell, (t.MapI()*64, t.MapJ()*64)));
+                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2, onMap: false);
 
-
+                // 鼠标上的法术
                 if(!_predraw) if(inventory[0] != null) _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], MouseCoor, Color.Yellow);
+                
                 if(!_predraw) _spriteBatch.End();
+
+
+
                 if(!_predraw) _spriteBatch.Begin();
+
+                // 左侧栏
                 DrawWindow(inventoryWindow, new(shopWidth,0,inventoryWidth,height), null, onMap: false);
                 DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null, onMap: false);
                 DrawWindow(shopWindow, new(0,0,shopWidth,height), null, onMap: false);
                 DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null, onMap: false);
-                foreach(Spell s in spells.Values)
-                {
-                    if(s.attachment.type == Attachment.Type.Desk) DrawSpellUI(s, s.attachment.deskIndex*64, s.attachment.deskIndex*64, onMap: false);
-                }
+
+                // 物品栏法术
+                l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
+                for(int i=1;i<inventory.Length;++i) if(inventory[i] != null) l.Add(inventory[i].showLayer, (inventory[i],(shopWidth+74, i*64+10)));
+                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2, onMap: false);
+
 
                 if(!_predraw) _spriteBatch.End();
+
+                
                 break;
             case GameScene.Title:
 
@@ -822,12 +837,10 @@ public class Game1 : Game
                     DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+138, 44, 44), onMap: onMap);
                     DrawWindow(s.windowSlots[1],new(x, y, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height), new(x+74, y+74, 44, 44), onMap: onMap);
                     
-                    SortedList l = new();
-                    if(s.children[0] != null) l.Add(s.children[0].showLayer, (s.children[0], new Point(x, y+128)));
-                    if(s.children[1] != null) l.Add(s.children[1].showLayer, (s.children[1], new Point(x+64, y+64)));
-                    foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y, onMap: onMap);
-                    // if(s.children[0] != null) DrawSpellUI(s.children[0], x, y+128);
-                    // if(s.children[1] != null) DrawSpellUI(s.children[1], x+64, y+64);
+                    var l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
+                    if(s.children[0] != null) l.Add(s.children[0].showLayer, (s.children[0], (x, y+128)));
+                    if(s.children[1] != null) l.Add(s.children[1].showLayer, (s.children[1], (x+64, y+64)));
+                    foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2, onMap: onMap);
 
                     break;
                 }
@@ -936,3 +949,25 @@ public class Game1 : Game
 
 
 }
+
+#region Dupilcate Key
+public class DuplicateKeyComparer<TKey>
+                :
+             IComparer<TKey> where TKey : IComparable
+{
+    #region IComparer<TKey> Members
+
+    public int Compare(TKey x, TKey y)
+    {
+        int result = x.CompareTo(y);
+
+        if (result == 0)
+            return 1; // Handle equality as being greater. Note: this will break Remove(key) or
+        else          // IndexOfKey(key) since the comparer never returns 0 to signal key equality
+            return result;
+    }
+
+    #endregion
+}
+
+#endregion
