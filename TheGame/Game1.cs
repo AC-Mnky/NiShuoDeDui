@@ -347,11 +347,12 @@ public class Game1 : Game
         blocks = new Block[Block.numX,Block.numY];
         do{
             for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
-                blocks[x,y] = new(RandomBlockName(), x,y);
+                blocks[x,y] = new(RandomBlockName.Next(), x,y);
             BluedoorIndex = rand.Next(8);
             Bluedoor = RefindPath(Blocks(rand.Next(Block.numX), rand.Next(Block.numY)),BluedoorIndex);
         } while(_pathRoadNum != 35);
         // } while(_pathRoadNum < 30 || _pathRoadNum > 40);
+        foreach(Block b in blocks) b.Initialize();
 
         Reddoor = Bluedoor.succ;
         ReddoorIndex = (BluedoorIndex + 4) % 8;
@@ -388,41 +389,29 @@ public class Game1 : Game
             RandomNewSpell().ReAttach(new(t));
         }
     }
-    private BlockName RandomBlockName(){
-        return rand.Next(3) switch
-        {
-            0 or 1 => BlockName.A,
-            2 => BlockName.B,
-            _ => throw new ArgumentOutOfRangeException(),
-        };
-    }
-    private Name RandomSpellName(){
-        return rand.Next(21) switch
-        {
-            0 or 1 or 2 or 3 => Name.SummonProjectile,
-            4 or 5 => Name.Add10Speed,
-            6 => Name.AddSpeed,
-            7 => Name.AddXVelocity,
-            8 => Name.AddYVelocity,
-            9 => Name.ReduceXVelocity,
-            10 => Name.ReduceYVelocity,
-            11 => Name.AimClosestInSquareD6,
-            12 => Name.TriggerUponDeath,
-            13 => Name.VelocityZero,
-            14 => Name.Wait60Ticks,
-            15 => Name.AimMouse,
-            16 => Name.AimBack,
-            17 => Name.AimLeft,
-            18 => Name.AimRight,
-            19 => Name.AimUp,
-            20 => Name.AimDown,
-            _ => throw new ArgumentOutOfRangeException(),
-        };
-    }
-
+    private static RanDict<BlockName> RandomBlockName = new(){{BlockName.A,2}, {BlockName.B,1}};
+    private static RanDict<Name> RandomSpellName = new(){
+        {Name.SummonProjectile, 4},
+        {Name.Add10Speed, 2},
+        {Name.AddSpeed, 1},
+        {Name.AddXVelocity, 1},
+        {Name.AddYVelocity, 1},
+        {Name.ReduceXVelocity, 1},
+        {Name.ReduceYVelocity, 1},
+        {Name.AimClosestInSquareD6, 1},
+        {Name.TriggerUponDeath, 1},
+        {Name.VelocityZero, 1},
+        {Name.Wait60Ticks, 1},
+        {Name.AimMouse, 1},
+        {Name.AimBack, 1},
+        {Name.AimLeft, 1},
+        {Name.AimRight, 1},
+        {Name.AimUp, 1},
+        {Name.AimDown, 1},
+    };
     private Spell RandomNewSpell()
     {
-        Spell spell = NewSpell(RandomSpellName());
+        Spell spell = NewSpell(RandomSpellName.Next());
         if(spell.name == Name.SummonProjectile)
             spell.summonedEntity = rand.Next(4) switch
             {

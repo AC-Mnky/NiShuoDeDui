@@ -39,7 +39,7 @@ public class Projectile : Entity
                 break;
             case Name.Spike:
                 velocity -= 0.1f * Normalized(velocity);
-                health -= 0.005d;
+                health -= 0.001d;
                 break;
         }
         #endregion

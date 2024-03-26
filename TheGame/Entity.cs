@@ -63,9 +63,9 @@ abstract public class Entity : Thing
         {Name.EnemyFast, Color.Red},
         {Name.EnemyVeryFast, Color.Red},
         {Name.Projectile1, Color.Blue},
-        {Name.Stone, Color.Gray},
+        {Name.Stone, Color.DarkGray},
         {Name.Arrow, Color.White},
-        {Name.Spike, Color.Black},
+        {Name.Spike, Color.DarkRed},
         {Name.SquareD6, Color.Transparent}
     };
     protected static Dictionary<Name, int> Money = new() {
