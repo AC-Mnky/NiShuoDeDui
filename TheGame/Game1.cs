@@ -64,6 +64,7 @@ public class Game1 : Game
     public static Texture2D doorGUI;
 
     private bool _predraw = false;
+    private bool _hasdrawn;
 
 
 
@@ -98,12 +99,12 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         
-        title = new Window(this, WindowType.Title, Content.Load<Texture2D>("untitled"), Color.White, clickable: false, onMap: false);
-        newGame = new Window(this, WindowType.NewGame, Content.Load<Texture2D>("newGame"), Color.White, onMap: false);
-        shopWindow = new Window(this, WindowType.Shop, Content.Load<Texture2D>("white"), Color.Aqua * 0.8f, clickable: false, onMap: false);
-        inventoryWindow = new Window(this, WindowType.Inventory, Content.Load<Texture2D>("white"), Color.Blue * 0.8f, clickable: false, onMap: false);
-        moneyWindow = new Window(this, WindowType.Money, Content.Load<Texture2D>("white"), Color.Aqua * 0.8f, clickable: true, onMap: false);
-        lifeWindow = new Window(this, WindowType.Life, Content.Load<Texture2D>("white"), Color.Blue * 0.8f, clickable: true, onMap: false);
+        title = new Window(this, WindowType.Title, Content.Load<Texture2D>("untitled"), Color.White, clickable: false);
+        newGame = new Window(this, WindowType.NewGame, Content.Load<Texture2D>("newGame"), Color.White);
+        shopWindow = new Window(this, WindowType.Shop, Content.Load<Texture2D>("white"), Color.Aqua * 0.8f, clickable: false);
+        inventoryWindow = new Window(this, WindowType.Inventory, Content.Load<Texture2D>("white"), Color.Blue * 0.8f, clickable: false);
+        moneyWindow = new Window(this, WindowType.Money, Content.Load<Texture2D>("white"), Color.Aqua * 0.8f, clickable: true);
+        lifeWindow = new Window(this, WindowType.Life, Content.Load<Texture2D>("white"), Color.Blue * 0.8f, clickable: true);
         towerGUI = Content.Load<Texture2D>("towergui");
         doorGUI = Content.Load<Texture2D>("door");
         // _lightgrey = Content.Load<Texture2D>("lightgrey");
@@ -604,15 +605,27 @@ public class Game1 : Game
                 {
                     if(mouseOn?.parent is Spell)
                     {
-                        ((Spell)mouseOn.parent).showUI ^= true;
+                        Spell s = (Spell)mouseOn.parent;
                         if(mouseOn.type == WindowType.SpellIcon)
                         {
-                            holdingSpell = (Spell)mouseOn.parent;
+                            holdingSpell = s;
                         }
-                    }
-                    else
-                    {
-                        holdingSpell = null;
+                        else
+                        {
+                            holdingSpell = null;
+                        }
+                        if(s.showUI && mouseOn.type != WindowType.SpellDescription) s.showUI = false;
+                        else
+                        {
+                            s.showUI = true;
+                            double t = gameTime.TotalGameTime.TotalMilliseconds;
+                            s.showLayer = t;
+                            while(s.attachment.type==Attachment.Type.Child)
+                            {
+                                s = s.attachment.parent;
+                                s.showLayer = t;
+                            }
+                        }
                     }
                 }
                 if(Mouse.LeftDeClicked())
@@ -641,6 +654,7 @@ public class Game1 : Game
                     if(holdingSpell != null && inventory[0] == null)
                     {
                         oldAtt = holdingSpell.ReAttach(new Attachment(0));
+                        holdingSpell.showUI = true;
                     }
                 }
                 #endregion
@@ -671,15 +685,20 @@ public class Game1 : Game
                     inventoryWidth -= (int)MathF.Ceiling(inventoryWidth*0.2f);
                 }
                 #endregion
+                
                 break;
             case GameScene.Title:
                 if(Mouse.LeftClicked())
                 {
                     if(mouseOn == newGame)
                     {
-                        GameBegin();
+                        gamescene = GameScene.Loading;
+                        _hasdrawn = false;
                     }
                 }
+                break;
+            case GameScene.Loading:
+                if(_hasdrawn) GameBegin();
                 break;
             case GameScene.Lose or GameScene.Win:
                 if(Mouse.LeftClicked())
@@ -761,13 +780,13 @@ public class Game1 : Game
                 if(!_predraw) if(inventory[0] != null) _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], MouseCoor, Color.Yellow);
                 if(!_predraw) _spriteBatch.End();
                 if(!_predraw) _spriteBatch.Begin();
-                DrawWindow(inventoryWindow, new(shopWidth,0,inventoryWidth,height), null);
-                DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null);
-                DrawWindow(shopWindow, new(0,0,shopWidth,height), null);
-                DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null);
+                DrawWindow(inventoryWindow, new(shopWidth,0,inventoryWidth,height), null, onMap: false);
+                DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null, onMap: false);
+                DrawWindow(shopWindow, new(0,0,shopWidth,height), null, onMap: false);
+                DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null, onMap: false);
                 foreach(Spell s in spells.Values)
                 {
-                    if(s.attachment.type == Attachment.Type.Desk) DrawSpellUI(s, s.attachment.deskIndex*64, s.attachment.deskIndex*64);
+                    if(s.attachment.type == Attachment.Type.Desk) DrawSpellUI(s, s.attachment.deskIndex*64, s.attachment.deskIndex*64, onMap: false);
                 }
 
                 if(!_predraw) _spriteBatch.End();
@@ -775,8 +794,8 @@ public class Game1 : Game
             case GameScene.Title:
 
                 if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                DrawWindow(title, new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4), null);
-                DrawWindow(newGame, new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2), new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20));
+                DrawWindow(title, new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4), null, onMap: false);
+                DrawWindow(newGame, new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2), new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20), onMap: false);
                 if(!_predraw) _spriteBatch.End();
 
                 break;
@@ -787,48 +806,53 @@ public class Game1 : Game
 
 
         if(!_predraw) base.Draw(gameTime);
+        if(!_predraw) _hasdrawn = true;
     }
 
-    protected void DrawSpellUI(Spell s, int x, int y)
+    protected void DrawSpellUI(Spell s, int x, int y, bool onMap = true)
     {
         if(!s.showUI)
         {
-            DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), null);
+            DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44), onMap: onMap);
         }
         else
         {
-            DrawWindow(s.windowUI, new(x, y, s.windowUI.texture.Width, s.windowUI.texture.Height), null);
-            DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), null);
+            DrawWindow(s.windowUI, new(x, y, s.windowUI.texture.Width, s.windowUI.texture.Height), null, onMap: onMap);
+            DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44), onMap: onMap);
             switch(Spell.childrenNumber[s.name])
             {
                 case 1:
                 {
-                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+74, 44, 44));
-                    if(s.children[0] != null) DrawSpellUI(s.children[0], x, y+64);
+                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+74, 44, 44), onMap: onMap);
+                    if(s.children[0] != null) DrawSpellUI(s.children[0], x, y+64, onMap: onMap);
 
                     break;
                 }
                 case 2:
                 {
-                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+138, 44, 44));
-                    if(s.children[0] != null) DrawSpellUI(s.children[0], x, y+128);
+                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+138, 44, 44), onMap: onMap);
+                    DrawWindow(s.windowSlots[1],new(x, y, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height), new(x+74, y+74, 44, 44), onMap: onMap);
                     
-                    DrawWindow(s.windowSlots[1],new(x, y, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height), new(x+74, y+74, 44, 44));
-                    if(s.children[1] != null) DrawSpellUI(s.children[1], x+64, y+64);
+                    SortedList l = new();
+                    if(s.children[0] != null) l.Add(s.children[0].showLayer, (s.children[0], new Point(x, y+128)));
+                    if(s.children[1] != null) l.Add(s.children[1].showLayer, (s.children[1], new Point(x+64, y+64)));
+                    foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y, onMap: onMap);
+                    // if(s.children[0] != null) DrawSpellUI(s.children[0], x, y+128);
+                    // if(s.children[1] != null) DrawSpellUI(s.children[1], x+64, y+64);
 
                     break;
                 }
             }
         }
     }
-    protected void DrawWindow(Window w, Rectangle RectRender, Rectangle? RectMouseCatch)
+    protected void DrawWindow(Window w, Rectangle RectRender, Rectangle? RectMouseCatch, bool onMap = true)
     {
         w.Update();
         Rectangle rectMouseCatch = RectMouseCatch??RectRender;
 
         if(_predraw)
         {
-            if(w.onMap)
+            if(onMap)
             {
                 for(int i = (int)MathF.Ceiling((LeftTop.X-rectMouseCatch.Right)/xPeriod);i<(RightBottom.X-rectMouseCatch.Left)/xPeriod;++i)
                     for(int j = (int)MathF.Ceiling((LeftTop.Y-rectMouseCatch.Bottom)/yPeriod);j<(RightBottom.Y-rectMouseCatch.Top)/yPeriod;++j)
@@ -843,7 +867,7 @@ public class Game1 : Game
         }
         else
         {
-            if(w.onMap)
+            if(onMap)
             {
                 for(int i = (int)MathF.Ceiling((LeftTop.X-RectRender.Right)/xPeriod);i<(RightBottom.X-RectRender.Left)/xPeriod;++i)
                     for(int j = (int)MathF.Ceiling((LeftTop.Y-RectRender.Bottom)/yPeriod);j<(RightBottom.Y-RectRender.Top)/yPeriod;++j)

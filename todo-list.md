@@ -1,8 +1,8 @@
 <!-- code transition between gamescene -->
 <!-- draw reddoor, bluedoor -->
-draw shop, inventory
-code shop
+<!-- draw shop, inventory -->
 code inventory
+code shop
 ---0.1.0---
 code dummies
 (not urgent)draw font, code font
