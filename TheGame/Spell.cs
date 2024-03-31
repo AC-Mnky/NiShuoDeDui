@@ -66,6 +66,7 @@ public class Spell : Thing
     public Window[] windowSlots;
     public bool showUI = false;
     public double showLayer = 0;
+    public bool bought = false;
     public Spell(Game1 game, long id, Name name) : base(game, id, name)
     {
         children = new Spell[childrenNumber[name]];
@@ -91,7 +92,8 @@ public class Spell : Thing
         {
             case Attachment.Type.Inventory:
             {
-                game.inventory[attachment.inventoryIndex] = null;
+                if(attachment.index >= 0) game.inventory[attachment.index] = null;
+                else game.shop[-attachment.index] = null;
                 break;
             }
             case Attachment.Type.Tower:
@@ -102,7 +104,7 @@ public class Spell : Thing
             }
             case Attachment.Type.Child:
             {
-                attachment.parent.children[attachment.rank] = null;
+                attachment.parent.children[attachment.index] = null;
                 break;
             }
             case Attachment.Type.Null:
@@ -121,7 +123,8 @@ public class Spell : Thing
         {
             case Attachment.Type.Inventory:
             {
-                game.inventory[target.inventoryIndex] = this;
+                if(target.index >= 0) game.inventory[target.index] = this;
+                else game.shop[-target.index] = this;
                 break;
             }
             case Attachment.Type.Tower:
@@ -133,7 +136,7 @@ public class Spell : Thing
             }
             case Attachment.Type.Child:
             {
-                target.parent.children[target.rank] = this;
+                target.parent.children[target.index] = this;
                 break;
             }
             case Attachment.Type.Null:

@@ -59,7 +59,9 @@ public class Game1 : Game
     private Spell holdingSpell = null;
     private Attachment oldAtt = null;
     public Spell[] inventory;
+    public Spell[] shop;
     public Window[] inventorySlot;
+    public Window[] shopSlot;
     private Window title, newGame, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
     private int shopWidth, inventoryWidth;
     private bool shopOpen, inventoryOpen, inventoryAvailable;
@@ -446,20 +448,35 @@ public class Game1 : Game
 
 
         #endregion
-        foreach(Block b in blocks) foreach(Tower t in b.tower)
-        {
-            RandomNewSpell().ReAttach(new(t));
-        }
+        // foreach(Block b in blocks) foreach(Tower t in b.tower)
+        // {
+        //     RandomNewSpell().ReAttach(new(t));
+        // }
     }
     private void InitInventory()
     {
         inventory = new Spell[11];
-        inventorySlot = new Window[11];
-        for(int i=1;i<11;++i)
+        inventorySlot = new Window[inventory.Length];
+        for(int i=1;i<inventory.Length;++i)
         {
             inventorySlot[i] = new Window(this, WindowType.InventorySlot, slotTexture, Color.White){
                 rank = i,
             };
+        }
+    }
+    private void InitShop()
+    {
+        shop = new Spell[11];
+        shopSlot = new Window[shop.Length];
+        for(int i=1;i<shop.Length;++i)
+        {
+            shopSlot[i] = new Window(this, WindowType.ShopSlot, slotTexture, Color.White){
+                rank = -i,
+            };
+        }
+        for(int i=1;i<shop.Length;++i)
+        {
+            RandomNewSpell().ReAttach(new(-i));
         }
     }
     private static RanDict<BlockName> RandomBlockName = new(){{BlockName.A,2}, {BlockName.B,1}};
@@ -523,6 +540,11 @@ public class Game1 : Game
             inventory[i].showUI = false;
             inventory[i].showLayer = 0;
         }
+        for(int i=1;i<shop.Length;++i) if(shop[i] != null)
+        {
+            shop[i].showUI = false;
+            shop[i].showLayer = 0;
+        }
         foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null)
         {
             t.spell.showUI = false;
@@ -533,6 +555,7 @@ public class Game1 : Game
     private void WaveBegin()
     {
         RefreshMap();
+        InitShop();
         gamescene = GameScene.Build;
         shopWidth = 0;
         shopOpen = true;
@@ -594,14 +617,8 @@ public class Game1 : Game
             case GameScene.Build or GameScene.Battle:
                 if (Keyboard.HasBeenPressed(Keys.R))
                     _view = Matrix.Identity; // 恢复视角至初始状态
-                if (Keyboard.HasBeenPressed(Keys.T) && gamestatus == GameStatus.Paused)
-                    TickUpdate(); // 暂停状态下，按一次T增加一刻
                 if (gamescene == GameScene.Build && (Keyboard.IsPressed(Keys.LeftControl) || Keyboard.IsPressed(Keys.RightControl)) && Keyboard.HasBeenPressed(Keys.Enter))
                     BattleBegin();
-                // if (Keyboard.HasBeenPressed(Keys.D))
-                // if (tick > 0)
-                // Bluedoor = RefindPath(Blocks(2,2),6);
-                // Reddoor = Bluedoor.succ;
 
                 // 这部分是鼠标滚轮缩放
                 #region zoom
@@ -633,6 +650,8 @@ public class Game1 : Game
                 #endregion
 
                 #region tickupdate
+                if (Keyboard.HasBeenPressed(Keys.T) && gamestatus == GameStatus.Paused)
+                    TickUpdate(); // 暂停状态下，按一次T增加一刻
                 if (Keyboard.HasBeenPressed(Keys.Space))
                     if (gamestatus == GameStatus.Paused) gamestatus = GameStatus.Running;
                     else gamestatus = GameStatus.Paused;
@@ -735,6 +754,11 @@ public class Game1 : Game
                         else if (mouseOn?.type == WindowType.InventorySlot)
                         {
                             if(inventory[mouseOn.rank] == null)
+                                inventory[0].ReAttach(new Attachment(mouseOn.rank));
+                        }
+                        else if (mouseOn?.type == WindowType.ShopSlot)
+                        {
+                            if(shop[-mouseOn.rank] == null)
                                 inventory[0].ReAttach(new Attachment(mouseOn.rank));
                         }
                         else
@@ -893,6 +917,11 @@ public class Game1 : Game
                 DrawWindow(shopWindow, new(0,0,shopWidth,height), null);
                 DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null);
 
+                // 商店栏法术
+                for(int i=1;i<shop.Length;++i) DrawWindow(shopSlot[i], new(shopWidth-256+74+10, i*64+10+10,44,44), null);
+                l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
+                for(int i=1;i<shop.Length;++i) if(shop[i] != null) l.Add(shop[i].showLayer, (shop[i],(shopWidth-256+74, i*64+10)));
+                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
 
                 // 鼠标上的法术
                 if(!_predraw) if(inventory[0] != null) _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], Mouse.Pos(), Color.Yellow);
