@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
-public enum WindowType {SpellIcon, SpellSlot, SpellDescription, NewGame, Title, Tower, Block, Entity, Road, Reddoor, Bluedoor, Shop, Money, Inventory, Life};
+public enum WindowType {SpellIcon, SpellSlot, SpellDescription, NewGame, Title, Win, GameOver, Tower, Block, Entity, Road, Reddoor, Bluedoor, Shop, Money, Inventory, Life};
 
 public class Window
 {
@@ -41,6 +41,12 @@ public class Window
                 break;
             case WindowType.Entity:
                 color = originalColor * (float)(0.5+0.5*((Entity)parent).health/((Entity)parent).maxhealth);
+                break;
+            case WindowType.Life:
+                text = "LIFE " + ((Game1)parent).life.ToString();
+                break;
+            case WindowType.Money:
+                text = "MONEY " + ((Game1)parent).money.ToString();
                 break;
         }
     }

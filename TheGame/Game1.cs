@@ -37,6 +37,8 @@ public class Game1 : Game
     public Vector2 RightBottom = new();
     public static float xPeriod, yPeriod;
     public int MouseI = 0, MouseJ = 0;
+    int width;
+    int height;
     public long tick; // 游戏从开始经过的刻数
     private long thingCount; // 游戏从开始产生的Entity, Spell, Spellcast总数
     private double timeBank;
@@ -57,7 +59,7 @@ public class Game1 : Game
     private Spell holdingSpell = null;
     private Attachment oldAtt = null;
     public Spell[] inventory;
-    private Window title, newGame, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
+    private Window title, newGame, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
     private int shopWidth, inventoryWidth;
     private bool shopOpen, inventoryOpen;
     private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
@@ -140,10 +142,25 @@ public class Game1 : Game
             text = "NEW GAME",
             textScale = 2
         };
+        win = new Window(this, WindowType.Win, transparentTexture, Color.Transparent, clickable: false){
+            text = "YOU WIN",
+            textScale = 4,
+            textColor = Color.Black
+        };
+        gameover = new Window(this, WindowType.GameOver, transparentTexture, Color.Transparent, clickable: false){
+            text = "GAME OVER",
+            textScale = 4
+        };
         shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.Aqua, clickable: false);
         inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.Blue, clickable: false);
-        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Aqua, clickable: true);
-        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.Blue, clickable: true);
+        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Aqua, clickable: true){
+            textScale = 2,
+            textOffset = new(15,15)
+        };
+        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.Blue, clickable: true){
+            textScale = 2,
+            textOffset = new(15,15)
+        };
         towerGUI = Content.Load<Texture2D>("towergui");
         doorGUI = Content.Load<Texture2D>("door");
         // _lightgrey = Content.Load<Texture2D>("lightgrey");
@@ -775,8 +792,8 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime) // 显示
     {
-        int width = GraphicsDevice.Viewport.Width;
-        int height = GraphicsDevice.Viewport.Height;
+        width = GraphicsDevice.Viewport.Width;
+        height = GraphicsDevice.Viewport.Height;
         if(!_predraw)
         {
             LeftTop = Vector2.Transform(new Vector2(0,0), Matrix.Invert(_view));
@@ -855,13 +872,22 @@ public class Game1 : Game
             case GameScene.Title:
 
                 if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                DrawWindow(title, new((width-194*4)/2,(height-7*4)/2-50,194*4,7*4), null, onMap: false);
-                DrawWindow(newGame, new((width-70*2)/2,(height-7*2)/2+20,70*2,7*2), new((width-70*2)/2-10,(height-7*2)/2+20-10,70*2+20,7*2+20), onMap: false);
+                DrawStringWindow(title, new(width/2,height/2-50), onMap: false);
+                DrawStringWindow(newGame, new(width/2,height/2+20), onMap: false);
                 if(!_predraw) _spriteBatch.End();
 
                 break;
             case GameScene.Win:
-                GraphicsDevice.Clear(Color.White);
+                if(!_predraw) GraphicsDevice.Clear(Color.White);
+                if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                DrawStringWindow(win, new(width/2, height/2), onMap: false);
+                if(!_predraw) _spriteBatch.End();
+                break;
+            case GameScene.Lose:
+                if(!_predraw) GraphicsDevice.Clear(Color.Black);
+                if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                DrawStringWindow(gameover, new(width/2, height/2),  onMap: false);
+                if(!_predraw) _spriteBatch.End();
                 break;
         }
 
@@ -903,6 +929,10 @@ public class Game1 : Game
                 }
             }
         }
+    }
+    protected void DrawStringWindow(Window w, Point position, bool mouseCatch = true, bool onMap = true)
+    {
+        DrawWindow(w, new(position - (_font.MeasureString(w.text) * w.textScale / 2).ToPoint(), (_font.MeasureString(w.text)*w.textScale).ToPoint()), mouseCatch ? null : new(), onMap: onMap);
     }
     protected void DrawWindow(Window w, Rectangle RectRender, Rectangle? RectMouseCatch, bool onMap = true)
     {
