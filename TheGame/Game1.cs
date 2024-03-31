@@ -24,6 +24,7 @@ public class Game1 : Game
 {
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
     private GraphicsDeviceManager _graphics;
+    private SpriteFont _font;
     private SpriteBatch _spriteBatch;
     private Effect _mapShader;
     // private Effect _guiShader;
@@ -62,6 +63,9 @@ public class Game1 : Game
     private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
     public static Texture2D towerGUI;
     public static Texture2D doorGUI;
+    public static Texture2D defaultTexture;
+    public static Texture2D whiteTexture;
+    public static Texture2D transparentTexture;
 
     private bool _predraw = false;
     private bool _hasdrawn;
@@ -91,20 +95,55 @@ public class Game1 : Game
         //     // (i+j)%2==0;
         // }
 
-
         base.Initialize();
     }
 
     protected override void LoadContent() // 加载材质
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        #region font
         
-        title = new Window(this, WindowType.Title, Content.Load<Texture2D>("untitled"), Color.White, clickable: false);
-        newGame = new Window(this, WindowType.NewGame, Content.Load<Texture2D>("newGame"), Color.White);
-        shopWindow = new Window(this, WindowType.Shop, Content.Load<Texture2D>("white"), Color.Aqua * 0.8f, clickable: false);
-        inventoryWindow = new Window(this, WindowType.Inventory, Content.Load<Texture2D>("white"), Color.Blue * 0.8f, clickable: false);
-        moneyWindow = new Window(this, WindowType.Money, Content.Load<Texture2D>("white"), Color.Aqua * 0.8f, clickable: true);
-        lifeWindow = new Window(this, WindowType.Life, Content.Load<Texture2D>("white"), Color.Blue * 0.8f, clickable: true);
+        var characters = new List<char>(){' ','0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','？'};
+
+        var glyphBounds = new List<Rectangle>();
+        glyphBounds.Add(new());
+        for(int i=0;i<10;++i) glyphBounds.Add(new(5*i,9,4,7));
+        for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,0,7,7));
+        glyphBounds.Add(new(225,27,7,7));
+        
+        var cropping = new List<Rectangle>();
+        cropping.Add(new());
+        for(int i=0;i<10;++i) cropping.Add(new(0,0,4,7));
+        for(int i=0;i<26;++i) cropping.Add(new(0,0,7,7));
+        cropping.Add(new(0,0,7,7));
+        
+        var kerning = new List<Vector3>();
+        kerning.Add(new(0,7,0));
+        for(int i=0;i<10;++i) kerning.Add(new(0.5f,4,0.5f));
+        for(int i=0;i<26;++i) kerning.Add(new(1,7,1));
+        kerning.Add(new(1,7,1));
+        
+        _font = new SpriteFont(Content.Load<Texture2D>("font"), glyphBounds, cropping, characters, 2, 0, kerning, '？');
+        
+        #endregion
+
+        defaultTexture = Content.Load<Texture2D>("default");
+        whiteTexture = Content.Load<Texture2D>("white");
+        transparentTexture = Content.Load<Texture2D>("transparent");
+        
+        title = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "UNTITLED TOWER DEFENSE",
+            textScale = 4
+        };
+        newGame = new Window(this, WindowType.NewGame, transparentTexture, Color.Transparent){
+            text = "NEW GAME",
+            textScale = 2
+        };
+        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.Aqua, clickable: false);
+        inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.Blue, clickable: false);
+        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Aqua, clickable: true);
+        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.Blue, clickable: true);
         towerGUI = Content.Load<Texture2D>("towergui");
         doorGUI = Content.Load<Texture2D>("door");
         // _lightgrey = Content.Load<Texture2D>("lightgrey");
@@ -444,6 +483,12 @@ public class Game1 : Game
         gamescene = GameScene.Battle;
         shopOpen = false;
         inventoryOpen = false;
+        for(int i=1;i<inventory.Length;++i)
+        {
+            if(inventory[i] == null) continue;
+            inventory[i].showUI = false;
+            inventory[i].showLayer = 0;
+        }
         RefreshMap();
     }
     private void StageBegin()
@@ -674,6 +719,15 @@ public class Game1 : Game
                 if(Keyboard.HasBeenPressed(Keys.I) && gamescene == GameScene.Build)
                 {
                     inventoryOpen ^= true;
+                    if(!inventoryOpen)
+                    {
+                        for(int i=1;i<inventory.Length;++i)
+                        {
+                            if(inventory[i] == null) continue;
+                            inventory[i].showUI = false;
+                            inventory[i].showLayer = 0;
+                        }
+                    }
                 }
                 if(shopOpen && shopWidth < 256)
                 {
@@ -747,7 +801,7 @@ public class Game1 : Game
             case GameScene.Build or GameScene.Battle:
 
 
-                if(!_predraw) _spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, effect: _mapShader);
+                if(!_predraw) _spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, effect: _mapShader, samplerState: SamplerState.PointClamp);
 
                 // 区块
                 // foreach(Block b in blocks) DrawWindow(b.window, new(b.Coordinate().ToPoint(),new(Block.Dgrid*64,Block.Dgrid*64)), null);
@@ -768,28 +822,31 @@ public class Game1 : Game
                 // 法术
                 var l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
                 foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null) l.Add(t.spell.showLayer, (t.spell, (t.MapI()*64, t.MapJ()*64)));
-                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2, onMap: false);
+                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
 
-                // 鼠标上的法术
-                if(!_predraw) if(inventory[0] != null) _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], MouseCoor, Color.Yellow);
                 
                 if(!_predraw) _spriteBatch.End();
 
 
 
-                if(!_predraw) _spriteBatch.Begin();
+                if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-                // 左侧栏
+                // 物品栏
                 DrawWindow(inventoryWindow, new(shopWidth,0,inventoryWidth,height), null, onMap: false);
                 DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null, onMap: false);
+                
+                // 物品栏法术
+                l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
+                for(int i=1;i<inventory.Length;++i) if(inventory[i] != null) l.Add(inventory[i].showLayer, (inventory[i],(shopWidth+inventoryWidth-256+74, i*64+10)));
+                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2, onMap: false);
+                
+                // 商店栏
                 DrawWindow(shopWindow, new(0,0,shopWidth,height), null, onMap: false);
                 DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null, onMap: false);
 
-                // 物品栏法术
-                l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
-                for(int i=1;i<inventory.Length;++i) if(inventory[i] != null) l.Add(inventory[i].showLayer, (inventory[i],(shopWidth+74, i*64+10)));
-                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2, onMap: false);
 
+                // 鼠标上的法术
+                if(!_predraw) if(inventory[0] != null) _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], MouseCoor, Color.Yellow);
 
                 if(!_predraw) _spriteBatch.End();
 
@@ -798,8 +855,8 @@ public class Game1 : Game
             case GameScene.Title:
 
                 if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                DrawWindow(title, new((width-192*4)/2,(height-7*4)/2-50,192*4,7*4), null, onMap: false);
-                DrawWindow(newGame, new((width-68*2)/2,(height-7*2)/2+20,68*2,7*2), new((width-68*2)/2-10,(height-7*2)/2+20-10,68*2+20,7*2+20), onMap: false);
+                DrawWindow(title, new((width-194*4)/2,(height-7*4)/2-50,194*4,7*4), null, onMap: false);
+                DrawWindow(newGame, new((width-70*2)/2,(height-7*2)/2+20,70*2,7*2), new((width-70*2)/2-10,(height-7*2)/2+20-10,70*2+20,7*2+20), onMap: false);
                 if(!_predraw) _spriteBatch.End();
 
                 break;
@@ -876,11 +933,13 @@ public class Game1 : Game
                     {
                         Rectangle r = RectRender;
                         r.Offset(i*xPeriod, j*yPeriod);
-                        _spriteBatch.Draw(w.texture, r, null, (w.clickable && mouseOn == w) ? Color.Yellow : w.color, w.rotation, new(), new(), 0);
+                        _spriteBatch.Draw(w.texture??defaultTexture, r, null, (w.clickable && mouseOn == w) ? Color.Yellow : w.color, w.rotation, new(), new(), 0);
+                        if(w.text != null) _spriteBatch.DrawString(_font, w.text, (r.Location + w.textOffset).ToVector2(), (w.clickable && mouseOn == w) ? Color.Yellow : w.textColor, w.rotation, new(), w.textScale, SpriteEffects.None, 0);
                     }
             }
             else
-                _spriteBatch.Draw(w.texture, RectRender, null, (w.clickable && mouseOn == w) ? Color.Yellow : w.color, w.rotation, new(), new(), 0);
+                _spriteBatch.Draw(w.texture??defaultTexture, RectRender, null, (w.clickable && mouseOn == w) ? Color.Yellow : w.color, w.rotation, new(), new(), 0);
+                if(w.text != null) _spriteBatch.DrawString(_font, w.text, (RectRender.Location + w.textOffset).ToVector2(), (w.clickable && mouseOn == w) ? Color.Yellow : w.textColor, w.rotation, new(), w.textScale, SpriteEffects.None, 0);
         }
     }
 

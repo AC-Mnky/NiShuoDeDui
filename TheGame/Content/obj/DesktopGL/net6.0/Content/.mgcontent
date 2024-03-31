@@ -31,6 +31,7 @@
     <File>D:/Game202402/TheGame/Content/enemy1.png</File>
     <File>D:/Game202402/TheGame/Content/enemyfast.png</File>
     <File>D:/Game202402/TheGame/Content/enemyveryfast.png</File>
+    <File>D:/Game202402/TheGame/Content/font.png</File>
     <File>D:/Game202402/TheGame/Content/Fonts/File.spritefont</File>
     <File>D:/Game202402/TheGame/Content/lightgrey.png</File>
     <File>D:/Game202402/TheGame/Content/map-shader.fx</File>
@@ -46,6 +47,7 @@
     <File>D:/Game202402/TheGame/Content/summonenemy1icon.png</File>
     <File>D:/Game202402/TheGame/Content/summonprojectile1icon.png</File>
     <File>D:/Game202402/TheGame/Content/towerGUI.png</File>
+    <File>D:/Game202402/TheGame/Content/transparent.png</File>
     <File>D:/Game202402/TheGame/Content/triggerupondeathicon.png</File>
     <File>D:/Game202402/TheGame/Content/Untitled.png</File>
     <File>D:/Game202402/TheGame/Content/velocityzeroicon.png</File>
@@ -80,7 +82,9 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File>Fonts/untitledfont.spritefont</File>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

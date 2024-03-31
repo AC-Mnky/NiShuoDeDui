@@ -19,6 +19,10 @@ public class Window
     public WindowType type;
     public int rank = -1;
     public float rotation = 0;
+    public string text = null;
+    public Point textOffset = new(0,0);
+    public Color textColor = Color.White;
+    public float textScale = 2;
     public Window(object parent, WindowType type, Texture2D texture, Color originalColor, bool clickable = true)
     {
         this.parent = parent;

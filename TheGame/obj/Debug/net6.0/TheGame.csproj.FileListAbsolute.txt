@@ -71,3 +71,5 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimupicon.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\door.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\default.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\white.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\font.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\transparent.xnb
