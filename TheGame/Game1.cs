@@ -59,18 +59,20 @@ public class Game1 : Game
     private Spell holdingSpell = null;
     private Attachment oldAtt = null;
     public Spell[] inventory;
+    public Window[] inventorySlot;
     private Window title, newGame, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
     private int shopWidth, inventoryWidth;
-    private bool shopOpen, inventoryOpen;
+    private bool shopOpen, inventoryOpen, inventoryAvailable;
     private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
-    public static Texture2D towerGUI;
-    public static Texture2D doorGUI;
+    public static Texture2D slotTexture;
+    public static Texture2D doorTexture;
     public static Texture2D defaultTexture;
     public static Texture2D whiteTexture;
     public static Texture2D transparentTexture;
 
     private bool _predraw = false;
     private bool _hasdrawn;
+    private bool _onMap;
 
 
 
@@ -130,6 +132,7 @@ public class Game1 : Game
         
         #endregion
 
+        #region random shit
         defaultTexture = Content.Load<Texture2D>("default");
         whiteTexture = Content.Load<Texture2D>("white");
         transparentTexture = Content.Load<Texture2D>("transparent");
@@ -161,10 +164,12 @@ public class Game1 : Game
             textScale = 2,
             textOffset = new(15,15)
         };
-        towerGUI = Content.Load<Texture2D>("towergui");
-        doorGUI = Content.Load<Texture2D>("door");
+        slotTexture = Content.Load<Texture2D>("towergui");
+        doorTexture = Content.Load<Texture2D>("door");
         // _lightgrey = Content.Load<Texture2D>("lightgrey");
         // _darkgrey = Content.Load<Texture2D>("darkgrey");
+
+        #endregion
 
         #region texture
         Block.Texture[BlockName.A] = Content.Load<Texture2D>("blockdefault");
@@ -395,6 +400,7 @@ public class Game1 : Game
     private void InitMap()
     {
         ClearMap();
+        _view = Matrix.Identity;
         (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEntity = Name.Enemy1;
         (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyEasy;
         (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyFast;
@@ -412,7 +418,7 @@ public class Game1 : Game
 
         Reddoor = Bluedoor.succ;
         ReddoorIndex = (BluedoorIndex + 4) % 8;
-        BluedoorWindow = new Window(this, WindowType.Bluedoor, doorGUI, Color.Blue, false)
+        BluedoorWindow = new Window(this, WindowType.Bluedoor, doorTexture, Color.Blue, false)
         {
             rotation = BluedoorIndex switch
             {
@@ -423,7 +429,7 @@ public class Game1 : Game
                 _ => throw new ArgumentOutOfRangeException()              
             }
         };
-        ReddoorWindow = new Window(this, WindowType.Reddoor, doorGUI, Color.Red, false)
+        ReddoorWindow = new Window(this, WindowType.Reddoor, doorTexture, Color.Red, false)
         {
             rotation = ReddoorIndex switch
             {
@@ -443,6 +449,17 @@ public class Game1 : Game
         foreach(Block b in blocks) foreach(Tower t in b.tower)
         {
             RandomNewSpell().ReAttach(new(t));
+        }
+    }
+    private void InitInventory()
+    {
+        inventory = new Spell[11];
+        inventorySlot = new Window[11];
+        for(int i=1;i<11;++i)
+        {
+            inventorySlot[i] = new Window(this, WindowType.InventorySlot, slotTexture, Color.White){
+                rank = i,
+            };
         }
     }
     private static RanDict<BlockName> RandomBlockName = new(){{BlockName.A,2}, {BlockName.B,1}};
@@ -500,38 +517,43 @@ public class Game1 : Game
         gamescene = GameScene.Battle;
         shopOpen = false;
         inventoryOpen = false;
-        for(int i=1;i<inventory.Length;++i)
+        inventoryAvailable = false;
+        for(int i=1;i<inventory.Length;++i) if(inventory[i] != null)
         {
-            if(inventory[i] == null) continue;
             inventory[i].showUI = false;
             inventory[i].showLayer = 0;
         }
+        foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null)
+        {
+            t.spell.showUI = false;
+            t.spell.showLayer = 0;
+        }
         RefreshMap();
     }
-    private void StageBegin()
+    private void WaveBegin()
     {
-        // gamescene = GameScene.Battle;
-        // ClearMap();
-        // tick = 0;
-    }
-    private void GameBegin()
-    {
-        InitMap();
+        RefreshMap();
         gamescene = GameScene.Build;
-        _view = Matrix.Identity;
-        thingCount = 0;
-        gamestatus = GameStatus.Running;
-        tps = 60;
-        inventory = new Spell[11];
-        life = 20;
-        money = 0;
         shopWidth = 0;
         shopOpen = true;
         inventoryWidth = 0;
         inventoryOpen = true;
-        // gamescene = GameScene.Battle;
-        // ClearMap();
-        // tick = 0;
+        inventoryAvailable = true;
+    }
+    private void StageBegin()
+    {
+        InitMap();
+        WaveBegin();
+    }
+    private void GameBegin()
+    {
+        InitInventory();
+        StageBegin();
+        thingCount = 0;
+        gamestatus = GameStatus.Running;
+        tps = 60;
+        life = 20;
+        money = 0;
     }
     private void GameOver()
     {
@@ -658,7 +680,7 @@ public class Game1 : Game
                     if(mouseOn?.parent is Spell)
                     {
                         Spell s = (Spell)mouseOn.parent;
-                        if(s.showUI && mouseOn.type != WindowType.SpellDescription)
+                        if(s.showUI && mouseOn.type == WindowType.SpellIcon)
                         {
                             s.showUI = false;
                             s.showLayer = 0;
@@ -679,7 +701,7 @@ public class Game1 : Game
                         if(mouseOn.type == WindowType.SpellIcon)
                         {
                             holdingSpell = s;
-                            if(Keyboard.IsPressed(Keys.LeftControl))
+                            if(Keyboard.IsPressed(Keys.LeftControl) && inventoryAvailable)
                             {
                                 int index = 1;
                                 while(index < inventory.Length && inventory[index] != null) ++index;
@@ -696,7 +718,7 @@ public class Game1 : Game
                 }
                 if(Mouse.LeftDeClicked())
                 {
-                    if(inventory[0] != null)
+                    if(inventory[0] != null && inventoryAvailable)
                     {
                         inventory[0].showLayer = time;
 
@@ -705,14 +727,19 @@ public class Game1 : Game
                             if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
                                 inventory[0].ReAttach(new Attachment((Spell)mouseOn.parent, mouseOn.rank));
                         }
-                        else if (mouseOn?.parent is Tower)
+                        else if (mouseOn?.type == WindowType.Tower)
                         {
                             if(((Tower)mouseOn.parent).spell == null)
                                 inventory[0].ReAttach(new Attachment((Tower)mouseOn.parent));
                         }
+                        else if (mouseOn?.type == WindowType.InventorySlot)
+                        {
+                            if(inventory[mouseOn.rank] == null)
+                                inventory[0].ReAttach(new Attachment(mouseOn.rank));
+                        }
                         else
                         {
-                            inventory[0].ReAttach(oldAtt);
+                            // inventory[0].ReAttach(oldAtt);
                         }
                     }
                 }
@@ -796,13 +823,6 @@ public class Game1 : Game
         height = GraphicsDevice.Viewport.Height;
         if(!_predraw)
         {
-            LeftTop = Vector2.Transform(new Vector2(0,0), Matrix.Invert(_view));
-            RightBottom = Vector2.Transform(new Vector2(width,height), Matrix.Invert(_view));
-            xPeriod = Block.numX*Block.Dgrid*64f;
-            yPeriod = Block.numY*Block.Dgrid*64f;
-            projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
-            _mapShader.Parameters["view_projection"].SetValue(_view * projection);
-
             mouseOn = null;
 
             _predraw = true;
@@ -819,6 +839,16 @@ public class Game1 : Game
 
 
                 if(!_predraw) _spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, effect: _mapShader, samplerState: SamplerState.PointClamp);
+                if(_predraw)
+                {
+                    LeftTop = Vector2.Transform(new Vector2(0,0), Matrix.Invert(_view));
+                    RightBottom = Vector2.Transform(new Vector2(width,height), Matrix.Invert(_view));
+                    xPeriod = Block.numX*Block.Dgrid*64f;
+                    yPeriod = Block.numY*Block.Dgrid*64f;
+                    projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
+                    _mapShader.Parameters["view_projection"].SetValue(_view * projection);
+                }
+                _onMap = true;
 
                 // 区块
                 // foreach(Block b in blocks) DrawWindow(b.window, new(b.Coordinate().ToPoint(),new(Block.Dgrid*64,Block.Dgrid*64)), null);
@@ -847,23 +877,25 @@ public class Game1 : Game
 
 
                 if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                _onMap = false;
 
                 // 物品栏
-                DrawWindow(inventoryWindow, new(shopWidth,0,inventoryWidth,height), null, onMap: false);
-                DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null, onMap: false);
+                DrawWindow(inventoryWindow, new(shopWidth,0,inventoryWidth,height), null);
+                DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null);
                 
                 // 物品栏法术
+                for(int i=1;i<inventory.Length;++i) DrawWindow(inventorySlot[i], new(shopWidth+inventoryWidth-256+74+10, i*64+10+10,44,44), null);
                 l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
                 for(int i=1;i<inventory.Length;++i) if(inventory[i] != null) l.Add(inventory[i].showLayer, (inventory[i],(shopWidth+inventoryWidth-256+74, i*64+10)));
-                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2, onMap: false);
+                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
                 
                 // 商店栏
-                DrawWindow(shopWindow, new(0,0,shopWidth,height), null, onMap: false);
-                DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null, onMap: false);
+                DrawWindow(shopWindow, new(0,0,shopWidth,height), null);
+                DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null);
 
 
                 // 鼠标上的法术
-                if(!_predraw) if(inventory[0] != null) _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], MouseCoor, Color.Yellow);
+                if(!_predraw) if(inventory[0] != null) _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], Mouse.Pos(), Color.Yellow);
 
                 if(!_predraw) _spriteBatch.End();
 
@@ -872,21 +904,24 @@ public class Game1 : Game
             case GameScene.Title:
 
                 if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                DrawStringWindow(title, new(width/2,height/2-50), onMap: false);
-                DrawStringWindow(newGame, new(width/2,height/2+20), onMap: false);
+                _onMap = false;
+                DrawStringWindow(title, new(width/2,height/2-50));
+                DrawStringWindow(newGame, new(width/2,height/2+20));
                 if(!_predraw) _spriteBatch.End();
 
                 break;
             case GameScene.Win:
                 if(!_predraw) GraphicsDevice.Clear(Color.White);
                 if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                DrawStringWindow(win, new(width/2, height/2), onMap: false);
+                _onMap = false;
+                DrawStringWindow(win, new(width/2, height/2));
                 if(!_predraw) _spriteBatch.End();
                 break;
             case GameScene.Lose:
                 if(!_predraw) GraphicsDevice.Clear(Color.Black);
                 if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                DrawStringWindow(gameover, new(width/2, height/2),  onMap: false);
+                _onMap = false;
+                DrawStringWindow(gameover, new(width/2, height/2));
                 if(!_predraw) _spriteBatch.End();
                 break;
         }
@@ -896,52 +931,52 @@ public class Game1 : Game
         if(!_predraw) _hasdrawn = true;
     }
 
-    protected void DrawSpellUI(Spell s, int x, int y, bool onMap = true)
+    protected void DrawSpellUI(Spell s, int x, int y)
     {
         if(!s.showUI)
         {
-            DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44), onMap: onMap);
+            DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44));
         }
         else
         {
-            DrawWindow(s.windowUI, new(x, y, s.windowUI.texture.Width, s.windowUI.texture.Height), null, onMap: onMap);
-            DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44), onMap: onMap);
+            DrawWindow(s.windowUI, new(x, y, s.windowUI.texture.Width, s.windowUI.texture.Height), null);
+            DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44));
             switch(Spell.childrenNumber[s.name])
             {
                 case 1:
                 {
-                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+74, 44, 44), onMap: onMap);
-                    if(s.children[0] != null) DrawSpellUI(s.children[0], x, y+64, onMap: onMap);
+                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+74, 44, 44));
+                    if(s.children[0] != null) DrawSpellUI(s.children[0], x, y+64);
 
                     break;
                 }
                 case 2:
                 {
-                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+138, 44, 44), onMap: onMap);
-                    DrawWindow(s.windowSlots[1],new(x, y, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height), new(x+74, y+74, 44, 44), onMap: onMap);
+                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+138, 44, 44));
+                    DrawWindow(s.windowSlots[1],new(x, y, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height), new(x+74, y+74, 44, 44));
                     
                     var l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
                     if(s.children[0] != null) l.Add(s.children[0].showLayer, (s.children[0], (x, y+128)));
                     if(s.children[1] != null) l.Add(s.children[1].showLayer, (s.children[1], (x+64, y+64)));
-                    foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2, onMap: onMap);
+                    foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
 
                     break;
                 }
             }
         }
     }
-    protected void DrawStringWindow(Window w, Point position, bool mouseCatch = true, bool onMap = true)
+    protected void DrawStringWindow(Window w, Point position, bool mouseCatch = true)
     {
-        DrawWindow(w, new(position - (_font.MeasureString(w.text) * w.textScale / 2).ToPoint(), (_font.MeasureString(w.text)*w.textScale).ToPoint()), mouseCatch ? null : new(), onMap: onMap);
+        DrawWindow(w, new(position - (_font.MeasureString(w.text) * w.textScale / 2).ToPoint(), (_font.MeasureString(w.text)*w.textScale).ToPoint()), mouseCatch ? null : new());
     }
-    protected void DrawWindow(Window w, Rectangle RectRender, Rectangle? RectMouseCatch, bool onMap = true)
+    protected void DrawWindow(Window w, Rectangle RectRender, Rectangle? RectMouseCatch)
     {
         w.Update();
         Rectangle rectMouseCatch = RectMouseCatch??RectRender;
 
         if(_predraw)
         {
-            if(onMap)
+            if(_onMap)
             {
                 for(int i = (int)MathF.Ceiling((LeftTop.X-rectMouseCatch.Right)/xPeriod);i<(RightBottom.X-rectMouseCatch.Left)/xPeriod;++i)
                     for(int j = (int)MathF.Ceiling((LeftTop.Y-rectMouseCatch.Bottom)/yPeriod);j<(RightBottom.Y-rectMouseCatch.Top)/yPeriod;++j)
@@ -956,7 +991,7 @@ public class Game1 : Game
         }
         else
         {
-            if(onMap)
+            if(_onMap)
             {
                 for(int i = (int)MathF.Ceiling((LeftTop.X-RectRender.Right)/xPeriod);i<(RightBottom.X-RectRender.Left)/xPeriod;++i)
                     for(int j = (int)MathF.Ceiling((LeftTop.Y-RectRender.Bottom)/yPeriod);j<(RightBottom.Y-RectRender.Top)/yPeriod;++j)

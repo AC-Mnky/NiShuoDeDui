@@ -91,7 +91,7 @@ public class Spell : Thing
         {
             case Attachment.Type.Inventory:
             {
-                game.inventory[attachment.deskIndex] = null;
+                game.inventory[attachment.inventoryIndex] = null;
                 break;
             }
             case Attachment.Type.Tower:
@@ -121,7 +121,7 @@ public class Spell : Thing
         {
             case Attachment.Type.Inventory:
             {
-                game.inventory[target.deskIndex] = this;
+                game.inventory[target.inventoryIndex] = this;
                 break;
             }
             case Attachment.Type.Tower:
