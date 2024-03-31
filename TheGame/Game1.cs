@@ -156,9 +156,9 @@ public class Game1 : Game
             text = "GAME OVER",
             textScale = 4
         };
-        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.Aqua, clickable: false);
+        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.BlueViolet, clickable: false);
         inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.Blue, clickable: false);
-        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Aqua, clickable: true){
+        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.BlueViolet, clickable: true){
             textScale = 2,
             textOffset = new(15,15)
         };
@@ -390,7 +390,7 @@ public class Game1 : Game
             if(!sc.alive) spellcasts.Remove(sc.id); // 移除被标记为死亡的Spellcast
         foreach(Spell s in spells.Values)
             s.TickUpdate(); // 法术更新（其实只有地图上的法术会发生变化）
-        if (money >= 20) Ending();
+        if (money >= 30) Ending();
         if (life <= 0) GameOver();
         ++tick;
 
@@ -566,7 +566,7 @@ public class Game1 : Game
         gamestatus = GameStatus.Running;
         tps = 60;
         life = 20;
-        money = 5;
+        money = 10;
     }
     private void GameOver()
     {
@@ -681,9 +681,7 @@ public class Game1 : Game
                 }
                 #endregion
                 
-                #region spell UI // 此region已成屎山, 勿动
-                // Spell s = (0 <= MouseI && MouseI < maxI && 0 <= MouseJ && MouseJ < maxJ) ? spellAt[MouseI, MouseJ] : null;
-                // if(mouseOn is Spell) s = (Spell)mouseOn;
+                #region spell UI // 此region已成屎山, 能不动就不动
                 if(Mouse.LeftClicked())
                 {
                     if(mouseOn?.parent is Spell)
@@ -710,13 +708,13 @@ public class Game1 : Game
                         if(mouseOn.type == WindowType.SpellIcon)
                         {
                             holdingSpell = s;
-                            if(Keyboard.IsPressed(Keys.LeftControl) && inventoryAvailable)
+                            if(Keyboard.IsPressed(Keys.LeftControl) && TakeAble(s))
                             {
                                 int index = 1;
                                 while(index < inventory.Length && inventory[index] != null) ++index;
                                 if(index < inventory.Length)
                                 {
-                                    s.ReAttach(new(index));
+                                    MoveSpell(s, new(index));
                                     holdingSpell = null;
                                     s.showUI = false;
                                     s.showLayer = 0;
@@ -735,42 +733,42 @@ public class Game1 : Game
                 }
                 if(Mouse.LeftDeClicked())
                 {
-                    if(inventory[0] != null && inventoryAvailable)
+                    if(inventory[0] != null && TakeAble(inventory[0]))
                     {
                         inventory[0].showLayer = time;
 
                         if(mouseOn?.parent is Spell && mouseOn.type == WindowType.SpellSlot)
                         {
                             if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
-                                inventory[0].ReAttach(new Attachment((Spell)mouseOn.parent, mouseOn.rank));
+                                MoveSpell(inventory[0], new Attachment((Spell)mouseOn.parent, mouseOn.rank));
                         }
                         else if (mouseOn?.type == WindowType.Tower)
                         {
                             if(((Tower)mouseOn.parent).spell == null)
-                                inventory[0].ReAttach(new Attachment((Tower)mouseOn.parent));
+                                MoveSpell(inventory[0], new Attachment((Tower)mouseOn.parent));
                         }
                         else if (mouseOn?.type == WindowType.InventorySlot)
                         {
                             if(inventory[mouseOn.rank] == null)
-                                inventory[0].ReAttach(new Attachment(mouseOn.rank));
+                                MoveSpell(inventory[0], new Attachment(mouseOn.rank));
                         }
                         else if (mouseOn?.type == WindowType.ShopSlot)
                         {
                             if(shop[-mouseOn.rank] == null)
-                                inventory[0].ReAttach(new Attachment(mouseOn.rank));
+                                MoveSpell(inventory[0], new Attachment(mouseOn.rank));
                         }
                         else
                         {
-                            // inventory[0].ReAttach(oldAtt);
+                            // MoveSpell(inventory[0], oldAtt);
                         }
                     }
                 }
                 if(Mouse.LeftDown() && Mouse.FirstMovementSinceLastLeftClick())
                 {
                     // Debug.Print("First move!");
-                    if(holdingSpell != null && inventory[0] == null)
+                    if(holdingSpell != null && inventory[0] == null && TakeAble(holdingSpell))
                     {
-                        oldAtt = holdingSpell.ReAttach(new Attachment(0));
+                        oldAtt = MoveSpell(holdingSpell, new Attachment(0));
                         holdingSpell.showUI = true;
                     }
                 }
@@ -855,7 +853,33 @@ public class Game1 : Game
         }
     }
 
-
+    private bool TakeAble(Spell s)
+    {
+        if(!inventoryAvailable) return false;
+        if(s == null) return false;
+        if(s.attachment.type == Attachment.Type.Inventory)
+        {
+            if(s.attachment.index == 0) return true;
+            else if(s.attachment.index < 0)
+            {
+                if(s.price > money) return false;
+            }
+        }
+        return true;
+    }
+    private Attachment MoveSpell(Spell s, Attachment a)
+    {
+        Debug.Assert(TakeAble(s));
+        if(s.attachment.type == Attachment.Type.Inventory && s.attachment.index < 0) money -= s.price;
+        Attachment old = s.ReAttach(a);
+        if(!s.bought && (s.attachment.type != Attachment.Type.Inventory /* || s.attachment.index > 0*/))
+        {
+            s.bought = true;
+            s.price /= 2;
+        }
+        if(s.attachment.type == Attachment.Type.Inventory && s.attachment.index < 0) money += s.price;
+        return old;
+    }
     protected override void Draw(GameTime gameTime) // 显示
     {
         width = GraphicsDevice.Viewport.Width;
@@ -939,7 +963,8 @@ public class Game1 : Game
                 foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
 
                 // 鼠标上的法术
-                if(!_predraw) if(inventory[0] != null) _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], Mouse.Pos(), Color.Yellow);
+                if(!_predraw) if(inventory[0] != null) DrawWindow(inventory[0].windowIcon, new(Mouse.Pos().ToPoint(),new(36,36)), new());
+                // _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], Mouse.Pos(), Color.Yellow);
 
                 if(!_predraw) _spriteBatch.End();
 

@@ -66,6 +66,7 @@ public class Spell : Thing
     public Window[] windowSlots;
     public bool showUI = false;
     public double showLayer = 0;
+    public int price = 2;
     public bool bought = false;
     public Spell(Game1 game, long id, Name name) : base(game, id, name)
     {

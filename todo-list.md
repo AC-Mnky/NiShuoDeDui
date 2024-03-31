@@ -3,7 +3,7 @@
 <!-- draw shop, inventory -->
 <!-- draw font, code font -->
 <!-- code inventory -->
-code shop
+<!-- code shop -->
 ---0.1.0---
 code dummies
 code stage

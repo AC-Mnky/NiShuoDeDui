@@ -42,6 +42,9 @@ public class Window
             case WindowType.Entity:
                 color = originalColor * (float)(0.5+0.5*((Entity)parent).health/((Entity)parent).maxhealth);
                 break;
+            case WindowType.SpellIcon:
+                color = ((Spell)parent).bought ? originalColor : Color.Gold;
+                break;
             case WindowType.Life:
                 text = "LIFE " + ((Game1)parent).life.ToString();
                 break;
