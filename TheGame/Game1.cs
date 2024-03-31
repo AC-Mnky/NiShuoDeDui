@@ -532,19 +532,9 @@ public class Game1 : Game
     private void BattleBegin()
     {
         gamescene = GameScene.Battle;
-        shopOpen = false;
-        inventoryOpen = false;
         inventoryAvailable = false;
-        for(int i=1;i<inventory.Length;++i) if(inventory[i] != null)
-        {
-            inventory[i].showUI = false;
-            inventory[i].showLayer = 0;
-        }
-        for(int i=1;i<shop.Length;++i) if(shop[i] != null)
-        {
-            shop[i].showUI = false;
-            shop[i].showLayer = 0;
-        }
+        if(inventoryOpen) ToggleInventory();
+        if(shopOpen) ToggleShop();
         foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null)
         {
             t.spell.showUI = false;
@@ -558,9 +548,9 @@ public class Game1 : Game
         InitShop();
         gamescene = GameScene.Build;
         shopWidth = 0;
-        shopOpen = true;
+        if(!shopOpen) ToggleShop();
         inventoryWidth = 0;
-        inventoryOpen = true;
+        if(!inventoryOpen) ToggleInventory();
         inventoryAvailable = true;
     }
     private void StageBegin()
@@ -576,7 +566,7 @@ public class Game1 : Game
         gamestatus = GameStatus.Running;
         tps = 60;
         life = 20;
-        money = 0;
+        money = 5;
     }
     private void GameOver()
     {
@@ -691,7 +681,7 @@ public class Game1 : Game
                 }
                 #endregion
                 
-                #region UI // 此region已成屎山, 勿动
+                #region spell UI // 此region已成屎山, 勿动
                 // Spell s = (0 <= MouseI && MouseI < maxI && 0 <= MouseJ && MouseJ < maxJ) ? spellAt[MouseI, MouseJ] : null;
                 // if(mouseOn is Spell) s = (Spell)mouseOn;
                 if(Mouse.LeftClicked())
@@ -733,6 +723,14 @@ public class Game1 : Game
                                 }
                             }
                         }
+                    }
+                    else if(mouseOn?.type == WindowType.Life && gamescene == GameScene.Build)
+                    {
+                        ToggleInventory();
+                    }
+                    else if(mouseOn?.type == WindowType.Money && gamescene == GameScene.Build)
+                    {
+                        ToggleShop();
                     }
                 }
                 if(Mouse.LeftDeClicked())
@@ -782,20 +780,11 @@ public class Game1 : Game
                 #region shop inventory
                 if(Keyboard.HasBeenPressed(Keys.S) && gamescene == GameScene.Build)
                 {
-                    shopOpen ^= true;
+                    ToggleShop();
                 }
                 if(Keyboard.HasBeenPressed(Keys.I) && gamescene == GameScene.Build)
                 {
-                    inventoryOpen ^= true;
-                    if(!inventoryOpen)
-                    {
-                        for(int i=1;i<inventory.Length;++i)
-                        {
-                            if(inventory[i] == null) continue;
-                            inventory[i].showUI = false;
-                            inventory[i].showLayer = 0;
-                        }
-                    }
+                    ToggleInventory();
                 }
                 if(shopOpen && shopWidth < 256)
                 {
@@ -839,6 +828,32 @@ public class Game1 : Game
         base.Update(gameTime);
     }
 
+    private void ToggleInventory()
+    {
+        inventoryOpen ^= true;
+        if(!inventoryOpen)
+        {
+            for(int i=1;i<inventory.Length;++i)
+            {
+                if(inventory[i] == null) continue;
+                inventory[i].showUI = false;
+                inventory[i].showLayer = 0;
+            }
+        }
+    }
+    private void ToggleShop()
+    {
+        shopOpen ^= true;
+        if(!shopOpen)
+        {
+            for(int i=1;i<shop.Length;++i)
+            {
+                if(shop[i] == null) continue;
+                shop[i].showUI = false;
+                shop[i].showLayer = 0;
+            }
+        }
+    }
 
 
     protected override void Draw(GameTime gameTime) // 显示
