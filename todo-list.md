@@ -5,8 +5,8 @@
 <!-- code inventory -->
 <!-- code shop -->
 ---0.1.0---
+<!-- code stage -->
 code dummies
-code stage
 (not urgent)improve title : introduction to fullscreen, map dragging, loop space, options
 (not urgent)draw perk, code perk
 (not urgent)better collision

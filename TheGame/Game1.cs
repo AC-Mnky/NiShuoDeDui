@@ -50,6 +50,8 @@ public class Game1 : Game
     private Dictionary<long, Entity> entities; // 十分关键的字典，其中每个实体都有一个唯一的id
     private Dictionary<long, Spell> spells; // 十分关键的字典，其中每个spell都有一个唯一的id
     private Dictionary<long, Spellcast> spellcasts; // 十分关键的字典，其中每个spellcast都有一个唯一的id
+    private System.Collections.Stack enemyStack;
+    private int enemyRate;
     private Block[,] blocks;
     public Segment Reddoor, Bluedoor;
     public Window ReddoorWindow, BluedoorWindow;
@@ -65,6 +67,7 @@ public class Game1 : Game
     private Window title, newGame, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
     private int shopWidth, inventoryWidth;
     private bool shopOpen, inventoryOpen, inventoryAvailable;
+    public int stage, wave;
     private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
     public static Texture2D slotTexture;
     public static Texture2D doorTexture;
@@ -362,17 +365,34 @@ public class Game1 : Game
     public void Penetrated(int i)
     {
         life -= i;
-        Debug.Print("life: " + life.ToString());
+        // Debug.Print("life: " + life.ToString());
     }
-
+    public void GenerateEnemyStack()
+    {
+        for(int i=0;i<20;++i) enemyStack.Push(summonenemyEasy);
+        // if(rand.Next(60) == 0) NewSpellcast(summonenemy1, new Cast(new Vector2()));
+        // if(rand.Next(120) == 0) NewSpellcast(summonenemyEasy, new(new Vector2()));
+        // if(rand.Next(240) == 0) NewSpellcast(summonenemyFast, new Cast(new Vector2()));
+        // if(rand.Next(480) == 0) NewSpellcast(summonenemyVeryFast, new Cast(new Vector2()));
+    }
+    public int EnemyCount()
+    {
+        int x = 0;
+        foreach(Entity e in entities.Values) if(e is Enemy) ++x;
+        return x;
+    }
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
-        if(gamescene == GameScene.Battle)
+        switch(gamescene)
         {
-            // if(rand.Next(60) == 0) NewSpellcast(summonenemy1, new Cast(new Vector2()));
-            if(rand.Next(120) == 0) NewSpellcast(summonenemyEasy, new Cast(new Vector2()));
-            // if(rand.Next(240) == 0) NewSpellcast(summonenemyFast, new Cast(new Vector2()));
-            // if(rand.Next(480) == 0) NewSpellcast(summonenemyVeryFast, new Cast(new Vector2()));
+            case GameScene.Build:
+                break;
+            case GameScene.Battle:
+                if(tick == 0) GenerateEnemyStack();
+                if(rand.Next(enemyRate) == 0 && enemyStack.Count > 0) NewSpellcast((Spell)enemyStack.Pop(), new(new Vector2()));
+                break;
+            default:
+                return;
         }
         
         // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
@@ -390,8 +410,11 @@ public class Game1 : Game
             if(!sc.alive) spellcasts.Remove(sc.id); // 移除被标记为死亡的Spellcast
         foreach(Spell s in spells.Values)
             s.TickUpdate(); // 法术更新（其实只有地图上的法术会发生变化）
-        if (money >= 30) Ending();
-        if (life <= 0) GameOver();
+        if (gamescene == GameScene.Battle)
+        {
+            if (life <= 0) BattleEnd(false);
+            if (enemyStack.Count == 0 && EnemyCount() == 0) BattleEnd(true);
+        }
         ++tick;
 
         // Debug.Print(tick.ToString());
@@ -470,7 +493,7 @@ public class Game1 : Game
         shopSlot = new Window[shop.Length];
         for(int i=1;i<shop.Length;++i)
         {
-            shopSlot[i] = new Window(this, WindowType.ShopSlot, slotTexture, Color.White){
+            shopSlot[i] = new Window(this, WindowType.ShopSlot, slotTexture, Color.Gold){
                 rank = -i,
             };
         }
@@ -521,6 +544,7 @@ public class Game1 : Game
         spells = new();
         entities = new();
         spellcasts = new();
+        enemyStack = new();
     }
     private void RefreshMap()
     {
@@ -528,6 +552,30 @@ public class Game1 : Game
         timeBank = 0;
         entities = new();
         spellcasts = new();
+        enemyStack = new();
+    }
+    private void BattleEnd(bool win)
+    {
+        if(win)
+        {
+            ++wave;
+            if(wave>5)
+            {
+                wave = 1;
+                ++stage;
+                if(stage>3)
+                {
+                    Ending();
+                    return;
+                }
+                StageBegin();
+            }
+            WaveBegin();
+        }
+        else
+        {
+            gamescene = GameScene.Lose;
+        }
     }
     private void BattleBegin()
     {
@@ -544,34 +592,36 @@ public class Game1 : Game
     }
     private void WaveBegin()
     {
-        RefreshMap();
-        InitShop();
         gamescene = GameScene.Build;
+
+        InitShop();
+
         shopWidth = 0;
         if(!shopOpen) ToggleShop();
         inventoryWidth = 0;
         if(!inventoryOpen) ToggleInventory();
         inventoryAvailable = true;
+
+        enemyRate = 120 - 10 * (wave-1) - 20 * (stage-1);
+
+        RefreshMap();
     }
     private void StageBegin()
     {
         InitMap();
-        WaveBegin();
     }
     private void GameBegin()
     {
+        stage = 1;
+        wave = 1;
         InitInventory();
         StageBegin();
+        WaveBegin();
         thingCount = 0;
         gamestatus = GameStatus.Running;
         tps = 60;
         life = 20;
         money = 10;
-    }
-    private void GameOver()
-    {
-        if(gamescene == GameScene.Battle)
-            gamescene = GameScene.Lose;
     }
     private void Ending()
     {
@@ -872,11 +922,11 @@ public class Game1 : Game
         Debug.Assert(TakeAble(s));
         if(s.attachment.type == Attachment.Type.Inventory && s.attachment.index < 0) money -= s.price;
         Attachment old = s.ReAttach(a);
-        if(!s.bought && (s.attachment.type != Attachment.Type.Inventory /* || s.attachment.index > 0*/))
-        {
-            s.bought = true;
-            s.price /= 2;
-        }
+        // if(!s.used && (s.attachment.type != Attachment.Type.Inventory /* || s.attachment.index > 0*/))
+        // {
+        //     s.used = true;
+        //     s.price /= 2;
+        // }
         if(s.attachment.type == Attachment.Type.Inventory && s.attachment.index < 0) money += s.price;
         return old;
     }

@@ -67,7 +67,7 @@ public class Spell : Thing
     public bool showUI = false;
     public double showLayer = 0;
     public int price = 2;
-    public bool bought = false;
+    public bool used = false;
     public Spell(Game1 game, long id, Name name) : base(game, id, name)
     {
         children = new Spell[childrenNumber[name]];
@@ -165,7 +165,10 @@ public class Spell : Thing
     {
         foreach(Cast c in toCastNextTick)
             if(!(dependentOnly[name] && c.type == CastType.Independent))
+            {
                 game.NewSpellcast(this, c); // 其实不一定成功，所以以后要加上if
+                used = true;
+            }
         toCastNextTick.Clear();
     }
 
