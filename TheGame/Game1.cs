@@ -51,9 +51,12 @@ public class Game1 : Game
     public int life;
     public int money;
     private int tps; // 每秒多少刻（控制倍速，60刻是一倍速）
-    private LinkedList<Entity> entities; // 十分关键的字典，其中每个实体都有一个唯一的id
-    private LinkedList<Spell> spells; // 十分关键的字典，其中每个spell都有一个唯一的id
-    private LinkedList<Spellcast> spellcasts; // 十分关键的字典，其中每个spellcast都有一个唯一的id
+    // private LinkedList<Entity> entities;
+    private LinkedList<Enemy> enemy;
+    private LinkedList<Entity> neutral;
+    private LinkedList<Projectile> projectile;
+    private LinkedList<Spell> spell; // 十分关键的字典，其中每个spell都有一个唯一的id
+    private LinkedList<Spellcast> spellcast; // 十分关键的字典，其中每个spellcast都有一个唯一的id
     private Stack enemyStack;
     private int enemyRate;
     private Block[,] blocks;
@@ -267,21 +270,27 @@ public class Game1 : Game
 
     public Enemy NewEnemy(Name name, Segment segment, float progress)
     {
-        return (Enemy)entities.AddLast(new Enemy(this, name, segment, progress)).Value;
+        return enemy.AddLast(new Enemy(this, name, segment, progress)).Value;
     }
     public Projectile NewProjectile(Name name, Vector2 coordinate, Vector2 velocity)
     {
-        return (Projectile)entities.AddLast(new Projectile(this, name, coordinate, velocity)).Value;
+        return projectile.AddLast(new Projectile(this, name, coordinate, velocity)).Value;
     }
     public Spell NewSpell(Name name)
     {
-        return spells.AddLast(new Spell(this, name)).Value;
+        return spell.AddLast(new Spell(this, name)).Value;
     }
     public Spellcast NewSpellcast(Spell spell, Cast cast)
     {
-        return spellcasts.AddLast(new Spellcast(this, spell, cast)).Value;
+        return spellcast.AddLast(new Spellcast(this, spell, cast)).Value;
     }
 
+    public IEnumerable<Entity> entities()
+    {
+        foreach(Entity e in enemy) yield return e;
+        foreach(Entity e in neutral) yield return e;
+        foreach(Entity e in projectile) yield return e;
+    }
     public IEnumerable<Entity> Collisions(Entity e) // 简单的碰撞判定算法。之后可能会出现圆形的东西，从而需要修改。另外以后算法上可能会需要优化。
     {
         var E = e.Hitbox();
@@ -291,7 +300,25 @@ public class Game1 : Game
             Es[i] = E;
             Es[i].Offset((i/3-1)*xPeriod, (i%3-1)*yPeriod);
         }
-        foreach(Entity f in entities) if (f!=e)
+        if(e is not Enemy) foreach(Entity f in enemy)
+        {
+            var F = f.Hitbox();
+            for(int i=0;i<9;++i) if(F.IntersectsWith(Es[i]))
+            {
+                yield return f;
+                break;
+            }
+        }
+        foreach(Entity f in neutral) if (f!=e)
+        {
+            var F = f.Hitbox();
+            for(int i=0;i<9;++i) if(F.IntersectsWith(Es[i]))
+            {
+                yield return f;
+                break;
+            }
+        }
+        if(e is not Projectile) foreach(Entity f in projectile)
         {
             var F = f.Hitbox();
             for(int i=0;i<9;++i) if(F.IntersectsWith(Es[i]))
@@ -378,12 +405,12 @@ public class Game1 : Game
         // if(rand.Next(240) == 0) NewSpellcast(summonenemyFast, new Cast(new Vector2()));
         // if(rand.Next(480) == 0) NewSpellcast(summonenemyVeryFast, new Cast(new Vector2()));
     }
-    public int EnemyCount()
-    {
-        int x = 0;
-        foreach(Entity e in entities) if(e is Enemy) ++x;
-        return x;
-    }
+    // public int EnemyCount()
+    // {
+    //     int x = 0;
+    //     foreach(Entity e in entities) if(e is Enemy) ++x;
+    //     return x;
+    // }
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
         switch(gamescene)
@@ -399,32 +426,46 @@ public class Game1 : Game
         }
         
         // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
-        foreach(Spell s in spells)
+        foreach(Spell s in spell)
             s.TickCast(); // 待施放的法术进行施放
-        foreach(Spellcast sc in spellcasts)
+        foreach(Spellcast sc in spellcast)
             sc.TickUpdate(); // 被施法术更新
-        LinkedListNode<Entity> m1;
-        for(var n = entities.First;n!=null;n=m1)
+        #region remove entities // 移除被标记为死亡的实体
+        LinkedListNode<Enemy> m1;
+        for(var n = enemy.First;n!=null;n=m1)
         {
             m1 = n.Next;
-            if(!n.Value.alive) entities.Remove(n); // 移除被标记为死亡的实体
+            if(!n.Value.alive) enemy.Remove(n);
         }
-        foreach(Entity e in entities)
+        LinkedListNode<Entity> m3;
+        for(var n = neutral.First;n!=null;n=m3)
+        {
+            m3 = n.Next;
+            if(!n.Value.alive) neutral.Remove(n);
+        }
+        LinkedListNode<Projectile> m4;
+        for(var n = projectile.First;n!=null;n=m4)
+        {
+            m4 = n.Next;
+            if(!n.Value.alive) projectile.Remove(n);
+        }
+        #endregion
+        foreach(Entity e in entities())
             e.TickUpdateCoordinate(); // 实体移动
-        foreach(Entity e in entities)
+        foreach(Entity e in entities())
             e.TickUpdate(); // 实体更新（期间不应该移动！）
         LinkedListNode<Spellcast> m2;
-        for(var n = spellcasts.First;n!=null;n=m2)
+        for(var n = spellcast.First;n!=null;n=m2)
         {
             m2 = n.Next;
-            if(!n.Value.alive) spellcasts.Remove(n); // 移除被标记为死亡的Spellcast
+            if(!n.Value.alive) spellcast.Remove(n); // 移除被标记为死亡的Spellcast
         }
-        foreach(Spell s in spells)
+        foreach(Spell s in spell)
             s.TickUpdate(); // 法术更新（其实只有地图上的法术会发生变化）
         if (gamescene == GameScene.Battle)
         {
             if (life <= 0) BattleEnd(false);
-            if (enemyStack.Count == 0 && EnemyCount() == 0) BattleEnd(true);
+            if (enemyStack.Count == 0 && enemy.Count == 0) BattleEnd(true);
         }
         ++tick;
 
@@ -552,16 +593,24 @@ public class Game1 : Game
     private void ClearMap()
     {
         tick = 0;
-        entities = new();
-        spellcasts = new();
+
+        enemy = new();
+        neutral = new();
+        projectile = new();
+
+        spellcast = new();
         enemyStack = new();
     }
     private void RefreshMap()
     {
         tick = 0;
         timeBank = 0;
-        entities = new();
-        spellcasts = new();
+
+        enemy = new();
+        neutral = new();
+        projectile = new();
+
+        spellcast = new();
         enemyStack = new();
     }
     private void BattleEnd(bool win)
@@ -624,7 +673,7 @@ public class Game1 : Game
     {
         stage = 1;
         wave = 1;
-        spells = new();
+        spell = new();
         InitInventory();
         StageBegin();
         WaveBegin();
@@ -983,7 +1032,7 @@ public class Game1 : Game
                 foreach(Block b in blocks) foreach(Tower t in b.tower) DrawWindow(t.window, new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44), null);
 
                 // 实体
-                foreach(Entity e in entities)  if(e.window.texture != null) DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), null);
+                foreach(Entity e in entities())  if(e.window.texture != null) DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), new());
 
                 // 蓝门红门
                 DrawWindow(BluedoorWindow, new(BluedoorCoor.ToPoint(), new(64,64)),null);
