@@ -93,7 +93,7 @@ public class Spellcast : Thing
                     float minDistance = float.PositiveInfinity;
                     foreach(Entity e in game.Collisions(x)) if(e is Enemy)
                     {
-                        Vector2 r = e.coordinate-x.coordinate;
+                        Vector2 r = Closest(e.coordinate-x.coordinate);
                         float l = r.Length();
                         if(l < minDistance)
                         {

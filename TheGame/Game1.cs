@@ -10,11 +10,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace TheGame;
 
@@ -280,16 +284,22 @@ public class Game1 : Game
 
     public IEnumerable<Entity> Collisions(Entity e) // 简单的碰撞判定算法。之后可能会出现圆形的东西，从而需要修改。另外以后算法上可能会需要优化。
     {
-        // List<Entity> ans = new();
-        foreach(Entity f in entities)
+        var E = e.Hitbox();
+        var Es = new RectangleF[9];
+        for(int i=0;i<9;++i)
         {
-            if(f!=e && f.Hitbox().IntersectsWith(e.Hitbox()))
+            Es[i] = E;
+            Es[i].Offset((i/3-1)*xPeriod, (i%3-1)*yPeriod);
+        }
+        foreach(Entity f in entities) if (f!=e)
+        {
+            var F = f.Hitbox();
+            for(int i=0;i<9;++i) if(F.IntersectsWith(Es[i]))
             {
                 yield return f;
-                // ans.Add(f);
+                break;
             }
         }
-        // return ans;
     }
 
     public Block Blocks(int x, int y)
