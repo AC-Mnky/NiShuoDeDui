@@ -65,7 +65,7 @@ public class Spellcast : Thing
                     alive = false;
                     break;
                 case Name.AddSpeed:
-                    cast.subject.velocity += Normalized(cast.direction);
+                    cast.subject.velocity += 2 * Normalized(cast.direction);
                     alive = false;
                     break;
                 case Name.Add10Speed:
@@ -73,19 +73,19 @@ public class Spellcast : Thing
                     alive = false;
                     break;
                 case Name.AddXVelocity:
-                    ++cast.subject.velocity.X;
+                    cast.subject.velocity.X += 2;
                     alive = false;
                     break;
                 case Name.AddYVelocity:
-                    ++cast.subject.velocity.Y;
+                    cast.subject.velocity.Y += 2;
                     alive = false;
                     break;
                 case Name.ReduceXVelocity:
-                    --cast.subject.velocity.X;
+                    cast.subject.velocity.X -= 2;
                     alive = false;
                     break;
                 case Name.ReduceYVelocity:
-                    --cast.subject.velocity.Y;
+                    cast.subject.velocity.Y -= 2;
                     alive = false;
                     break;
                 case Name.AimClosestInSquareD6:
