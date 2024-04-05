@@ -91,7 +91,7 @@ public class Spellcast : Thing
                 case Name.AimClosestInSquareD6:
                     x = game.NewProjectile(Name.SquareD6, CurrentCoordinate(), Vector2.Zero);
                     float minDistance = float.PositiveInfinity;
-                    foreach(Entity e in x.Collisions()) if(e is Enemy)
+                    foreach(Entity e in game.Collisions(x)) if(e is Enemy)
                     {
                         Vector2 r = e.coordinate-x.coordinate;
                         float l = r.Length();

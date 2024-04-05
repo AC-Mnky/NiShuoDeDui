@@ -37,7 +37,7 @@ public class Enemy : Entity
 
     public override void TickUpdate()
     {
-        foreach(Entity e in Collisions())
+        foreach(Entity e in game.Collisions(this))
         {
             if(e is Projectile)
                 health -= e.Damage(this);

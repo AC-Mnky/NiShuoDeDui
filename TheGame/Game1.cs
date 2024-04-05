@@ -278,17 +278,18 @@ public class Game1 : Game
         return spellcasts.AddLast(new Spellcast(this, spell, cast)).Value;
     }
 
-    public List<Entity> Collisions(Entity e) // 简单的碰撞判定算法。之后可能会出现圆形的东西，从而需要修改。另外以后算法上可能会需要优化。
+    public IEnumerable<Entity> Collisions(Entity e) // 简单的碰撞判定算法。之后可能会出现圆形的东西，从而需要修改。另外以后算法上可能会需要优化。
     {
-        List<Entity> ans = new();
+        // List<Entity> ans = new();
         foreach(Entity f in entities)
         {
             if(f!=e && f.Hitbox().IntersectsWith(e.Hitbox()))
             {
-                ans.Add(f);
+                yield return f;
+                // ans.Add(f);
             }
         }
-        return ans;
+        // return ans;
     }
 
     public Block Blocks(int x, int y)
@@ -613,6 +614,7 @@ public class Game1 : Game
     {
         stage = 1;
         wave = 1;
+        spells = new();
         InitInventory();
         StageBegin();
         WaveBegin();

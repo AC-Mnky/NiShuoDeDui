@@ -44,7 +44,7 @@ public class Projectile : Entity
         }
         #endregion
 
-        foreach(Entity e in Collisions())
+        foreach(Entity e in game.Collisions(this))
         {
             if(e is Enemy)
                 health -= e.Damage(this);
