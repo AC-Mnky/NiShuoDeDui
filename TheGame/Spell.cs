@@ -68,7 +68,7 @@ public class Spell : Thing
     public double showLayer = 0;
     public int price = 2;
     public bool used = false;
-    public Spell(Game1 game, long id, Name name) : base(game, id, name)
+    public Spell(Game1 game, Name name) : base(game, name)
     {
         children = new Spell[childrenNumber[name]];
         windowIcon = new Window(this, WindowType.SpellIcon, IconTexture(), Color.White);

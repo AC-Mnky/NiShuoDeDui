@@ -76,7 +76,7 @@ abstract public class Entity : Thing
 
     };
     public static Dictionary<Name, Texture2D> Texture = new();
-    public Entity(Game1 game, long id, Name name) : base(game,id,name)
+    public Entity(Game1 game, Name name) : base(game,name)
     {
         size = Size[name];
         health = maxhealth = DefaultHealth[name];
@@ -90,7 +90,7 @@ abstract public class Entity : Thing
     {
         return new RectangleF(coordinate.X-size.X/2,coordinate.Y-size.Y/2,size.X,size.Y);
     }
-    public ArrayList Collisions() {return game.Collisions(this);}
+    public List<Entity> Collisions() {return game.Collisions(this);}
     virtual public void TickUpdateCoordinate()
     {
         coordinate.X -= MathF.Floor(coordinate.X/Game1.xPeriod) * Game1.xPeriod;

@@ -15,7 +15,7 @@ public class Spellcast : Thing
         if (cast.type == CastType.Dependent) return cast.subject.coordinate;
         else return cast.coordinate;
     }
-    public Spellcast(Game1 game, long id, Spell spell, Cast cast) : base(game,id,spell.name)
+    public Spellcast(Game1 game, Spell spell, Cast cast) : base(game,spell.name)
     {
         this.spell = spell;
         this.cast = cast;

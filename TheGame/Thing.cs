@@ -13,15 +13,15 @@ abstract public class Thing
 {
     protected Game1 game;
     public long tickBirth;
-    public long id;
+    // public long id;
     public Name name;
     public bool alive = true;
-    public Thing(Game1 game, long id, Name name)
+    public Thing(Game1 game, Name name)
     {
         this.game = game;
         tickBirth = game.tick;
         this.name = name;
-        this.id = id;
+        // this.id = id;
     }
     abstract public void TickUpdate(); 
 
