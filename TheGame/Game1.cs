@@ -150,7 +150,7 @@ public class Game1 : Game
         transparentTexture = Content.Load<Texture2D>("transparent");
         
         title = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "UNTITLED TOWER DEFENSE",
+            text = "THIS IS A TOWER DEFENSE GAME NAMED THIS IS A TOWER DEFENSE GAME NAMED THIS IS A TOWER DEFENSE GAME",
             textScale = 4
         };
         newGame = new Window(this, WindowType.NewGame, transparentTexture, Color.Transparent){
