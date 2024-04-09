@@ -203,66 +203,31 @@ public class Game1 : Game
         Entity.Texture[Name.EnemyFast] = Content.Load<Texture2D>("enemyfast");
         Entity.Texture[Name.EnemyVeryFast] = Content.Load<Texture2D>("enemyveryfast");
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
-        Entity.Texture[Name.SquareD6] = null;
+        Entity.Texture[Name.SquareD6] = whiteTexture;
+        Entity.Texture[Name.ExplosionSquareD6] = whiteTexture;
 
-        Spell._TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
-        Spell._TextureIcon[Name.SummonProjectile] = Content.Load<Texture2D>("SummonProjectile1icon");
-        Spell._TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("velocityzeroicon");
-        Spell._TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
-        Spell._TextureIcon[Name.Add10Speed] = Content.Load<Texture2D>("add5speedicon");
-        Spell._TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("addxvelocityicon");
-        Spell._TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("addyvelocityicon");
-        Spell._TextureIcon[Name.ReduceXVelocity] = Content.Load<Texture2D>("reducexvelocityicon");
-        Spell._TextureIcon[Name.ReduceYVelocity] = Content.Load<Texture2D>("reduceyvelocityicon");
-        Spell._TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("triggerupondeathicon");
-        Spell._TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("aimclosestinsquared6icon");
-        Spell._TextureIcon[Name.AimMouse] = Content.Load<Texture2D>("aimmouseicon");
-        Spell._TextureIcon[Name.AimUp] = Content.Load<Texture2D>("aimupicon");
-        Spell._TextureIcon[Name.AimDown] = Content.Load<Texture2D>("aimdownicon");
-        Spell._TextureIcon[Name.AimLeft] = Content.Load<Texture2D>("aimlefticon");
-        Spell._TextureIcon[Name.AimRight] = Content.Load<Texture2D>("aimrighticon");
-        Spell._TextureIcon[Name.AimBack] = Content.Load<Texture2D>("aimbackicon");
-        Spell._TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
+        Spell.TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
+        Spell.TextureIcon[Name.SummonProjectile] = Content.Load<Texture2D>("SummonProjectile1icon");
+        Spell.TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("velocityzeroicon");
+        Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
+        Spell.TextureIcon[Name.Add10Speed] = Content.Load<Texture2D>("add5speedicon");
+        Spell.TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("addxvelocityicon");
+        Spell.TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("addyvelocityicon");
+        Spell.TextureIcon[Name.ReduceXVelocity] = Content.Load<Texture2D>("reducexvelocityicon");
+        Spell.TextureIcon[Name.ReduceYVelocity] = Content.Load<Texture2D>("reduceyvelocityicon");
+        Spell.TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("triggerupondeathicon");
+        Spell.TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("aimclosestinsquared6icon");
+        Spell.TextureIcon[Name.AimMouse] = Content.Load<Texture2D>("aimmouseicon");
+        Spell.TextureIcon[Name.AimUp] = Content.Load<Texture2D>("aimupicon");
+        Spell.TextureIcon[Name.AimDown] = Content.Load<Texture2D>("aimdownicon");
+        Spell.TextureIcon[Name.AimLeft] = Content.Load<Texture2D>("aimlefticon");
+        Spell.TextureIcon[Name.AimRight] = Content.Load<Texture2D>("aimrighticon");
+        Spell.TextureIcon[Name.AimBack] = Content.Load<Texture2D>("aimbackicon");
+        Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
 
-        Spell.TextureUI[Name.SummonEnemy] = Content.Load<Texture2D>("SpellGUI2");
-        Spell.TextureUI[Name.SummonProjectile] = Content.Load<Texture2D>("SpellGUI2");
-        Spell.TextureUI[Name.VelocityZero] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AddSpeed] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.Add10Speed] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.ReduceXVelocity] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.ReduceYVelocity] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AddXVelocity] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AddYVelocity] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.TriggerUponDeath] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AimMouse] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AimUp] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AimDown] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AimLeft] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AimRight] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.AimBack] = Content.Load<Texture2D>("SpellGUI1");
-        Spell.TextureUI[Name.Wait60Ticks] = Content.Load<Texture2D>("SpellGUI1");
-
-        Spell.TextureSlot[(Name.SummonEnemy,0)] = Content.Load<Texture2D>("spellgui2slot0");
-        Spell.TextureSlot[(Name.SummonEnemy,1)] = Content.Load<Texture2D>("spellgui2slot1");
-        Spell.TextureSlot[(Name.SummonProjectile,0)] = Content.Load<Texture2D>("spellgui2slot0");
-        Spell.TextureSlot[(Name.SummonProjectile,1)] = Content.Load<Texture2D>("spellgui2slot1");
-        Spell.TextureSlot[(Name.VelocityZero,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AddSpeed,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.Add10Speed,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AddXVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AddYVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.ReduceXVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.ReduceYVelocity,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.TriggerUponDeath,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AimClosestInSquareD6,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AimMouse,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AimUp,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AimDown,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AimLeft,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AimRight,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.AimBack,0)] = Content.Load<Texture2D>("spellgui1slot0");
-        Spell.TextureSlot[(Name.Wait60Ticks,0)] = Content.Load<Texture2D>("spellgui1slot0");
+        Spell.TextureSlot[(2,0)] = Content.Load<Texture2D>("spellgui2slot0");
+        Spell.TextureSlot[(2,1)] = Content.Load<Texture2D>("spellgui2slot1");
+        Spell.TextureSlot[(1,0)] = Content.Load<Texture2D>("spellgui1slot0");
         #endregion
 
         _mapShader = Content.Load<Effect>("map-shader");
@@ -407,6 +372,9 @@ public class Game1 : Game
         summonenemyVeryFast = NewSpell(Name.SummonEnemy, Name.EnemyVeryFast);
         for(int i=0;i<20;++i) enemyStack.Push(summonenemyEasy);
     }
+
+
+
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
         switch(gamescene)
@@ -469,6 +437,8 @@ public class Game1 : Game
         // Debug.Print(spellcasts.Count.ToString());
         // Debug.Print(entities.Count.ToString());
     }
+
+
 
     private void InitMap()
     {
@@ -547,35 +517,71 @@ public class Game1 : Game
         }
     }
     private static RanDict<BlockName> RandomBlockName = new(){{BlockName.A,2}, {BlockName.B,1}};
+    private static RanDict<Name> RandomProjectileName = new(){
+        {Name.Projectile1, 1},
+        {Name.Stone, 1},
+        {Name.Arrow, 1},
+        {Name.Spike, 1},
+        {Name.ExplosionSquareD6, 0.5},
+    };
     private static RanDict<Name> RandomSpellName = new(){
-        {Name.SummonProjectile, 4},
+        {Name.SummonProjectile, 6},
         {Name.Add10Speed, 2},
         {Name.AddSpeed, 1},
+        {Name.DoubleSpeed, 1},
+        {Name.AddXVelocity, 0.25},
+        {Name.AddYVelocity, 0.25},
+        {Name.ReduceXVelocity, 0.25},
+        {Name.ReduceYVelocity, 0.25},
+        {Name.AimClosestInSquareD6, 1},
+        {Name.TriggerUponDeath, 1},
+        {Name.VelocityZero, 0.5},
+        {Name.Wait60Ticks, 1},
+        {Name.AimMouse, 1},
+        {Name.AimBack, 0.5},
+        {Name.AimLeft, 0.25},
+        {Name.AimRight, 0.25},
+        {Name.AimUp, 0.25},
+        {Name.AimDown, 0.25},
+        {Name.DoubleCast, 1},
+        {Name.TwiceCast, 1},
+        {Name.CastEveryTick, 1},
+        {Name.CastEvery8Ticks, 1},
+        {Name.CastEvery64Ticks, 1},
+    };
+    public static Dictionary<Name, int> SpellPrice = new(){
+        {Name.Projectile1, 1},
+        {Name.Stone, 3},
+        {Name.Arrow, 2},
+        {Name.Spike, 2},
+        {Name.ExplosionSquareD6, 10},
+        {Name.Add10Speed, 2},
+        {Name.AddSpeed, 1},
+        {Name.DoubleSpeed, 2},
         {Name.AddXVelocity, 1},
         {Name.AddYVelocity, 1},
         {Name.ReduceXVelocity, 1},
         {Name.ReduceYVelocity, 1},
-        {Name.AimClosestInSquareD6, 1},
-        {Name.TriggerUponDeath, 1},
+        {Name.AimClosestInSquareD6, 2},
+        {Name.TriggerUponDeath, 2},
+        {Name.Wait60Ticks, 2},
         {Name.VelocityZero, 1},
-        {Name.Wait60Ticks, 1},
-        {Name.AimMouse, 1},
+        {Name.AimMouse, 2},
         {Name.AimBack, 1},
         {Name.AimLeft, 1},
         {Name.AimRight, 1},
         {Name.AimUp, 1},
         {Name.AimDown, 1},
+        {Name.DoubleCast, 1},
+        {Name.TwiceCast, 5},
+        {Name.CastEveryTick, 10},
+        {Name.CastEvery8Ticks, 8},
+        {Name.CastEvery64Ticks, 5},
     };
+
     private Spell RandomNewSpell()
     {
-        Spell spell = NewSpell(RandomSpellName.Next(), rand.Next(4) switch
-            {
-                0 => Name.Projectile1,
-                1 => Name.Stone,
-                2 => Name.Arrow,
-                3 => Name.Spike,
-                _ => throw new ArgumentOutOfRangeException(),
-            });
+        Spell spell = NewSpell(RandomSpellName.Next(), RandomProjectileName.Next());
         return spell;
     }
 
@@ -670,7 +676,7 @@ public class Game1 : Game
         gamestatus = GameStatus.Running;
         tps = 60;
         life = 20;
-        money = 10;
+        money = 20;
     }
     private void Ending()
     {
@@ -1019,7 +1025,7 @@ public class Game1 : Game
                 foreach(Block b in blocks) foreach(Road r in b.road) DrawWindow(r.window, new(b.Coordinate().ToPoint(), new(Block.Dgrid*64,Block.Dgrid*64)), new());
 
                 // 实体
-                foreach(Entity e in entities())  if(e.window.texture != null) DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), new());
+                foreach(Entity e in entities())  if(e.window.texture != null) DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), e.size.ToPoint()), new());
 
                 // 蓝门红门
                 DrawWindow(BluedoorWindow, new(BluedoorCoor.ToPoint(), new(64,64)),null);

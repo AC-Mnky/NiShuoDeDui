@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -41,13 +42,15 @@ public class Projectile : Entity
                 velocity -= 0.1f * Normalized(velocity);
                 health -= 0.001d;
                 break;
+            case Name.ExplosionSquareD6:
+                break;
         }
         #endregion
 
         foreach(Entity e in game.Collisions(this))
         {
             if(e is Enemy)
-                health -= e.Damage(this);
+                e.health -= Damage(e);
         }
         if(health <= 0d)
         {

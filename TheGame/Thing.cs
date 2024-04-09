@@ -7,8 +7,48 @@ using System.Security.Cryptography;
 namespace TheGame;
 
 public enum Name {Null,
-Enemy1, EnemyEasy, EnemyFast, EnemyVeryFast, Projectile1, Stone, Arrow, Spike, SquareD6,
-SummonEnemy, SummonProjectile, SummonStone, SummonArrow, SummonSpike, VelocityZero, AddSpeed, Add10Speed, AddXVelocity, AddYVelocity, ReduceXVelocity, ReduceYVelocity, TriggerUponDeath, AimClosestInSquareD6, AimMouse, AimLeft, AimRight, AimUp, AimDown, AimBack, Wait60Ticks};
+
+
+Enemy1, 
+EnemyEasy, 
+EnemyFast, 
+EnemyVeryFast, 
+Projectile1, 
+Stone, 
+Arrow, 
+Spike, 
+SquareD6, 
+ExplosionSquareD6,
+
+
+SummonEnemy, 
+SummonProjectile, 
+SummonStone, 
+SummonArrow, 
+SummonSpike, 
+VelocityZero, 
+AddSpeed, 
+Add10Speed, 
+DoubleSpeed, 
+AddXVelocity, 
+AddYVelocity, 
+ReduceXVelocity, 
+ReduceYVelocity, 
+TriggerUponDeath, 
+AimClosestInSquareD6, 
+AimMouse, 
+AimLeft, 
+AimRight, 
+AimUp, 
+AimDown, 
+AimBack, 
+Wait60Ticks, 
+DoubleCast, 
+TwiceCast,
+CastEveryTick,
+CastEvery8Ticks,
+CastEvery64Ticks,
+};
 
 abstract public class Thing
 {

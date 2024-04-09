@@ -19,7 +19,8 @@ abstract public class Entity : Thing
         {Name.EnemyFast, new Vector2(-8f,-8f)},
         {Name.EnemyVeryFast, new Vector2(-8f,-8f)},
         {Name.Projectile1, new Vector2(-8f,-8f)},
-        {Name.SquareD6, new()}
+        {Name.SquareD6, new(-3*64f,-3*64f)},
+        {Name.ExplosionSquareD6, new(-3*64f,-3*64f)},
     };
     protected static Dictionary<Name, Vector2> Size = new() {
         {Name.Enemy1, new(32f,32f)},
@@ -30,7 +31,20 @@ abstract public class Entity : Thing
         {Name.Stone, new(16f,16f)},
         {Name.Arrow, new(16f,16f)},
         {Name.Spike, new(16f,16f)},
-        {Name.SquareD6, new(6*64f,6*64f)}
+        {Name.SquareD6, new(6*64f,6*64f)},
+        {Name.ExplosionSquareD6, new(6*64f,6*64f)}
+    };
+    protected static Dictionary<Name, Color> DefaultColor = new() {
+        {Name.Enemy1, Color.Red},
+        {Name.EnemyEasy, Color.Red},
+        {Name.EnemyFast, Color.Red},
+        {Name.EnemyVeryFast, Color.Red},
+        {Name.Projectile1, Color.Blue},
+        {Name.Stone, Color.DarkGray},
+        {Name.Arrow, Color.White},
+        {Name.Spike, Color.DarkRed},
+        {Name.SquareD6, Color.White*0.05f},
+        {Name.ExplosionSquareD6, Color.White*0.5f},
     };
     protected static Dictionary<Name, float> DefaultSpeed = new() {
         {Name.Enemy1, 1f},
@@ -47,7 +61,8 @@ abstract public class Entity : Thing
         {Name.Stone, 5d},
         {Name.Arrow, 1d},
         {Name.Spike, 1d},
-        {Name.SquareD6, 0d}
+        {Name.SquareD6, -1d},
+        {Name.ExplosionSquareD6, float.MinValue/2},
     };
     protected static Dictionary<Name, double> DefaultDamage = new() {
         {Name.Enemy1, 1d},
@@ -55,32 +70,20 @@ abstract public class Entity : Thing
         {Name.EnemyFast, 1d},
         {Name.EnemyVeryFast, 1d},
         {Name.Projectile1, 1d},
-        {Name.SquareD6, 0d}
-    };
-    protected static Dictionary<Name, Color> DefaultColor = new() {
-        {Name.Enemy1, Color.Red},
-        {Name.EnemyEasy, Color.Red},
-        {Name.EnemyFast, Color.Red},
-        {Name.EnemyVeryFast, Color.Red},
-        {Name.Projectile1, Color.Blue},
-        {Name.Stone, Color.DarkGray},
-        {Name.Arrow, Color.White},
-        {Name.Spike, Color.DarkRed},
-        {Name.SquareD6, Color.Transparent}
+        {Name.SquareD6, 0d},
+        {Name.ExplosionSquareD6, 5d},
     };
     protected static Dictionary<Name, int> Money = new() {
         {Name.Enemy1, 1},
         {Name.EnemyEasy, 1},
         {Name.EnemyFast, 1},
         {Name.EnemyVeryFast, 1},
-
     };
     public static Dictionary<Name, Texture2D> Texture = new();
     public Entity(Game1 game, Name name) : base(game,name)
     {
         size = Size[name];
         health = maxhealth = DefaultHealth[name];
-        // Damage = DefaultDamage[name];
         window = new Window(this, WindowType.Entity, EntityTexture(), DefaultColor[name], true);
     }
     public Vector2 coordinate;

@@ -12,30 +12,9 @@ namespace TheGame;
 
 public class Spell : Thing
 {
-    // private static Dictionary<Name, bool> _dependentOnly = new() {
-    //     {Name.SummonEnemy, false},
-    //     {Name.SummonProjectile, false},
-    //     {Name.VelocityZero, true},
-    //     {Name.AddSpeed, true},
-    //     {Name.Add10Speed, true},
-    //     {Name.AddXVelocity, true},
-    //     {Name.AddYVelocity, true},
-    //     {Name.ReduceXVelocity, true},
-    //     {Name.ReduceYVelocity, true},
-    //     {Name.TriggerUponDeath, true},
-    //     {Name.AimClosestInSquareD6, false},
-    //     {Name.AimMouse, false},
-    //     {Name.AimUp, false},
-    //     {Name.AimDown, false},
-    //     {Name.AimLeft, false},
-    //     {Name.AimRight, false},
-    //     {Name.AimBack, false},
-    //     {Name.Wait60Ticks, false}
-    // };
     public readonly bool dependentOnly;
-    public static Dictionary<Name, Texture2D> TextureUI = new();
-    public static Dictionary<Name, Texture2D> _TextureIcon = new();
-    public static Dictionary<(Name, int), Texture2D> TextureSlot = new();
+    public static Dictionary<Name, Texture2D> TextureIcon = new();
+    public static Dictionary<(int, int), Texture2D> TextureSlot = new();
     public Attachment attachment = new();
     public Vector2 Coordinate() {return attachment.tower.Coordinate();}
     public Spell[] children; // 子法术列表（第零项是后继法术）
@@ -55,7 +34,18 @@ public class Spell : Thing
     public Spell(Game1 game, Name name, Name summonedEntity = Name.Null) : base(game, name)
     {
         this.summonedEntity = summonedEntity;
-        dependentOnly = name switch{Name.VelocityZero or Name.AddSpeed or Name.Add10Speed or Name.AddXVelocity or Name.AddYVelocity or Name.ReduceXVelocity or Name.ReduceYVelocity or Name.TriggerUponDeath => true, _ => false};
+        price = 2*Game1.SpellPrice.GetValueOrDefault(name == Name.SummonProjectile ? summonedEntity : name);
+        dependentOnly = name switch{
+            Name.VelocityZero or 
+            Name.AddSpeed or 
+            Name.Add10Speed or 
+            Name.DoubleSpeed or
+            Name.AddXVelocity or 
+            Name.AddYVelocity or 
+            Name.ReduceXVelocity or 
+            Name.ReduceYVelocity or 
+            Name.TriggerUponDeath 
+            => true, _ => false};
         windowIcon = new Window(this, WindowType.SpellIcon, IconTexture(), Color.White);
         windowSlot = new Window(this, WindowType.SpellSlot, null, Color.White);
         UIsize = new(64,64);
@@ -67,11 +57,13 @@ public class Spell : Thing
                     Name.Stone => "A STONE",
                     Name.Arrow => "AN ARROW",
                     Name.Spike => "A SPIKE",
+                    Name.ExplosionSquareD6 => "AN EXPLOSION",
                     _ => "SOMETHING WEIRD",
                 },
-                Name.VelocityZero => "REMOVE VELOCITY",
+                Name.VelocityZero => "REMOVE SPEED",
                 Name.AddSpeed => "ADD SPEED",
                 Name.Add10Speed => "ADD MUCH SPEED",
+                Name.DoubleSpeed => "DOUBLE SPEED",
                 Name.AddXVelocity => "SPEED EAST",
                 Name.AddYVelocity => "SPEED SOUTH",
                 Name.ReduceXVelocity => "SPEED WEST",
@@ -85,7 +77,12 @@ public class Spell : Thing
                 Name.AimRight => "AIM EAST",
                 Name.AimBack => "AIM BACK",
                 Name.Wait60Ticks => "WAIT A SECOND",
-                _ => "IF YOU SEE THIS PLEASE REPORT THIS AS A BUG"
+                Name.DoubleCast => "CAST TWO SPELLS",
+                Name.TwiceCast => "CAST A SPELL TWICE",
+                Name.CastEveryTick => "CAST A SPELL 64 TIMES",
+                Name.CastEvery8Ticks => "SLOWLY CAST A SPELL 16 TIMES",
+                Name.CastEvery64Ticks => "VERT SLOWLY CAST A SPELL 4 TIMES",
+                _ => "THIS IS A BUG"
             },
             text2 = "NO MANA COST",
             textOffset = new(64,14),
@@ -95,19 +92,31 @@ public class Spell : Thing
         {
             case Name.SummonEnemy:
             case Name.SummonProjectile:
+            case Name.DoubleCast:
                 UIsize = Max(UIsize, new(128, 192));
                 children = new Spell[2];
                 windowSlots = new Window[2]
                 {
-                    new (this, WindowType.SpellSlots, TextureSlot[(name, 0)],Color.Aqua){rank = 0, text = "TO CAST UPON EXPIRATION", textOffset = new(64,128+14), textColor = Color.Aqua},
-                    new (this, WindowType.SpellSlots, TextureSlot[(name, 1)],Color.BlueViolet){rank = 1, text = "TO CAST ON SUMMONED ENTITY", textOffset = new(128,64+14), textColor = Color.BlueViolet},
+                    new (this, WindowType.SpellSlots, TextureSlot[(2,0)],Color.Aqua){rank = 0, textOffset = new(64,128+14), textColor = Color.Aqua, text = name switch{
+                        Name.DoubleCast => "SECOND SPELL",
+                        _ => "TO CAST UPON EXPIRATION",
+                    }},
+                    new (this, WindowType.SpellSlots, TextureSlot[(2,1)],Color.BlueViolet){rank = 1, textOffset = new(128,64+14), textColor = Color.BlueViolet, text = name switch{
+                        Name.DoubleCast => "FIRST SPELL",
+                        _ => "TO CAST ON SUMMONED ENTITY",
+                    }},
                 };
                 break;
             default:
                 UIsize = Max(UIsize, new(64, 128));
                 children = new Spell[1];
                 windowSlots = new Window[1]{
-                    new (this, WindowType.SpellSlots, TextureSlot[(name, 0)],Color.Aqua){rank = 0, text = "TO CAST UPON EXPIRATION", textOffset = new(64,64+14), textColor = Color.Aqua},
+                    new (this, WindowType.SpellSlots, TextureSlot[(1,0)],Color.Aqua){rank = 0, textOffset = new(64,64+14), textColor = Color.Aqua, text = name switch{
+                        Name.TriggerUponDeath => "TO CAST UPON ENTITY EXPIRATION",
+                        Name.TwiceCast => "TO CAST TWICE",
+                        Name.CastEveryTick or Name.CastEvery8Ticks or Name.CastEvery64Ticks=> "TO CAST REPEATEDLY",
+                        _ => "TO CAST UPON EXPIRATION",
+                    }},
                 };
                 break;
         }
@@ -204,6 +213,7 @@ public class Spell : Thing
     }
     public void TickCast()
     {
+        bool oldused = used;
         foreach(Cast c in toCastNextTick)
             // if(!(dependentOnly[name] && c.type == CastType.Independent))
             {
@@ -211,10 +221,11 @@ public class Spell : Thing
                 used = true;
             }
         toCastNextTick.Clear();
+        if(!oldused && used) price /= 2;
     }
 
     private Texture2D IconTexture()
     {
-        return _TextureIcon[name];
+        return TextureIcon.GetValueOrDefault(name);
     }
 }

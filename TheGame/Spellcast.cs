@@ -10,6 +10,7 @@ public class Spellcast : Thing
 {
     public Spell spell;
     public Cast cast;
+    private int int1;
     public Vector2 CurrentCoordinate()
     {
         if (cast.type == CastType.Dependent) return cast.subject.coordinate;
@@ -54,6 +55,10 @@ public class Spellcast : Thing
                     break;
                 case Name.Add10Speed:
                     cast.subject.velocity += 10 * Normalized(cast.direction);
+                    alive = false;
+                    break;
+                case Name.DoubleSpeed:
+                    cast.subject.velocity *= 2;
                     alive = false;
                     break;
                 case Name.AddXVelocity:
@@ -114,6 +119,47 @@ public class Spellcast : Thing
                     break;
                 case Name.Wait60Ticks:
                     if(game.tick - tickBirth >= 60) alive = false;
+                    break;
+                case Name.DoubleCast:
+                    spell.children[1]?.toCastNextTick.Add(cast.Clone());
+                    alive = false;
+                    break;
+                case Name.TwiceCast:
+                    spell.children[0]?.toCastNextTick.Add(cast.Clone());
+                    alive = false;
+                    break;
+                case Name.CastEveryTick:
+                    spell.children[0]?.toCastNextTick.Add(cast.Clone());
+                    ++int1;
+                    if(int1>=64)
+                    {
+                        alive = false;
+                        return;
+                    }
+                    break;
+                case Name.CastEvery8Ticks:
+                    if((tickBirth-game.tick)%8==0 && tickBirth!=game.tick)
+                    {
+                        spell.children[0]?.toCastNextTick.Add(cast.Clone());
+                        ++int1;
+                    }
+                    if(int1>=16)
+                    {
+                        alive = false;
+                        return;
+                    }
+                    break;
+                case Name.CastEvery64Ticks:
+                    if((tickBirth-game.tick)%64==0 && tickBirth!=game.tick)
+                    {
+                        spell.children[0]?.toCastNextTick.Add(cast.Clone());
+                        ++int1;
+                    }
+                    if(int1>=4)
+                    {
+                        alive = false;
+                        return;
+                    }
                     break;
             }
         }

@@ -15,9 +15,10 @@ public class Block
     public static RanDict<int> RandomTowerNumber = new(){
         {1,20},{2,10},{3,5},{4,1}
     };
+    const int STANDARD = 8;
     public static Dictionary<BlockName, RanDict<(int,int,int)>> RandomTowerLocation = new(){
-        {BlockName.A,new(){{(0,0,(15-14)),1},{(0,2,(15-14)),1},{(0,4,(15-14)),1},{(2,0,(15-14)),1},{(2,2,(15-14)),1},{(2,4,(15-14)),1},{(4,0,(15-14)),1},{(4,2,(15-14)),1},{(4,4,(15-14)),1}}},
-        {BlockName.B,new(){{(0,0,(15-14)),1},{(0,2,(15-14)),1},{(0,4,(15-14)),1},{(2,0,(15-14)),1},{(2,2,(15-14)),1},{(2,4,(15-14)),1},{(4,0,(15-14)),1},{(4,2,(15-14)),1},{(4,4,(15-14)),1}}},
+        {BlockName.A,new(){{(0,0,STANDARD),1},{(0,2,STANDARD),1},{(0,4,STANDARD),1},{(2,0,STANDARD),1},{(2,2,STANDARD),1},{(2,4,STANDARD),1},{(4,0,STANDARD),1},{(4,2,STANDARD),1},{(4,4,STANDARD),1}}},
+        {BlockName.B,new(){{(0,0,STANDARD),1},{(0,2,STANDARD),1},{(0,4,STANDARD),1},{(2,0,STANDARD),1},{(2,2,STANDARD),1},{(2,4,STANDARD),1},{(4,0,STANDARD),1},{(4,2,STANDARD),1},{(4,4,STANDARD),1}}},
     };
     public BlockName name;
     public const int numX = 5;
