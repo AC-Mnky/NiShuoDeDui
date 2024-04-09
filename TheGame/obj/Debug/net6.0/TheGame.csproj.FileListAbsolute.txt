@@ -73,3 +73,13 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\default.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\white.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\font.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\transparent.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimback.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimdown.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimleft.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimmouse.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimright.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aimup.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\slot.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\slotLeft.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\slotUp.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\templateicon.xnb

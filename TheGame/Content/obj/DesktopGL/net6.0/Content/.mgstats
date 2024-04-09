@@ -3,13 +3,13 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/addspeedicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/addspeedicon.xnb","TextureProcessor","Texture2DContent",184,5269,0.0036556
 "D:/Game202402/TheGame/Content/addxvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/addxvelocityicon.xnb","TextureProcessor","Texture2DContent",229,5269,0.2002347
 "D:/Game202402/TheGame/Content/addyvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/addyvelocityicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.0031025
-"D:/Game202402/TheGame/Content/aimback.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimbackicon.xnb","TextureProcessor","Texture2DContent",236,5269,0.1907946
+"D:/Game202402/TheGame/Content/aimback.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimback.xnb","TextureProcessor","Texture2DContent",236,5269,0.176489
 "D:/Game202402/TheGame/Content/aimclosestinsquared6icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimclosestinsquared6icon.xnb","TextureProcessor","Texture2DContent",222,5269,0.0026284
-"D:/Game202402/TheGame/Content/aimdown.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimdownicon.xnb","TextureProcessor","Texture2DContent",253,5269,0.0027979
-"D:/Game202402/TheGame/Content/aimleft.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimlefticon.xnb","TextureProcessor","Texture2DContent",233,5269,0.002651
-"D:/Game202402/TheGame/Content/aimmouse.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimmouseicon.xnb","TextureProcessor","Texture2DContent",245,5269,0.0023015
-"D:/Game202402/TheGame/Content/aimright.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimrighticon.xnb","TextureProcessor","Texture2DContent",236,5269,0.0026944
-"D:/Game202402/TheGame/Content/aimup.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimupicon.xnb","TextureProcessor","Texture2DContent",235,5269,0.0025386
+"D:/Game202402/TheGame/Content/aimdown.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimdown.xnb","TextureProcessor","Texture2DContent",253,5269,0.0040851
+"D:/Game202402/TheGame/Content/aimleft.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimleft.xnb","TextureProcessor","Texture2DContent",233,5269,0.0029222
+"D:/Game202402/TheGame/Content/aimmouse.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimmouse.xnb","TextureProcessor","Texture2DContent",245,5269,0.0019977
+"D:/Game202402/TheGame/Content/aimright.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimright.xnb","TextureProcessor","Texture2DContent",236,5269,0.0030202
+"D:/Game202402/TheGame/Content/aimup.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimup.xnb","TextureProcessor","Texture2DContent",235,5269,0.0024329
 "D:/Game202402/TheGame/Content/blockA04.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA04.xnb","TextureProcessor","Texture2DContent",1152,409685,0.1890316
 "D:/Game202402/TheGame/Content/blockA15.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA15.xnb","TextureProcessor","Texture2DContent",1152,409685,0.0132768
 "D:/Game202402/TheGame/Content/blockA26.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockA26.xnb","TextureProcessor","Texture2DContent",596,409685,0.0137884
@@ -34,6 +34,9 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/projectile1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/projectile1.xnb","TextureProcessor","Texture2DContent",130,1109,0.2211646
 "D:/Game202402/TheGame/Content/reducexvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/reducexvelocityicon.xnb","TextureProcessor","Texture2DContent",228,5269,0.0030651
 "D:/Game202402/TheGame/Content/reduceyvelocityicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/reduceyvelocityicon.xnb","TextureProcessor","Texture2DContent",237,5269,0.002097
+"D:/Game202402/TheGame/Content/slot.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/slot.xnb","TextureProcessor","Texture2DContent",182,4181,0.0027211
+"D:/Game202402/TheGame/Content/slotLeft.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/slotLeft.xnb","TextureProcessor","Texture2DContent",192,4181,0.0026864
+"D:/Game202402/TheGame/Content/slotUp.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/slotUp.xnb","TextureProcessor","Texture2DContent",191,4181,0.003225
 "D:/Game202402/TheGame/Content/SpellGUI1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI1.xnb","TextureProcessor","Texture2DContent",692,196693,0.199017
 "D:/Game202402/TheGame/Content/SpellGUI1Slot0.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI1Slot0.xnb","TextureProcessor","Texture2DContent",510,196693,0.1866287
 "D:/Game202402/TheGame/Content/SpellGUI2.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2.xnb","TextureProcessor","Texture2DContent",997,393301,0.1944148
@@ -41,6 +44,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/SpellGUI2slot1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2slot1.xnb","TextureProcessor","Texture2DContent",729,393301,0.0118721
 "D:/Game202402/TheGame/Content/summonenemy1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonenemy1icon.xnb","TextureProcessor","Texture2DContent",258,5269,0.0022206
 "D:/Game202402/TheGame/Content/summonprojectile1icon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/summonprojectile1icon.xnb","TextureProcessor","Texture2DContent",247,5269,0.0028158
+"D:/Game202402/TheGame/Content/templateicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/templateicon.xnb","TextureProcessor","Texture2DContent",173,4181,0.0063455
 "D:/Game202402/TheGame/Content/towerGUI.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/towerGUI.xnb","TextureProcessor","Texture2DContent",200,7829,0.2304031
 "D:/Game202402/TheGame/Content/transparent.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/transparent.xnb","TextureProcessor","Texture2DContent",81,89,0.2102242
 "D:/Game202402/TheGame/Content/triggerupondeathicon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/triggerupondeathicon.xnb","TextureProcessor","Texture2DContent",225,5269,0.1984556

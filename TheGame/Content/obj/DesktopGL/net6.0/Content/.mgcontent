@@ -39,6 +39,9 @@
     <File>D:/Game202402/TheGame/Content/projectile1.png</File>
     <File>D:/Game202402/TheGame/Content/reducexvelocityicon.png</File>
     <File>D:/Game202402/TheGame/Content/reduceyvelocityicon.png</File>
+    <File>D:/Game202402/TheGame/Content/slot.png</File>
+    <File>D:/Game202402/TheGame/Content/slotLeft.png</File>
+    <File>D:/Game202402/TheGame/Content/slotUp.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI1.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI1Slot0.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI2.png</File>
@@ -46,6 +49,7 @@
     <File>D:/Game202402/TheGame/Content/SpellGUI2slot1.png</File>
     <File>D:/Game202402/TheGame/Content/summonenemy1icon.png</File>
     <File>D:/Game202402/TheGame/Content/summonprojectile1icon.png</File>
+    <File>D:/Game202402/TheGame/Content/templateicon.png</File>
     <File>D:/Game202402/TheGame/Content/towerGUI.png</File>
     <File>D:/Game202402/TheGame/Content/transparent.png</File>
     <File>D:/Game202402/TheGame/Content/triggerupondeathicon.png</File>
@@ -59,13 +63,13 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
-    <File>aimbackicon.png</File>
     <File xsi:nil="true" />
-    <File>aimdownicon.png</File>
-    <File>aimlefticon.png</File>
-    <File>aimmouseicon.png</File>
-    <File>aimrighticon.png</File>
-    <File>aimupicon.png</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
@@ -84,6 +88,10 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File>Fonts/untitledfont.spritefont</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
-public enum WindowType {SpellIcon, SpellSlot, SpellDescription, NewGame, Title, Win, GameOver, InventorySlot, ShopSlot, Tower, Block, Entity, Road, Reddoor, Bluedoor, Shop, Money, Inventory, Life};
+public enum WindowType {SpellIcon, SpellSlot, SpellSlots, SpellDescription, NewGame, Title, Win, GameOver, InventorySlot, ShopSlot, Tower, Block, Entity, Road, Reddoor, Bluedoor, Shop, Money, Inventory, Life};
 
 public class Window
 {
@@ -20,9 +20,13 @@ public class Window
     public int rank = -1;
     public float rotation = 0;
     public string text = null;
+    public string text2 = null;
     public Point textOffset = new(0,0);
+    public Point text2Offset = new(0,12);
     public Color textColor = Color.White;
+    public Color text2Color = Color.Gray;
     public float textScale = 2;
+    public float text2Scale = 2;
     public Window(object parent, WindowType type, Texture2D texture, Color originalColor, bool clickable = true)
     {
         this.parent = parent;

@@ -28,7 +28,7 @@ public class Game1 : Game
 {
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
     private GraphicsDeviceManager _graphics;
-    private SpriteFont _font;
+    public SpriteFont _font;
     private SpriteBatch _spriteBatch;
     private Effect _mapShader;
     // private Effect _guiShader;
@@ -76,7 +76,7 @@ public class Game1 : Game
     private bool shopOpen, inventoryOpen, inventoryAvailable;
     public int stage, wave;
     private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
-    public static Texture2D slotTexture;
+    public static Texture2D slotTexture, slotLeftTexture, slotUpTexture;
     public static Texture2D doorTexture;
     public static Texture2D defaultTexture;
     public static Texture2D whiteTexture;
@@ -176,7 +176,9 @@ public class Game1 : Game
             textScale = 2,
             textOffset = new(15,15)
         };
-        slotTexture = Content.Load<Texture2D>("towergui");
+        slotTexture = Content.Load<Texture2D>("slot");
+        slotUpTexture = Content.Load<Texture2D>("slotUp");
+        slotLeftTexture = Content.Load<Texture2D>("slotLeft");
         doorTexture = Content.Load<Texture2D>("door");
         // _lightgrey = Content.Load<Texture2D>("lightgrey");
         // _darkgrey = Content.Load<Texture2D>("darkgrey");
@@ -203,24 +205,24 @@ public class Game1 : Game
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.SquareD6] = null;
 
-        Spell.TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
-        Spell.TextureIcon[Name.SummonProjectile] = Content.Load<Texture2D>("SummonProjectile1icon");
-        Spell.TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("velocityzeroicon");
-        Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
-        Spell.TextureIcon[Name.Add10Speed] = Content.Load<Texture2D>("add5speedicon");
-        Spell.TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("addxvelocityicon");
-        Spell.TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("addyvelocityicon");
-        Spell.TextureIcon[Name.ReduceXVelocity] = Content.Load<Texture2D>("reducexvelocityicon");
-        Spell.TextureIcon[Name.ReduceYVelocity] = Content.Load<Texture2D>("reduceyvelocityicon");
-        Spell.TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("triggerupondeathicon");
-        Spell.TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("aimclosestinsquared6icon");
-        Spell.TextureIcon[Name.AimMouse] = Content.Load<Texture2D>("aimmouseicon");
-        Spell.TextureIcon[Name.AimUp] = Content.Load<Texture2D>("aimupicon");
-        Spell.TextureIcon[Name.AimDown] = Content.Load<Texture2D>("aimdownicon");
-        Spell.TextureIcon[Name.AimLeft] = Content.Load<Texture2D>("aimlefticon");
-        Spell.TextureIcon[Name.AimRight] = Content.Load<Texture2D>("aimrighticon");
-        Spell.TextureIcon[Name.AimBack] = Content.Load<Texture2D>("aimbackicon");
-        Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
+        Spell._TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
+        Spell._TextureIcon[Name.SummonProjectile] = Content.Load<Texture2D>("SummonProjectile1icon");
+        Spell._TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("velocityzeroicon");
+        Spell._TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
+        Spell._TextureIcon[Name.Add10Speed] = Content.Load<Texture2D>("add5speedicon");
+        Spell._TextureIcon[Name.AddXVelocity] = Content.Load<Texture2D>("addxvelocityicon");
+        Spell._TextureIcon[Name.AddYVelocity] = Content.Load<Texture2D>("addyvelocityicon");
+        Spell._TextureIcon[Name.ReduceXVelocity] = Content.Load<Texture2D>("reducexvelocityicon");
+        Spell._TextureIcon[Name.ReduceYVelocity] = Content.Load<Texture2D>("reduceyvelocityicon");
+        Spell._TextureIcon[Name.TriggerUponDeath] = Content.Load<Texture2D>("triggerupondeathicon");
+        Spell._TextureIcon[Name.AimClosestInSquareD6] = Content.Load<Texture2D>("aimclosestinsquared6icon");
+        Spell._TextureIcon[Name.AimMouse] = Content.Load<Texture2D>("aimmouseicon");
+        Spell._TextureIcon[Name.AimUp] = Content.Load<Texture2D>("aimupicon");
+        Spell._TextureIcon[Name.AimDown] = Content.Load<Texture2D>("aimdownicon");
+        Spell._TextureIcon[Name.AimLeft] = Content.Load<Texture2D>("aimlefticon");
+        Spell._TextureIcon[Name.AimRight] = Content.Load<Texture2D>("aimrighticon");
+        Spell._TextureIcon[Name.AimBack] = Content.Load<Texture2D>("aimbackicon");
+        Spell._TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
 
         Spell.TextureUI[Name.SummonEnemy] = Content.Load<Texture2D>("SpellGUI2");
         Spell.TextureUI[Name.SummonProjectile] = Content.Load<Texture2D>("SpellGUI2");
@@ -276,9 +278,9 @@ public class Game1 : Game
     {
         return projectile.AddLast(new Projectile(this, name, coordinate, velocity)).Value;
     }
-    public Spell NewSpell(Name name)
+    public Spell NewSpell(Name name, Name summonedEntity = Name.Null)
     {
-        return spell.AddLast(new Spell(this, name)).Value;
+        return spell.AddLast(new Spell(this, name, summonedEntity)).Value;
     }
     public Spellcast NewSpellcast(Spell spell, Cast cast)
     {
@@ -399,18 +401,12 @@ public class Game1 : Game
     }
     public void GenerateEnemyStack()
     {
+        summonenemy1 = NewSpell(Name.SummonEnemy, Name.Enemy1);
+        summonenemyEasy = NewSpell(Name.SummonEnemy, Name.EnemyEasy);
+        summonenemyFast = NewSpell(Name.SummonEnemy, Name.EnemyFast);
+        summonenemyVeryFast = NewSpell(Name.SummonEnemy, Name.EnemyVeryFast);
         for(int i=0;i<20;++i) enemyStack.Push(summonenemyEasy);
-        // if(rand.Next(60) == 0) NewSpellcast(summonenemy1, new Cast(new Vector2()));
-        // if(rand.Next(120) == 0) NewSpellcast(summonenemyEasy, new(new Vector2()));
-        // if(rand.Next(240) == 0) NewSpellcast(summonenemyFast, new Cast(new Vector2()));
-        // if(rand.Next(480) == 0) NewSpellcast(summonenemyVeryFast, new Cast(new Vector2()));
     }
-    // public int EnemyCount()
-    // {
-    //     int x = 0;
-    //     foreach(Entity e in entities) if(e is Enemy) ++x;
-    //     return x;
-    // }
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
         switch(gamescene)
@@ -478,10 +474,6 @@ public class Game1 : Game
     {
         ClearMap();
         _view = Matrix.Identity;
-        (summonenemy1 = NewSpell(Name.SummonEnemy)).summonedEntity = Name.Enemy1;
-        (summonenemyEasy = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyEasy;
-        (summonenemyFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyFast;
-        (summonenemyVeryFast = NewSpell(Name.SummonEnemy)).summonedEntity = Name.EnemyVeryFast;
         #region blocks
         blocks = new Block[Block.numX,Block.numY];
         do{
@@ -530,7 +522,7 @@ public class Game1 : Game
     }
     private void InitInventory()
     {
-        inventory = new Spell[11];
+        inventory = new Spell[25];
         inventorySlot = new Window[inventory.Length];
         for(int i=1;i<inventory.Length;++i)
         {
@@ -541,7 +533,7 @@ public class Game1 : Game
     }
     private void InitShop()
     {
-        shop = new Spell[11];
+        shop = new Spell[25];
         shopSlot = new Window[shop.Length];
         for(int i=1;i<shop.Length;++i)
         {
@@ -576,16 +568,14 @@ public class Game1 : Game
     };
     private Spell RandomNewSpell()
     {
-        Spell spell = NewSpell(RandomSpellName.Next());
-        if(spell.name == Name.SummonProjectile)
-            spell.summonedEntity = rand.Next(4) switch
+        Spell spell = NewSpell(RandomSpellName.Next(), rand.Next(4) switch
             {
                 0 => Name.Projectile1,
                 1 => Name.Stone,
                 2 => Name.Arrow,
                 3 => Name.Spike,
                 _ => throw new ArgumentOutOfRangeException(),
-            };
+            });
         return spell;
     }
 
@@ -846,7 +836,7 @@ public class Game1 : Game
                     {
                         inventory[0].showLayer = time;
 
-                        if(mouseOn?.parent is Spell && mouseOn.type == WindowType.SpellSlot)
+                        if(mouseOn?.parent is Spell && mouseOn.type == WindowType.SpellSlots)
                         {
                             if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
                                 MoveSpell(inventory[0], new Attachment((Spell)mouseOn.parent, mouseOn.rank));
@@ -1028,9 +1018,6 @@ public class Game1 : Game
                 // 路
                 foreach(Block b in blocks) foreach(Road r in b.road) DrawWindow(r.window, new(b.Coordinate().ToPoint(), new(Block.Dgrid*64,Block.Dgrid*64)), new());
 
-                // 塔
-                foreach(Block b in blocks) foreach(Tower t in b.tower) DrawWindow(t.window, new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44), null);
-
                 // 实体
                 foreach(Entity e in entities())  if(e.window.texture != null) DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), new(e.window.texture.Width, e.window.texture.Height)), new());
 
@@ -1038,10 +1025,11 @@ public class Game1 : Game
                 DrawWindow(BluedoorWindow, new(BluedoorCoor.ToPoint(), new(64,64)),null);
                 DrawWindow(ReddoorWindow, new(ReddoorCoor.ToPoint(), new(64,64)),null);
 
-                // 法术
-                var l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
-                foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null) l.Add(t.spell.showLayer, (t.spell, (t.MapI()*64, t.MapJ()*64)));
-                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
+                // 塔和法术
+                foreach(Block b in blocks) foreach(Tower t in b.tower) DrawWindow(t.window, new((int)t.Coordinate().X-32,(int)t.Coordinate().Y-32,64,64), new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44));
+                var l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
+                foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null) l.Add(t.spell.showLayer, (t.spell, new(t.MapI()*64, t.MapJ()*64)));
+                foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
 
                 
                 if(!_predraw) _spriteBatch.End();
@@ -1056,20 +1044,20 @@ public class Game1 : Game
                 DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null);
                 
                 // 物品栏法术
-                for(int i=1;i<inventory.Length;++i) DrawWindow(inventorySlot[i], new(shopWidth+inventoryWidth-256+74+10, i*64+10+10,44,44), null);
-                l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
-                for(int i=1;i<inventory.Length;++i) if(inventory[i] != null) l.Add(inventory[i].showLayer, (inventory[i],(shopWidth+inventoryWidth-256+74, i*64+10)));
-                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
+                for(int i=1;i<inventory.Length;++i) DrawWindow(inventorySlot[i], new(new Point(shopWidth+inventoryWidth-256,0)+InventoryOffset(i),new(64,64)), new(new Point(shopWidth+inventoryWidth-256+10,10)+InventoryOffset(i),new(44,44)));
+                l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
+                for(int i=1;i<inventory.Length;++i) if(inventory[i] != null) l.Add(inventory[i].showLayer, (inventory[i],new Point(shopWidth+inventoryWidth-256,0)+InventoryOffset(i)));
+                foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
                 
                 // 商店栏
                 DrawWindow(shopWindow, new(0,0,shopWidth,height), null);
                 DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null);
 
                 // 商店栏法术
-                for(int i=1;i<shop.Length;++i) DrawWindow(shopSlot[i], new(shopWidth-256+74+10, i*64+10+10,44,44), null);
-                l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
-                for(int i=1;i<shop.Length;++i) if(shop[i] != null) l.Add(shop[i].showLayer, (shop[i],(shopWidth-256+74, i*64+10)));
-                foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
+                for(int i=1;i<shop.Length;++i) DrawWindow(shopSlot[i], new(new Point(shopWidth-256,0)+InventoryOffset(i),new(64,64)), new(new Point(shopWidth-256+10,10)+InventoryOffset(i),new(44,44)));
+                l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
+                for(int i=1;i<shop.Length;++i) if(shop[i] != null) l.Add(shop[i].showLayer, (shop[i],new Point(shopWidth-256,0)+InventoryOffset(i)));
+                foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
 
                 // 鼠标上的法术
                 if(!_predraw) if(inventory[0] != null) DrawWindow(inventory[0].windowIcon, new(Mouse.Pos().ToPoint(),new(36,36)), new());
@@ -1109,6 +1097,11 @@ public class Game1 : Game
         if(!_predraw) _hasdrawn = true;
     }
 
+    protected Point InventoryOffset(int i)
+    {
+        const int SPACING = 32;
+        return new(SPACING+(i-1)%3*64,SPACING+(i-1)/3*64);
+    }
     protected void DrawSpellUI(Spell s, int x, int y)
     {
         if(!s.showUI)
@@ -1117,12 +1110,14 @@ public class Game1 : Game
         }
         else
         {
-            DrawWindow(s.windowUI, new(x, y, s.windowUI.texture.Width, s.windowUI.texture.Height), null);
+            DrawWindow(s.windowUIouter, new(new(x-2,y-2), s.UIsize+new Point(4,4)), null);
+            DrawWindow(s.windowUI, new(new(x,y), s.UIsize), null);
+            DrawWindow(s.windowSlot, new(x, y, 64, 64), new());
             DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44));
             foreach(Window ws in s.windowSlots) DrawWindow(ws, new(x, y, ws.texture.Width, ws.texture.Height), new(new Point(x,y) + ws.textOffset + new Point(-54,-4), new(44,44)));
-            var l = new SortedList<double, (Spell,(int,int))>(new DuplicateKeyComparer<double>());
-            for(int i=0;i<s.children.Length; ++i) if(s.children[i] != null) l.Add(s.children[i].showLayer, (s.children[i], (x+s.windowSlots[i].textOffset.X-64, y+s.windowSlots[i].textOffset.Y-14)));
-            foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
+            var l = new SortedList<double, (Spell,Point)>(new DuplicateKeyComparer<double>());
+            for(int i=0;i<s.children.Length; ++i) if(s.children[i] != null) l.Add(s.children[i].showLayer, (s.children[i], new(x+s.windowSlots[i].textOffset.X-64, y+s.windowSlots[i].textOffset.Y-14)));
+            foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
         }
     }
     protected void DrawStringWindow(Window w, Point position, bool mouseCatch = true)
@@ -1160,11 +1155,13 @@ public class Game1 : Game
                         r.Offset(i*xPeriod, j*yPeriod);
                         _spriteBatch.Draw(w.texture??defaultTexture, r, null, (w.clickable && mouseOn == w) ? Color.Yellow : w.color, w.rotation, new(), new(), 0);
                         if(w.text != null) _spriteBatch.DrawString(_font, w.text, (r.Location + w.textOffset).ToVector2(), (w.clickable && mouseOn == w) ? Color.Yellow : w.textColor, w.rotation, new(), w.textScale, SpriteEffects.None, 0);
+                        if(w.text2 != null) _spriteBatch.DrawString(_font, w.text2, (r.Location + w.text2Offset).ToVector2(), (w.clickable && mouseOn == w) ? Color.Yellow : w.text2Color, w.rotation, new(), w.text2Scale, SpriteEffects.None, 0);
                     }
             }
             else
                 _spriteBatch.Draw(w.texture??defaultTexture, RectRender, null, (w.clickable && mouseOn == w) ? Color.Yellow : w.color, w.rotation, new(), new(), 0);
                 if(w.text != null) _spriteBatch.DrawString(_font, w.text, (RectRender.Location + w.textOffset).ToVector2(), (w.clickable && mouseOn == w) ? Color.Yellow : w.textColor, w.rotation, new(), w.textScale, SpriteEffects.None, 0);
+                if(w.text2 != null) _spriteBatch.DrawString(_font, w.text2, (RectRender.Location + w.text2Offset).ToVector2(), (w.clickable && mouseOn == w) ? Color.Yellow : w.text2Color, w.rotation, new(), w.text2Scale, SpriteEffects.None, 0);
         }
     }
 

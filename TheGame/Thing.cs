@@ -6,7 +6,8 @@ using System.Security.Cryptography;
 
 namespace TheGame;
 
-public enum Name {Enemy1, EnemyEasy, EnemyFast, EnemyVeryFast, Projectile1, Stone, Arrow, Spike, SquareD6,
+public enum Name {Null,
+Enemy1, EnemyEasy, EnemyFast, EnemyVeryFast, Projectile1, Stone, Arrow, Spike, SquareD6,
 SummonEnemy, SummonProjectile, SummonStone, SummonArrow, SummonSpike, VelocityZero, AddSpeed, Add10Speed, AddXVelocity, AddYVelocity, ReduceXVelocity, ReduceYVelocity, TriggerUponDeath, AimClosestInSquareD6, AimMouse, AimLeft, AimRight, AimUp, AimDown, AimBack, Wait60Ticks};
 
 abstract public class Thing
@@ -32,7 +33,7 @@ abstract public class Thing
     }
     public static Vector2 Randomdirection()
     {
-        int a = RandomNumberGenerator.GetInt32(2147483647);
+        float a = RandomNumberGenerator.GetInt32(360)*MathF.PI/180;
         return new(MathF.Cos(a),MathF.Sin(a));
     }
     public static Vector2 Normalized(Vector2 vector) // 不要问我为什么把这无关的玩意放在这里。我想不到更好的地方放了。
@@ -41,5 +42,9 @@ abstract public class Thing
         Vector2 v = vector;
         v.Normalize();
         return v;
+    }
+    public static Point Max(Point A, Point B)
+    {
+        return new((A.X>B.X)?A.X:B.X,(A.Y>B.Y)?A.Y:B.Y);
     }
 }
