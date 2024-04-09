@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>D:/Game202402/TheGame/Content/SpellGUI2slot1.png</SourceFile>
-  <SourceTime>2024-02-29T22:08:52.7050983+08:00</SourceTime>
+  <SourceTime>2024-04-09T13:38:49.357412+08:00</SourceTime>
   <DestFile>D:/Game202402/TheGame/Content/bin/DesktopGL/Content/SpellGUI2slot1.xnb</DestFile>
-  <DestTime>2024-02-29T22:11:06.1991743+08:00</DestTime>
+  <DestTime>2024-04-09T13:38:55.9811884+08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T19:44:56+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

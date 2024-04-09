@@ -7,6 +7,7 @@
 ---0.1.0---
 <!-- code stage -->
 <!-- (not urgent)better collision -->
+spell description
 more spells
 code dummies
 (not urgent)better better collision

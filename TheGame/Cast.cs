@@ -6,7 +6,7 @@ namespace TheGame;
 
 public enum CastType {Independent, Dependent};
 
-public class Cast : ICloneable
+public class Cast
 {
     public CastType type;
     public Vector2 coordinate = new();
@@ -23,18 +23,22 @@ public class Cast : ICloneable
         this.subject = subject;
     }
 
-    public object Clone()
+    public Cast Clone()
     {
         if(type == CastType.Independent)
         {
-            Cast clone = new(coordinate);
-            clone.direction = direction;
+            Cast clone = new(coordinate)
+            {
+                direction = direction
+            };
             return clone;
         }
         else
         {
-            Cast clone = new(subject);
-            clone.direction = direction;
+            Cast clone = new(subject)
+            {
+                direction = direction
+            };
             return clone;
         }
     }

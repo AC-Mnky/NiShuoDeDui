@@ -140,7 +140,7 @@ public class Game1 : Game
         for(int i=0;i<26;++i) kerning.Add(new(1,7,1));
         kerning.Add(new(1,7,1));
         
-        _font = new SpriteFont(Content.Load<Texture2D>("font"), glyphBounds, cropping, characters, 2, 0, kerning, '？');
+        _font = new SpriteFont(Content.Load<Texture2D>("font"), glyphBounds, cropping, characters, 12, 0, kerning, '？');
         
         #endregion
 
@@ -1119,28 +1119,10 @@ public class Game1 : Game
         {
             DrawWindow(s.windowUI, new(x, y, s.windowUI.texture.Width, s.windowUI.texture.Height), null);
             DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44));
-            switch(Spell.childrenNumber[s.name])
-            {
-                case 1:
-                {
-                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+74, 44, 44));
-                    if(s.children[0] != null) DrawSpellUI(s.children[0], x, y+64);
-
-                    break;
-                }
-                case 2:
-                {
-                    DrawWindow(s.windowSlots[0], new(x, y, s.windowSlots[0].texture.Width, s.windowSlots[0].texture.Height), new(x+10, y+138, 44, 44));
-                    DrawWindow(s.windowSlots[1],new(x, y, s.windowSlots[1].texture.Width, s.windowSlots[1].texture.Height), new(x+74, y+74, 44, 44));
-                    
-                    var l = new SortedList<double, object>(new DuplicateKeyComparer<double>());
-                    if(s.children[0] != null) l.Add(s.children[0].showLayer, (s.children[0], (x, y+128)));
-                    if(s.children[1] != null) l.Add(s.children[1].showLayer, (s.children[1], (x+64, y+64)));
-                    foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
-
-                    break;
-                }
-            }
+            foreach(Window ws in s.windowSlots) DrawWindow(ws, new(x, y, ws.texture.Width, ws.texture.Height), new(new Point(x,y) + ws.textOffset + new Point(-54,-4), new(44,44)));
+            var l = new SortedList<double, (Spell,(int,int))>(new DuplicateKeyComparer<double>());
+            for(int i=0;i<s.children.Length; ++i) if(s.children[i] != null) l.Add(s.children[i].showLayer, (s.children[i], (x+s.windowSlots[i].textOffset.X-64, y+s.windowSlots[i].textOffset.Y-14)));
+            foreach((Spell,(int,int)) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.Item1, sv.Item2.Item2);
         }
     }
     protected void DrawStringWindow(Window w, Point position, bool mouseCatch = true)

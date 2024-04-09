@@ -27,24 +27,8 @@ public class Spellcast : Thing
 
     public override void TickUpdate()
     {
-        Debug.Assert(!(Spell.dependentOnly[spell.name] && cast.type == CastType.Independent));
-        if(cast.type == CastType.Dependent && !cast.subject.alive) // 分类：亡语
-            {
-                switch(spell.name)
-                {
-                    case Name.TriggerUponDeath:
-                    {
-                        spell.children[0]?.toCastNextTick.Add(new Cast(CurrentCoordinate()));
-                        break;
-                    }
-                    case Name.Wait60Ticks:
-                    {
-                        spell.children[0]?.toCastNextTick.Add(new Cast(CurrentCoordinate()));
-                        break;
-                    }
-                }
-                alive = false;
-            }
+        if(cast.type == CastType.Independent && spell.dependentOnly) alive = false; // 短路
+        else if(cast.type == CastType.Dependent && !cast.subject.alive) alive = false; // 分类：亡语
         else
         {
             Entity x;
@@ -57,7 +41,7 @@ public class Spellcast : Thing
                     break;
                 case Name.SummonProjectile:
                     x = game.NewProjectile(spell.summonedEntity, CurrentCoordinate(), Vector2.Zero);
-                    spell.children[1]?.toCastNextTick.Add(new Cast(x));
+                    spell.children[1]?.toCastNextTick.Add(new Cast(x){direction = cast.direction});
                     alive = false;
                     break;
                 case Name.VelocityZero:
@@ -132,10 +116,11 @@ public class Spellcast : Thing
                     if(game.tick - tickBirth >= 60) alive = false;
                     break;
             }
-            if(!alive) // 结束后施放后继法术
-            {
-                spell.children[0]?.toCastNextTick.Add(cast.Clone());
-            }
+        }
+        if(!alive) // 结束后施放后继法术
+        {
+            if(cast.type == CastType.Dependent && !cast.subject.alive) spell.children[0]?.toCastNextTick.Add(new Cast(CurrentCoordinate()));
+            else spell.children[0]?.toCastNextTick.Add(cast.Clone());
         }
     }
 }
