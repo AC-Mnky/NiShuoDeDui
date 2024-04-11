@@ -9,7 +9,7 @@
 <!-- (not urgent)better collision -->
 <!-- spell description -->
 <!-- fix stage: towers into inventory -->
-mana
+<!-- mana -->
 more enemies
 more spells
 code dummies

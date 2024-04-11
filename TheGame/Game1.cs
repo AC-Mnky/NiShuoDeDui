@@ -269,7 +269,7 @@ public class Game1 : Game
     }
     public IEnumerable<Entity> Collisions(Entity e) // 简单的碰撞判定算法。之后可能会出现圆形的东西，从而需要修改。另外以后算法上可能会需要优化。
     {
-        var E = e.Hitbox();
+        var E = e.hitbox;
         var Es = new RectangleF[9];
         for(int i=0;i<9;++i)
         {
@@ -278,7 +278,7 @@ public class Game1 : Game
         }
         if(e is not Enemy) foreach(Entity f in enemy)
         {
-            var F = f.Hitbox();
+            var F = f.hitbox;
             for(int i=0;i<9;++i) if(F.IntersectsWith(Es[i]))
             {
                 yield return f;
@@ -287,7 +287,7 @@ public class Game1 : Game
         }
         foreach(Entity f in neutral) if (f!=e)
         {
-            var F = f.Hitbox();
+            var F = f.hitbox;
             for(int i=0;i<9;++i) if(F.IntersectsWith(Es[i]))
             {
                 yield return f;
@@ -296,7 +296,7 @@ public class Game1 : Game
         }
         if(e is not Projectile) foreach(Entity f in projectile)
         {
-            var F = f.Hitbox();
+            var F = f.hitbox;
             for(int i=0;i<9;++i) if(F.IntersectsWith(Es[i]))
             {
                 yield return f;
@@ -704,7 +704,7 @@ public class Game1 : Game
         switch(stage)
         {
             case 1:
-                InitMap(5, 3, x => x>=10 && x%2 == 1, 512, Color.Gray);
+                InitMap(5, 3, x => x>=10 && x%2 == 1, 512, Color.DimGray);
                 break;
             case 2:
                 InitMap(6, 4, x => x>=20, 1024, Color.DarkCyan);

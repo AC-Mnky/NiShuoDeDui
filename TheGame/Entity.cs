@@ -89,15 +89,13 @@ abstract public class Entity : Thing
     public Vector2 coordinate;
     public Vector2 size;
     public Window window;
-    public RectangleF Hitbox()
-    {
-        return new RectangleF(coordinate.X-size.X/2,coordinate.Y-size.Y/2,size.X,size.Y);
-    }
+    public RectangleF hitbox;
     // public List<Entity> Collisions() {return game.Collisions(this);}
     virtual public void TickUpdateCoordinate()
     {
         coordinate.X -= MathF.Floor(coordinate.X/game.xPeriod) * game.xPeriod;
         coordinate.Y -= MathF.Floor(coordinate.Y/game.yPeriod) * game.yPeriod;
+        hitbox = new RectangleF(coordinate.X-size.X/2,coordinate.Y-size.Y/2,size.X,size.Y);
     }
     public Vector2 velocity;
     public double maxhealth;
