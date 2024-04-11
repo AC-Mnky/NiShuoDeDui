@@ -27,6 +27,7 @@ public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
+    private double _time;
     private GraphicsDeviceManager _graphics;
     public SpriteFont _font;
     private SpriteBatch _spriteBatch;
@@ -85,6 +86,7 @@ public class Game1 : Game
     private bool _predraw = false;
     private bool _hasdrawn;
     private bool _onMap;
+    private bool _clearMapFlag = false;
 
 
 
@@ -150,7 +152,7 @@ public class Game1 : Game
         transparentTexture = Content.Load<Texture2D>("transparent");
         
         title = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "THIS IS A TOWER DEFENSE GAME NAMED THIS IS A TOWER DEFENSE GAME NAMED THIS IS A TOWER DEFENSE GAME",
+            text = "THE GAME IS A TOWER DEFENSE GAME NAMED THE GAME IS A TOWER DEFENSE GAME NAMED THE GAME IS A TOWER DEFENSE GAME",
             textScale = 4
         };
         newGame = new Window(this, WindowType.NewGame, transparentTexture, Color.Transparent){
@@ -492,7 +494,7 @@ public class Game1 : Game
     }
     private void InitInventory()
     {
-        inventory = new Spell[25];
+        inventory = new Spell[4];
         inventorySlot = new Window[inventory.Length];
         for(int i=1;i<inventory.Length;++i)
         {
@@ -588,6 +590,8 @@ public class Game1 : Game
 
     private void ClearMap()
     {
+        _clearMapFlag = true;
+        
         tick = 0;
 
         enemy = new();
@@ -596,6 +600,10 @@ public class Game1 : Game
 
         spellcast = new();
         enemyStack = new();
+
+        if(blocks != null) foreach(Block b in blocks) foreach(Tower t in b.tower) MoveToInventory(t.spell);
+
+        _clearMapFlag = false;
     }
     private void RefreshMap()
     {
@@ -670,9 +678,9 @@ public class Game1 : Game
         stage = 1;
         wave = 1;
         spell = new();
-        InitInventory();
         StageBegin();
         WaveBegin();
+        InitInventory();
         gamestatus = GameStatus.Running;
         tps = 60;
         life = 20;
@@ -691,7 +699,8 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime) // 窗口每帧更新（和暂停或倍速无关），这里主要负责一些输入输出的计算
     {
-        double time = gameTime.TotalGameTime.TotalMilliseconds;
+        #region some shit
+        _time = gameTime.TotalGameTime.TotalMilliseconds;
         Keyboard.GetState();
         Mouse.GetState();
         MouseCoor = Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(_view));
@@ -707,6 +716,7 @@ public class Game1 : Game
             _graphics.PreferredBackBufferHeight = 1080;
             _graphics.ApplyChanges();
         }
+        #endregion
         switch (gamescene)
         {
             case GameScene.Build or GameScene.Battle:
@@ -800,11 +810,11 @@ public class Game1 : Game
                         else
                         {
                             s.showUI = true;
-                            s.showLayer = time;
+                            s.showLayer = _time;
                             while(s.attachment.type==Attachment.Type.Child)
                             {
                                 s = s.attachment.parent;
-                                s.showLayer = time;
+                                s.showLayer = _time;
                             }
                         }
 
@@ -815,15 +825,7 @@ public class Game1 : Game
                             holdingSpell = s;
                             if(Keyboard.IsPressed(Keys.LeftControl) && TakeAble(s))
                             {
-                                int index = 1;
-                                while(index < inventory.Length && inventory[index] != null) ++index;
-                                if(index < inventory.Length)
-                                {
-                                    MoveSpell(s, new(index));
-                                    holdingSpell = null;
-                                    s.showUI = false;
-                                    s.showLayer = 0;
-                                }
+                                MoveToInventory(s);
                             }
                         }
                     }
@@ -836,11 +838,11 @@ public class Game1 : Game
                         ToggleShop();
                     }
                 }
-                if(Mouse.LeftDeClicked())
+                if(Mouse.LeftDeClicked() && !Keyboard.IsPressed(Keys.LeftControl))
                 {
                     if(inventory[0] != null && TakeAble(inventory[0]))
                     {
-                        inventory[0].showLayer = time;
+                        inventory[0].showLayer = _time;
 
                         if(mouseOn?.parent is Spell && mouseOn.type == WindowType.SpellSlots)
                         {
@@ -930,7 +932,67 @@ public class Game1 : Game
         }
         base.Update(gameTime);
     }
-
+    private bool TakeAble(Spell s)
+    {
+        if(!inventoryAvailable) return false;
+        if(s == null) return false;
+        if(s.attachment.type == Attachment.Type.Inventory)
+        {
+            if(s.attachment.index == 0) return true;
+            else if(s.attachment.index < 0)
+            {
+                if(s.price > money) return false;
+            }
+        }
+        return true;
+    }
+    private Attachment MoveSpell(Spell s, Attachment a)
+    {
+        Debug.Assert(_clearMapFlag || TakeAble(s));
+        if(s.attachment.type == Attachment.Type.Inventory && s.attachment.index < 0) money -= s.price;
+        Attachment old = s.ReAttach(a);
+        // if(!s.used && (s.attachment.type != Attachment.Type.Inventory /* || s.attachment.index > 0*/))
+        // {
+        //     s.used = true;
+        //     s.price /= 2;
+        // }
+        if(s.attachment.type == Attachment.Type.Inventory && s.attachment.index < 0) money += s.price;
+        return old;
+    }
+    private void MoveToInventory(Spell s)
+    {
+        if(s == null) return;
+        int index = 1;
+        while(index < inventory.Length && inventory[index] != null) ++index;
+        if(index < inventory.Length)
+        {
+            MoveSpell(s, new(index));
+            holdingSpell = null;
+            s.showUI = false;
+            s.showLayer = 0;
+        }
+        else MoveToMouse(s);
+    }
+    private void MoveToMouse(Spell s)
+    {
+        if(s == null) return;
+        if(inventory[0] == null)
+        {
+            MoveSpell(s, new(0));
+            holdingSpell = null;
+            s.showUI = true;
+            s.showLayer = _time;
+        }
+        else
+        {
+            Spell x = inventory[0];
+            while(x.children[0] != null) x = x.children[0];
+            MoveSpell(s, new(x, 0));
+            holdingSpell = null;
+            s.showUI = true;
+            s.showLayer = _time;
+        }
+    }
     private void ToggleInventory()
     {
         inventoryOpen ^= true;
@@ -956,34 +1018,6 @@ public class Game1 : Game
                 shop[i].showLayer = 0;
             }
         }
-    }
-
-    private bool TakeAble(Spell s)
-    {
-        if(!inventoryAvailable) return false;
-        if(s == null) return false;
-        if(s.attachment.type == Attachment.Type.Inventory)
-        {
-            if(s.attachment.index == 0) return true;
-            else if(s.attachment.index < 0)
-            {
-                if(s.price > money) return false;
-            }
-        }
-        return true;
-    }
-    private Attachment MoveSpell(Spell s, Attachment a)
-    {
-        Debug.Assert(TakeAble(s));
-        if(s.attachment.type == Attachment.Type.Inventory && s.attachment.index < 0) money -= s.price;
-        Attachment old = s.ReAttach(a);
-        // if(!s.used && (s.attachment.type != Attachment.Type.Inventory /* || s.attachment.index > 0*/))
-        // {
-        //     s.used = true;
-        //     s.price /= 2;
-        // }
-        if(s.attachment.type == Attachment.Type.Inventory && s.attachment.index < 0) money += s.price;
-        return old;
     }
     protected override void Draw(GameTime gameTime) // 显示
     {

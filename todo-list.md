@@ -8,6 +8,8 @@
 <!-- code stage -->
 <!-- (not urgent)better collision -->
 <!-- spell description -->
+<!-- fix stage: towers into inventory -->
+more enemies
 more spells
 code dummies
 (not urgent)better better collision
