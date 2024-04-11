@@ -68,10 +68,10 @@ public class Game1 : Game
     private Window mouseOn;
     private Spell holdingSpell = null;
     private Attachment oldAtt = null;
-    public Spell[] inventory;
-    public Spell[] shop;
-    public Window[] inventorySlot;
-    public Window[] shopSlot;
+    public List<Spell> inventory;
+    public List<Spell> shop;
+    public List<Window> inventorySlot;
+    public List<Window> shopSlot;
     private Window title, newGame, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
     private int shopWidth, inventoryWidth;
     private bool shopOpen, inventoryOpen, inventoryAvailable;
@@ -492,28 +492,30 @@ public class Game1 : Game
         //     RandomNewSpell().ReAttach(new(t));
         // }
     }
-    private void InitInventory()
+    private void InitInventory(int inventorySize)
     {
-        inventory = new Spell[4];
-        inventorySlot = new Window[inventory.Length];
-        for(int i=1;i<inventory.Length;++i)
+        inventory = new(1 + inventorySize);
+        inventorySlot = new(1 + inventorySize);
+        for(int i=0;i<1 + inventorySize;++i)
         {
-            inventorySlot[i] = new Window(this, WindowType.InventorySlot, slotTexture, Color.White){
+            inventory.Add(null);
+            inventorySlot.Add(new Window(this, WindowType.InventorySlot, slotTexture, Color.White){
                 rank = i,
-            };
+            });
         }
     }
-    private void InitShop()
+    private void InitShop(int shopSize)
     {
-        shop = new Spell[25];
-        shopSlot = new Window[shop.Length];
-        for(int i=1;i<shop.Length;++i)
+        shop = new(1 + shopSize);
+        shopSlot = new(1 + shopSize);
+        for(int i=0;i<1 + shopSize;++i)
         {
-            shopSlot[i] = new Window(this, WindowType.ShopSlot, slotTexture, Color.Gold){
+            shop.Add(null);
+            shopSlot.Add(new Window(this, WindowType.ShopSlot, slotTexture, Color.Gold){
                 rank = -i,
-            };
+            });
         }
-        for(int i=1;i<shop.Length;++i)
+        for(int i=1;i<shop.Count;++i)
         {
             RandomNewSpell().ReAttach(new(-i));
         }
@@ -657,7 +659,7 @@ public class Game1 : Game
     {
         gamescene = GameScene.Build;
 
-        InitShop();
+        InitShop(24 + 1 * (wave - 1)+ 5 * (stage-1));
 
         shopWidth = 0;
         if(!shopOpen) ToggleShop();
@@ -680,7 +682,7 @@ public class Game1 : Game
         spell = new();
         StageBegin();
         WaveBegin();
-        InitInventory();
+        InitInventory(24);
         gamestatus = GameStatus.Running;
         tps = 60;
         life = 20;
@@ -963,8 +965,8 @@ public class Game1 : Game
     {
         if(s == null) return;
         int index = 1;
-        while(index < inventory.Length && inventory[index] != null) ++index;
-        if(index < inventory.Length)
+        while(index < inventory.Count && inventory[index] != null) ++index;
+        if(index < inventory.Count)
         {
             MoveSpell(s, new(index));
             holdingSpell = null;
@@ -998,7 +1000,7 @@ public class Game1 : Game
         inventoryOpen ^= true;
         if(!inventoryOpen)
         {
-            for(int i=1;i<inventory.Length;++i)
+            for(int i=1;i<inventory.Count;++i)
             {
                 if(inventory[i] == null) continue;
                 inventory[i].showUI = false;
@@ -1011,7 +1013,7 @@ public class Game1 : Game
         shopOpen ^= true;
         if(!shopOpen)
         {
-            for(int i=1;i<shop.Length;++i)
+            for(int i=1;i<shop.Count;++i)
             {
                 if(shop[i] == null) continue;
                 shop[i].showUI = false;
@@ -1084,9 +1086,9 @@ public class Game1 : Game
                 DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null);
                 
                 // 物品栏法术
-                for(int i=1;i<inventory.Length;++i) DrawWindow(inventorySlot[i], new(new Point(shopWidth+inventoryWidth-256,0)+InventoryOffset(i),new(64,64)), new(new Point(shopWidth+inventoryWidth-256+10,10)+InventoryOffset(i),new(44,44)));
+                for(int i=1;i<inventory.Count;++i) DrawWindow(inventorySlot[i], new(new Point(shopWidth+inventoryWidth-256,0)+InventoryOffset(i),new(64,64)), new(new Point(shopWidth+inventoryWidth-256+10,10)+InventoryOffset(i),new(44,44)));
                 l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
-                for(int i=1;i<inventory.Length;++i) if(inventory[i] != null) l.Add(inventory[i].showLayer, (inventory[i],new Point(shopWidth+inventoryWidth-256,0)+InventoryOffset(i)));
+                for(int i=1;i<inventory.Count;++i) if(inventory[i] != null) l.Add(inventory[i].showLayer, (inventory[i],new Point(shopWidth+inventoryWidth-256,0)+InventoryOffset(i)));
                 foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
                 
                 // 商店栏
@@ -1094,9 +1096,9 @@ public class Game1 : Game
                 DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null);
 
                 // 商店栏法术
-                for(int i=1;i<shop.Length;++i) DrawWindow(shopSlot[i], new(new Point(shopWidth-256,0)+InventoryOffset(i),new(64,64)), new(new Point(shopWidth-256+10,10)+InventoryOffset(i),new(44,44)));
+                for(int i=1;i<shop.Count;++i) DrawWindow(shopSlot[i], new(new Point(shopWidth-256,0)+InventoryOffset(i),new(64,64)), new(new Point(shopWidth-256+10,10)+InventoryOffset(i),new(44,44)));
                 l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
-                for(int i=1;i<shop.Length;++i) if(shop[i] != null) l.Add(shop[i].showLayer, (shop[i],new Point(shopWidth-256,0)+InventoryOffset(i)));
+                for(int i=1;i<shop.Count;++i) if(shop[i] != null) l.Add(shop[i].showLayer, (shop[i],new Point(shopWidth-256,0)+InventoryOffset(i)));
                 foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
 
                 // 鼠标上的法术
