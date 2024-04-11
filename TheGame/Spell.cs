@@ -29,13 +29,14 @@ public class Spell : Thing
     public Point UIsize;
     public bool showUI = false;
     public double showLayer = 0;
-    public float manaCost = 100;
-    public int price = 2;
+    public float manaCost;
+    public int price;
     public bool used = false;
     public Spell(Name name, Name summonedEntity = Name.Null) : base(name)
     {
         this.summonedEntity = summonedEntity;
         price = 2*Game1.SpellPrice.GetValueOrDefault(name == Name.SummonProjectile ? summonedEntity : name);
+        manaCost = Game1.SpellCost.GetValueOrDefault(name == Name.SummonProjectile ? summonedEntity : name);
         dependentOnly = name switch{
             Name.VelocityZero or 
             Name.AddSpeed or 
@@ -85,7 +86,7 @@ public class Spell : Thing
                 Name.CastEvery64Ticks => "VERT SLOWLY CAST A SPELL 4 TIMES",
                 _ => "THIS IS A BUG"
             },
-            text2 = "NO MANA COST",
+            text2 = manaCost.ToString() + " MANA",
             textOffset = new(64,14),
             text2Offset = new(64,38),
         };

@@ -485,6 +485,8 @@ public class Game1 : Game
 
         spellcast = new();
         enemyStack = new();
+
+        for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y) mana[x,y] = 0;
     }
     private void InitMap(int numX, int numY, Func<int, bool> pathRoadNum, float manaMax, Color manaColor)
     {
@@ -640,6 +642,35 @@ public class Game1 : Game
         {Name.CastEveryTick, 10},
         {Name.CastEvery8Ticks, 8},
         {Name.CastEvery64Ticks, 5},
+    };
+    public static Dictionary<Name, float> SpellCost = new(){
+        {Name.Projectile1, 30},
+        {Name.Stone, 100},
+        {Name.Arrow, 80},
+        {Name.Spike, 80},
+        {Name.ExplosionSquareD6, 1000},
+        {Name.Add10Speed, 50},
+        {Name.AddSpeed, 10},
+        {Name.DoubleSpeed, 80},
+        {Name.AddXVelocity, 10},
+        {Name.AddYVelocity, 10},
+        {Name.ReduceXVelocity, 10},
+        {Name.ReduceYVelocity, 10},
+        {Name.AimClosestInSquareD6, 5},
+        {Name.TriggerUponDeath, 50},
+        {Name.Wait60Ticks, 50},
+        {Name.VelocityZero, 0},
+        {Name.AimMouse, 15},
+        {Name.AimBack, 2},
+        {Name.AimLeft, 2},
+        {Name.AimRight, 2},
+        {Name.AimUp, 2},
+        {Name.AimDown, 2},
+        {Name.DoubleCast, 20},
+        {Name.TwiceCast, 100},
+        {Name.CastEveryTick, 400},
+        {Name.CastEvery8Ticks, 300},
+        {Name.CastEvery64Ticks, 200},
     };
 
     private Spell RandomNewSpell()

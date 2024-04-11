@@ -10,13 +10,15 @@
 <!-- spell description -->
 <!-- fix stage: towers into inventory -->
 <!-- mana -->
+spells have different mana
 more enemies
 more spells
 code dummies
-(not urgent)better better collision
+(not urgent) font ,.
 (not urgent)improve title : introduction to fullscreen, map dragging, loop space, options
 (not urgent)draw perk, code perk
 (not urgent)better map generation
+(not urgent)better better collision
 
 
 
