@@ -26,7 +26,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",159,4181,0.2155331
 "D:/Game202402/TheGame/Content/enemyfast.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemyfast.xnb","TextureProcessor","Texture2DContent",152,1109,0.2016727
 "D:/Game202402/TheGame/Content/enemyveryfast.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemyveryfast.xnb","TextureProcessor","Texture2DContent",173,1109,0.0046251
-"D:/Game202402/TheGame/Content/font.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/font.xnb","TextureProcessor","Texture2DContent",1384,39989,0.2098381
+"D:/Game202402/TheGame/Content/font.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/font.xnb","TextureProcessor","Texture2DContent",1457,39989,0.1998816
 "D:/Game202402/TheGame/Content/Fonts/File.spritefont","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/Fonts/untitledfont.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21535,0.1654831
 "D:/Game202402/TheGame/Content/lightgrey.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/lightgrey.xnb","TextureProcessor","Texture2DContent",221,16469,0.0025487
 "D:/Game202402/TheGame/Content/map-shader.fx","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/map-shader.xnb","EffectProcessor","CompiledEffectContent",979,1565,0.2462226

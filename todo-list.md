@@ -12,7 +12,7 @@
 <!-- mana -->
 <!-- spells have different mana -->
 <!-- (not urgent) font ,. -->
-shop shows price
+<!-- shop shows price -->
 mana *
 more enemies
 code dummies

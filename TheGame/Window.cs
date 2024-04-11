@@ -51,14 +51,27 @@ public class Window : GameObject
             case WindowType.Entity:
                 color = originalColor * (float)(0.5+0.5*((Entity)parent).health/((Entity)parent).maxhealth);
                 break;
+            case WindowType.SpellDescription:
+                text2Color = game.manaColor;
+                break;
             case WindowType.SpellIcon:
                 color = ((Spell)parent).used ? originalColor : Color.Gold;
                 break;
             case WindowType.Life:
-                text = "LIFE " + ((Game1)parent).life.ToString();
+                text = "LIFE  " + ((Game1)parent).life.ToString() + 'λ';
                 break;
             case WindowType.Money:
-                text = "MONEY " + ((Game1)parent).money.ToString();
+                text = "MONEY "+ ((Game1)parent).money.ToString() + '$';
+                break;
+            case WindowType.ShopSlot:
+                if(game.shop[-rank]==null)
+                    text = null;
+                else
+                {
+                    text = game.shop[-rank].price.ToString() + '$';
+                    textOffset = new(32-(int)game._font.MeasureString(text).X,64);
+                    textColor = game.shop[-rank].price>game.money ? Color.Gray : game.shop[-rank].used ? Color.White : Color.Gold;
+                }
                 break;
         }
     }

@@ -26,7 +26,8 @@ public enum GameScene {Title, Perk, Build, Battle, Win, Lose, Options, Loading}
 public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
-    const bool CHEATALLOWED = true;
+    static bool CHEATALLOWED = true;
+    static bool SHOPALWAYSMAX = false;
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
     private double _time;
     private int _exitPower;
@@ -67,6 +68,7 @@ public class Game1 : Game
     public float manaMax;
     public float[,] mana;
     public Window[,] manaWindow;
+    public Color manaColor;
     public Segment Reddoor, Bluedoor;
     public Window ReddoorWindow, BluedoorWindow;
     public Vector2 ReddoorCoor, BluedoorCoor;
@@ -135,7 +137,7 @@ public class Game1 : Game
             'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
             '[','\\',']','^','_','`',
             'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-            '{','|','}','~','µ',
+            '{','|','}','~','µ','λ',
             '？',};
 
         var glyphBounds = new List<Rectangle>();
@@ -144,7 +146,7 @@ public class Game1 : Game
         for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,18,7,7));
         for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,27,7,7));
         for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,18,7,7));
-        for(int i=0;i<5;++i) glyphBounds.Add(new(9*i,36,7,7));
+        for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,36,7,7));
         glyphBounds.Add(new(225,27,7,7));
         
         var cropping = new List<Rectangle>
@@ -183,6 +185,7 @@ public class Game1 : Game
             new(0, 0, 4, 7), // }
             new(0, 0, 5, 7), // ~
             new(0, 0, 7, 7), // µ
+            new(0, 0, 7, 7), // λ
         });
         cropping.Add(new(0,0,7,7));
         
@@ -222,6 +225,7 @@ public class Game1 : Game
             new(1, 4, 1), // }
             new(1, 5, 1), // ~
             new(1, 7, 1), // µ
+            new(1, 7, 1), // λ
         });
         kerning.Add(new(1,7,1));
         
@@ -616,6 +620,7 @@ public class Game1 : Game
         
         #region mana field
         this.manaMax = manaMax;
+        this.manaColor = manaColor;
         xGrid = Block.numX * Block.Dgrid;
         yGrid = Block.numY * Block.Dgrid;
         mana = new float[xGrid, yGrid];
@@ -759,15 +764,15 @@ public class Game1 : Game
         if(win)
         {
             ++wave;
-            if(wave>5)
+            if(stage==4)
+            {
+                Ending();
+                return;
+            }
+            else if(wave>5)
             {
                 wave = 1;
                 ++stage;
-                if(stage>3)
-                {
-                    Ending();
-                    return;
-                }
                 StageBegin();
             }
             WaveBegin();
@@ -794,7 +799,8 @@ public class Game1 : Game
     {
         gamescene = GameScene.Build;
 
-        InitShop(24 + 1 * (wave - 1)+ 5 * (stage-1));
+        if(SHOPALWAYSMAX) InitShop(24);
+        else InitShop(6 + 1 * (wave - 1)+ 6 * (stage-1));
 
         shopWidth = 0;
         if(!shopOpen) ToggleShop();
@@ -818,6 +824,9 @@ public class Game1 : Game
                 break;
             case 3:
                 InitMap(7, 5, x => x>=30, 2048, Color.Purple);
+                break;
+            case 4:
+                InitMap(9, 7, x => x>=50, 4096, Color.Gold);
                 break;
         }
     }
@@ -1255,9 +1264,9 @@ public class Game1 : Game
                 DrawWindow(moneyWindow, new(shopWidth+20,height-64,216,44), null);
 
                 // 商店栏法术
-                for(int i=1;i<shop.Count;++i) DrawWindow(shopSlot[i], new(new Point(shopWidth-256,0)+InventoryOffset(i),new(64,64)), new(new Point(shopWidth-256+10,10)+InventoryOffset(i),new(44,44)));
+                for(int i=1;i<shop.Count;++i) DrawWindow(shopSlot[i], new(new Point(shopWidth-256,0)+ShopOffset(i),new(64,64)), new(new Point(shopWidth-256+10,10)+ShopOffset(i),new(44,44)));
                 l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
-                for(int i=1;i<shop.Count;++i) if(shop[i] != null) l.Add(shop[i].showLayer, (shop[i],new Point(shopWidth-256,0)+InventoryOffset(i)));
+                for(int i=1;i<shop.Count;++i) if(shop[i] != null) l.Add(shop[i].showLayer, (shop[i],new Point(shopWidth-256,0)+ShopOffset(i)));
                 foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
 
                 // 鼠标上的法术
@@ -1302,6 +1311,12 @@ public class Game1 : Game
     {
         const int SPACING = 32;
         return new(SPACING+(i-1)%3*64,SPACING+(i-1)/3*64);
+    }
+    protected Point ShopOffset(int i)
+    {
+        const int SPACING = 32;
+        const int PRICESPACING = 32;
+        return new(SPACING+(i-1)%3*64,SPACING+(i-1)/3*(64+PRICESPACING));
     }
     protected void DrawSpellUI(Spell s, int x, int y)
     {
