@@ -86,7 +86,7 @@ public class Spell : Thing
                 Name.CastEvery64Ticks => "VERT SLOWLY CAST A SPELL 4 TIMES",
                 _ => "THIS IS A BUG"
             },
-            text2 = manaCost.ToString() + " MANA",
+            text2 = manaCost.ToString() + "µ",
             textOffset = new(64,14),
             text2Offset = new(64,38),
         };

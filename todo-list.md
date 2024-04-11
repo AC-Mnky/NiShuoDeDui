@@ -10,12 +10,15 @@
 <!-- spell description -->
 <!-- fix stage: towers into inventory -->
 <!-- mana -->
-spells have different mana
+<!-- spells have different mana -->
+<!-- (not urgent) font ,. -->
+shop shows price
+mana *
 more enemies
-more spells
 code dummies
-(not urgent) font ,.
-(not urgent)improve title : introduction to fullscreen, map dragging, loop space, options
+more spells
+scaling spell
+(not urgent)improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version and does not represent the final quality of the game]
 (not urgent)draw perk, code perk
 (not urgent)better map generation
 (not urgent)better better collision
@@ -30,7 +33,7 @@ Spell.cs/description
 (?)Spell.cs/dependentonly
 Spellcast.cs/TickUpdate
 Game1.cs/RandomSpellName
-Game1.cs/Price
+Game1.cs/Price, Cost
 (draw icon)
 (mgcb editor)
 (Game1.cs/_TextureIcon)
@@ -42,7 +45,7 @@ Entity.cs/Damage
 Projectile.cs/TickUpdate
 Spell.cs/Projectile description
 Game1.cs/RandomProjectileName
-Game1.cs/Price
+Game1.cs/Price, Cost
 (draw projectile)
 (mgcb editor)
 Game1.cs/Texture

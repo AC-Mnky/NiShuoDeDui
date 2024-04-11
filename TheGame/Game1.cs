@@ -129,24 +129,100 @@ public class Game1 : Game
 
         #region font
         
-        var characters = new List<char>(){' ','0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','？'};
+        var characters = new List<char>(){
+            ' ','!','\"','#','$','%','&','\'','(',')','*','+',',','-','.','/',
+            '0','1','2','3','4','5','6','7','8','9',
+            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+            '[','\\',']','^','_','`',
+            'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+            '{','|','}','~','µ',
+            '？',};
 
         var glyphBounds = new List<Rectangle>();
-        glyphBounds.Add(new());
-        for(int i=0;i<10;++i) glyphBounds.Add(new(5*i,9,4,7));
-        for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,0,7,7));
+        for(int i=0;i<16;++i) glyphBounds.Add(new(9*i,0,7,7));
+        for(int i=0;i<10;++i) glyphBounds.Add(new(9*i,9,7,7));
+        for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,18,7,7));
+        for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,27,7,7));
+        for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,18,7,7));
+        for(int i=0;i<5;++i) glyphBounds.Add(new(9*i,36,7,7));
         glyphBounds.Add(new(225,27,7,7));
         
-        var cropping = new List<Rectangle>();
-        cropping.Add(new());
+        var cropping = new List<Rectangle>
+        {
+            new(),
+            new(0, 0, 1, 7), // !
+            new(0, 0, 3, 7), // "
+            new(0, 0, 5, 7), // #
+            new(0, 0, 7, 7), // $
+            new(0, 0, 7, 7), // %
+            new(0, 0, 7, 7), // &
+            new(0, 0, 1, 7), // '
+            new(0, 0, 4, 7), // (
+            new(0, 0, 4, 7), // )
+            new(0, 0, 5, 7), // *
+            new(0, 0, 5, 7), // +
+            new(0, 0, 2, 7), // ,
+            new(0, 0, 5, 7), // -
+            new(0, 0, 2, 7), // .
+            new(0, 0, 5, 7), // /
+        };
         for(int i=0;i<10;++i) cropping.Add(new(0,0,4,7));
         for(int i=0;i<26;++i) cropping.Add(new(0,0,7,7));
+        cropping.AddRange(new List<Rectangle>(){
+            new(0, 0, 4, 7), // [
+            new(0, 0, 5, 7), // \
+            new(0, 0, 4, 7), // ]
+            new(0, 0, 3, 7), // ^
+            new(0, 0, 3, 7), // _
+            new(0, 0, 2, 7), // `
+        });
+        for(int i=0;i<26;++i) cropping.Add(new(0,0,7,7));
+        cropping.AddRange(new List<Rectangle>(){
+            new(0, 0, 4, 7), // {
+            new(0, 0, 1, 7), // |
+            new(0, 0, 4, 7), // }
+            new(0, 0, 5, 7), // ~
+            new(0, 0, 7, 7), // µ
+        });
         cropping.Add(new(0,0,7,7));
         
-        var kerning = new List<Vector3>();
-        kerning.Add(new(0,7,0));
-        for(int i=0;i<10;++i) kerning.Add(new(0.5f,4,0.5f));
+        var kerning = new List<Vector3>()
+        {
+            new(0, 7, 0),
+            new(1, 1, 1), // !
+            new(1, 3, 1), // "
+            new(1, 5, 1), // #
+            new(1, 7, 1), // $
+            new(1, 7, 1), // %
+            new(1, 7, 1), // &
+            new(1, 1, 1), // '
+            new(1, 4, 1), // (
+            new(1, 4, 1), // )
+            new(1, 5, 1), // *
+            new(1, 5, 1), // +
+            new(1, 2, 1), // ,
+            new(1, 5, 1), // -
+            new(1, 2, 1), // .
+            new(1, 5, 1), // /
+        };
+        for(int i=0;i<10;++i) kerning.Add(new(1,4,1));
         for(int i=0;i<26;++i) kerning.Add(new(1,7,1));
+        kerning.AddRange(new List<Vector3>(){
+            new(1, 4, 1), // [
+            new(1, 5, 1), // \
+            new(1, 4, 1), // ]
+            new(1, 3, 1), // ^
+            new(1, 3, 1), // _
+            new(1, 2, 1), // `
+        });
+        for(int i=0;i<26;++i) kerning.Add(new(1,7,1));
+        kerning.AddRange(new List<Vector3>(){
+            new(1, 4, 1), // {
+            new(1, 1, 1), // |
+            new(1, 4, 1), // }
+            new(1, 5, 1), // ~
+            new(1, 7, 1), // µ
+        });
         kerning.Add(new(1,7,1));
         
         _font = new SpriteFont(Content.Load<Texture2D>("font"), glyphBounds, cropping, characters, 12, 0, kerning, '？');
@@ -163,7 +239,7 @@ public class Game1 : Game
             textScale = 4
         };
         newGame = new Window(this, WindowType.NewGame, transparentTexture, Color.Transparent){
-            text = "NEW GAME",
+            text = "new game",
             textScale = 2
         };
         win = new Window(this, WindowType.Win, transparentTexture, Color.Transparent, clickable: false){
