@@ -697,9 +697,9 @@ public class Game1 : Game
         MouseCoor = Vector2.Transform(new Vector2(Mouse.X(), Mouse.Y()), Matrix.Invert(_view));
         MouseI = (int)MathF.Floor(MouseCoor.X / 64f);
         MouseJ = (int)MathF.Floor(MouseCoor.Y / 64f);
-        if (Keyboard.HasBeenPressed(Keys.Escape))
+        if (Keyboard.HasBeenPressed(Keys.F11))
             ToggleBorderless();
-        if (Keyboard.HasBeenPressed(Keys.Q))
+        if (Keyboard.HasBeenPressed(Keys.Escape))
             Exit();
         if (Keyboard.HasBeenPressed(Keys.F12))
         {
