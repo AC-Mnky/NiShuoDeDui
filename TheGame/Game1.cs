@@ -483,8 +483,8 @@ public class Game1 : Game
         var oldmana = (float[,])mana.Clone();
         for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y)
         {
-            mana[x,y] += 0.1f * (oldmana[(x+1)%xGrid,y] + oldmana[(x+xGrid-1)%xGrid,y] + oldmana[x,(y+1)%yGrid] + oldmana[x,(y+yGrid-1)%yGrid] - 4*oldmana[x,y]); // 法术流动        
-            mana[x,y] += 0.01f * (manaMax-oldmana[x,y]); // 法术恢复
+            mana[x,y] += 0.125f * (oldmana[(x+1)%xGrid,y] + oldmana[(x+xGrid-1)%xGrid,y] + oldmana[x,(y+1)%yGrid] + oldmana[x,(y+yGrid-1)%yGrid] - 4*oldmana[x,y]); // 法术流动        
+            mana[x,y] += 0.005f * (manaMax-oldmana[x,y]); // 法术恢复
         }
         #endregion
         foreach(Spell s in spell)
@@ -665,15 +665,15 @@ public class Game1 : Game
             RandomNewSpell().ReAttach(new(-i));
         }
     }
-    private static RanDict<BlockName> RandomBlockName = new(){{BlockName.A,2}, {BlockName.B,1}};
-    private static RanDict<Name> RandomProjectileName = new(){
+    private static readonly RanDict<BlockName> RandomBlockName = new(){{BlockName.A,2}, {BlockName.B,1}};
+    private static readonly RanDict<Name> RandomProjectileName = new(){
         {Name.Projectile1, 1},
         {Name.Stone, 1},
         {Name.Arrow, 1},
         {Name.Spike, 1},
         {Name.ExplosionSquareD6, 0.5},
     };
-    private static RanDict<Name> RandomSpellName = new(){
+    private static readonly RanDict<Name> RandomSpellName = new(){
         {Name.SummonProjectile, 6},
         {Name.Add10Speed, 2},
         {Name.AddSpeed, 1},
@@ -698,7 +698,7 @@ public class Game1 : Game
         {Name.CastEvery8Ticks, 1},
         {Name.CastEvery64Ticks, 1},
     };
-    public static Dictionary<Name, int> SpellPrice = new(){
+    public static readonly Dictionary<Name, int> SpellPrice = new(){
         {Name.Projectile1, 1},
         {Name.Stone, 3},
         {Name.Arrow, 2},
@@ -727,7 +727,7 @@ public class Game1 : Game
         {Name.CastEvery8Ticks, 8},
         {Name.CastEvery64Ticks, 5},
     };
-    public static Dictionary<Name, float> SpellCost = new(){
+    public static readonly Dictionary<Name, float> SpellCost = new(){
         {Name.Projectile1, 30},
         {Name.Stone, 100},
         {Name.Arrow, 80},
@@ -755,6 +755,35 @@ public class Game1 : Game
         {Name.CastEveryTick, 400},
         {Name.CastEvery8Ticks, 300},
         {Name.CastEvery64Ticks, 200},
+    };
+    public static readonly Dictionary<(Name,int), float> ManaMul = new(){
+        {(Name.Projectile1, 1), 1.5f},
+        {(Name.Stone, 1), 1.5f},
+        {(Name.Arrow, 1), 1.5f},
+        {(Name.Spike, 1), 1.5f},
+        {(Name.ExplosionSquareD6, 1), 1.5f},
+        // {(Name.Add10Speed, 50},
+        {(Name.AddSpeed, 0), 1.0f},
+        {(Name.DoubleSpeed, 0), 5.0f},
+        {(Name.AddXVelocity, 0), 1.0f},
+        {(Name.AddYVelocity, 0), 1.0f},
+        {(Name.ReduceXVelocity, 0), 1.0f},
+        {(Name.ReduceYVelocity, 0), 1.0f},
+        {(Name.AimClosestInSquareD6, 0), 1.2f},
+        {(Name.TriggerUponDeath, 0), 1.5f},
+        {(Name.Wait60Ticks, 0), 1.5f},
+        {(Name.VelocityZero, 0),  0.9f},
+        {(Name.AimMouse, 0), 2.0f},
+        {(Name.AimBack, 0), 1.0f},
+        {(Name.AimLeft, 0), 1.0f},
+        {(Name.AimRight, 0), 1.0f},
+        {(Name.AimUp, 0), 1.0f},
+        {(Name.AimDown, 0), 1.0f},
+        // {(Name.DoubleCast,) 20},
+        {(Name.TwiceCast, 0), 1.5f},
+        {(Name.CastEveryTick, 0), 3.0f},
+        {(Name.CastEvery8Ticks, 0), 2.0f},
+        {(Name.CastEvery64Ticks, 0), 1.5f},
     };
 
     private Spell RandomNewSpell()

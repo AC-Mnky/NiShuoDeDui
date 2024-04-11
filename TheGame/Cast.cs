@@ -12,6 +12,7 @@ public class Cast
     public Vector2 coordinate = new();
     public Entity subject = null;
     public Vector2 direction = Vector2.Zero;
+    public float manaMul = 1;
     public Cast(Vector2 coordinate)
     {
         type = CastType.Independent;
@@ -22,29 +23,18 @@ public class Cast
         type = CastType.Dependent;
         this.subject = subject;
     }
+    public Cast(Cast c, bool forceIndependent = false)
+    {
+        type = forceIndependent ? CastType.Independent : c.type;
+        coordinate = forceIndependent ? c.CurrentCoordinate() : c.coordinate;
+        subject = forceIndependent ? null : c.subject;
+        direction = c.direction;
+        manaMul = c.manaMul;
+    }
     public Vector2 CurrentCoordinate()
     {
         if (type == CastType.Dependent) return subject.coordinate;
         else return coordinate;
     }
 
-    public Cast Clone()
-    {
-        if(type == CastType.Independent)
-        {
-            Cast clone = new(coordinate)
-            {
-                direction = direction
-            };
-            return clone;
-        }
-        else
-        {
-            Cast clone = new(subject)
-            {
-                direction = direction
-            };
-            return clone;
-        }
-    }
 }

@@ -31,7 +31,7 @@ public class Projectile : Entity
                 health -= 0.005d;
                 break;
             case Name.Stone:
-                velocity -= 0.1f * Normalized(velocity);
+                velocity -= 0.1f * NormalNerfed(velocity);
                 if(velocity.Length() < 0.1f) health -= 0.1d;
                 break;
             case Name.Arrow:
@@ -39,7 +39,7 @@ public class Projectile : Entity
                 if(velocity.Length() < 1f) health -= 0.005d * (game.tick-tickBirth);
                 break;
             case Name.Spike:
-                velocity -= 0.1f * Normalized(velocity);
+                velocity -= 0.1f * NormalNerfed(velocity);
                 health -= 0.001d;
                 break;
             case Name.ExplosionSquareD6:

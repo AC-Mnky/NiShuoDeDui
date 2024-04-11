@@ -13,7 +13,7 @@
 <!-- spells have different mana -->
 <!-- (not urgent) font ,. -->
 <!-- shop shows price -->
-mana *
+<!-- manaMul -->
 more enemies
 code dummies
 more spells

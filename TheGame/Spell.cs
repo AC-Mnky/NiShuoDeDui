@@ -17,6 +17,7 @@ public class Spell : Thing
     public static Dictionary<(int, int), Texture2D> TextureSlot = new();
     public Attachment attachment = new();
     public Spell[] children; // 子法术列表（第零项是后继法术）
+    public float[] childrenManaMul;
     public List<Cast> toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
     public Name summonedEntity;
     public Window windowIcon;
@@ -30,11 +31,15 @@ public class Spell : Thing
     public float manaCost;
     public int price;
     public bool used = false;
+    public Name ImplicitName()
+    {
+        return name == Name.SummonProjectile ? summonedEntity : name;
+    }
     public Spell(Name name, Name summonedEntity = Name.Null) : base(name)
     {
         this.summonedEntity = summonedEntity;
-        price = 2*Game1.SpellPrice.GetValueOrDefault(name == Name.SummonProjectile ? summonedEntity : name);
-        manaCost = Game1.SpellCost.GetValueOrDefault(name == Name.SummonProjectile ? summonedEntity : name);
+        price = 2*Game1.SpellPrice.GetValueOrDefault(ImplicitName());
+        manaCost = Game1.SpellCost.GetValueOrDefault(ImplicitName());
         dependentOnly = name switch{
             Name.VelocityZero or 
             Name.AddSpeed or 
@@ -127,6 +132,18 @@ public class Spell : Thing
             if(ws.text != null) UIsize = Max(UIsize, new(ws.textOffset.X+(int)(game._font.MeasureString(ws.text).X*ws.textScale)+10,0));
             if(ws.text2 != null) UIsize = Max(UIsize, new(ws.text2Offset.X+(int)(game._font.MeasureString(ws.text2).X*ws.text2Scale)+10,0));
         }
+        
+        childrenManaMul = new float[children.Length];
+        for(int i=0;i<children.Length;++i)
+        {
+            if(Game1.ManaMul.ContainsKey((ImplicitName(),i)))
+            {
+                childrenManaMul[i] = Game1.ManaMul[(ImplicitName(),i)];
+            }
+            else childrenManaMul[i] = 1.1f;
+            windowSlots[i].text2 = "µ*" + childrenManaMul[i].ToString();
+            windowSlots[i].text2Offset = windowSlots[i].textOffset + new Point(0,24);
+        }
     }
 
 
@@ -208,11 +225,15 @@ public class Spell : Thing
         {
             int x = (int)MathF.Floor(c.CurrentCoordinate().X/64);
             int y = (int)MathF.Floor(c.CurrentCoordinate().Y/64);
-            if(game.mana[x,y] > manaCost)
+            if(game.mana[x,y] > manaCost * c.manaMul)
             {
                 game.NewSpellcast(this, c);
-                game.mana[x,y] -= manaCost;
+                game.mana[x,y] -= manaCost * c.manaMul;
                 used = true;
+            }
+            else
+            {
+                Debug.Print(game.tick.ToString() + ' ' + x + ' ' + y);
             }
         }
         toCastNextTick.Clear();
@@ -221,6 +242,6 @@ public class Spell : Thing
 
     private Texture2D IconTexture()
     {
-        return TextureIcon.GetValueOrDefault(name);
+        return TextureIcon.GetValueOrDefault(ImplicitName());
     }
 }

@@ -36,12 +36,12 @@ public class Spellcast : Thing
             {
                 case Name.SummonEnemy:
                     x = game.NewEnemy(spell.summonedEntity, game.Reddoor, 0f);
-                    spell.children[1]?.toCastNextTick.Add(new Cast(x));
+                    AttemptCastChild(1, new(x));
                     alive = false;
                     break;
                 case Name.SummonProjectile:
                     x = game.NewProjectile(spell.summonedEntity, CurrentCoordinate(), Vector2.Zero);
-                    spell.children[1]?.toCastNextTick.Add(new Cast(x){direction = cast.direction});
+                    AttemptCastChild(1, new(x){direction = cast.direction});
                     alive = false;
                     break;
                 case Name.VelocityZero:
@@ -120,15 +120,15 @@ public class Spellcast : Thing
                     if(game.tick - tickBirth >= 60) alive = false;
                     break;
                 case Name.DoubleCast:
-                    spell.children[1]?.toCastNextTick.Add(cast.Clone());
+                    AttemptCastChild(1);
                     alive = false;
                     break;
                 case Name.TwiceCast:
-                    spell.children[0]?.toCastNextTick.Add(cast.Clone());
+                    AttemptCastChild(0);
                     alive = false;
                     break;
                 case Name.CastEveryTick:
-                    spell.children[0]?.toCastNextTick.Add(cast.Clone());
+                    AttemptCastChild(0);
                     ++int1;
                     if(int1>=64)
                     {
@@ -139,7 +139,7 @@ public class Spellcast : Thing
                 case Name.CastEvery8Ticks:
                     if((tickBirth-game.tick)%8==0 && tickBirth!=game.tick)
                     {
-                        spell.children[0]?.toCastNextTick.Add(cast.Clone());
+                        AttemptCastChild(0);
                         ++int1;
                     }
                     if(int1>=16)
@@ -151,7 +151,7 @@ public class Spellcast : Thing
                 case Name.CastEvery64Ticks:
                     if((tickBirth-game.tick)%64==0 && tickBirth!=game.tick)
                     {
-                        spell.children[0]?.toCastNextTick.Add(cast.Clone());
+                        AttemptCastChild(0);
                         ++int1;
                     }
                     if(int1>=4)
@@ -164,8 +164,13 @@ public class Spellcast : Thing
         }
         if(!alive) // 结束后施放后继法术
         {
-            if(cast.type == CastType.Dependent && !cast.subject.alive) spell.children[0]?.toCastNextTick.Add(new Cast(CurrentCoordinate()));
-            else spell.children[0]?.toCastNextTick.Add(cast.Clone());
+            if(cast.type == CastType.Dependent && !cast.subject.alive) AttemptCastChild(0, new(cast,true));
+            else AttemptCastChild(0);
         }
+    }
+
+    private void AttemptCastChild(int i, Cast c = null)
+    {
+        spell.children[i]?.toCastNextTick.Add(new(c??cast){manaMul = cast.manaMul*spell.childrenManaMul[i]});
     }
 }

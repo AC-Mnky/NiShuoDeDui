@@ -80,6 +80,13 @@ abstract public class Thing : GameObject
         v.Normalize();
         return v;
     }
+    public static Vector2 NormalNerfed(Vector2 vector)
+    {
+        if(vector.LengthSquared() < 1) return vector;
+        Vector2 v = vector;
+        v.Normalize();
+        return v;
+    }
     public static Point Max(Point A, Point B)
     {
         return new((A.X>B.X)?A.X:B.X,(A.Y>B.Y)?A.Y:B.Y);
