@@ -13,10 +13,9 @@ public class Spellcast : Thing
     private int int1;
     public Vector2 CurrentCoordinate()
     {
-        if (cast.type == CastType.Dependent) return cast.subject.coordinate;
-        else return cast.coordinate;
+        return cast.CurrentCoordinate();
     }
-    public Spellcast(Game1 game, Spell spell, Cast cast) : base(game,spell.name)
+    public Spellcast(Spell spell, Cast cast) : base(spell.name)
     {
         this.spell = spell;
         this.cast = cast;

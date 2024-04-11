@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using System.Security.Cryptography;
+using System.Net.Mail;
 
 namespace TheGame;
 
@@ -50,26 +51,22 @@ CastEvery8Ticks,
 CastEvery64Ticks,
 };
 
-abstract public class Thing
+abstract public class Thing : GameObject
 {
-    protected Game1 game;
     public long tickBirth;
-    // public long id;
     public Name name;
     public bool alive = true;
-    public Thing(Game1 game, Name name)
+    public Thing(Name name)
     {
-        this.game = game;
         tickBirth = game.tick;
         this.name = name;
-        // this.id = id;
     }
     abstract public void TickUpdate(); 
 
     public static Vector2 Closest(Vector2 vector)
     {
         vector.Deconstruct(out float x, out float y);
-        return new(x - MathF.Round(x / Game1.xPeriod) * Game1.xPeriod, y - MathF.Round(y / Game1.yPeriod) * Game1.yPeriod);
+        return new(x - MathF.Round(x / game.xPeriod) * game.xPeriod, y - MathF.Round(y / game.yPeriod) * game.yPeriod);
     }
     public static Vector2 Randomdirection()
     {

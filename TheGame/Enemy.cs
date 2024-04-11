@@ -10,7 +10,7 @@ public class Enemy : Entity
     public Segment segment;
     public float progress;
     public float speed;
-    public Enemy(Game1 game, Name name, Segment segment, float progress) : base(game, name)
+    public Enemy(Name name, Segment segment, float progress) : base(name)
     {
         this.segment = segment;
         this.progress = progress;

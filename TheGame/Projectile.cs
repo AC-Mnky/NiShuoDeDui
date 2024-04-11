@@ -6,7 +6,7 @@ namespace TheGame;
 
 public class Projectile : Entity
 {
-    public Projectile(Game1 game, Name name, Vector2 coordinate, Vector2 velocity) : base(game,name)
+    public Projectile(Name name, Vector2 coordinate, Vector2 velocity) : base(name)
     {
         this.coordinate = coordinate;
         this.velocity = velocity;

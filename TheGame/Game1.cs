@@ -26,8 +26,10 @@ public enum GameScene {Title, Perk, Build, Battle, Win, Lose, Options, Loading}
 public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
+    const bool CHEATALLOWED = true;
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
     private double _time;
+    private int _exitPower;
     private GraphicsDeviceManager _graphics;
     public SpriteFont _font;
     private SpriteBatch _spriteBatch;
@@ -40,8 +42,8 @@ public class Game1 : Game
     public Vector2 MouseCoor = new();
     public Vector2 LeftTop = new();
     public Vector2 RightBottom = new();
-    public static float xGrid, yGrid;
-    public static float xPeriod, yPeriod;
+    public int xGrid, yGrid;
+    public float xPeriod, yPeriod;
     public int MouseI = 0, MouseJ = 0;
     int width;
     int height;
@@ -62,6 +64,9 @@ public class Game1 : Game
     private Stack enemyStack;
     private int enemyRate;
     private Block[,] blocks;
+    public float manaMax;
+    public float[,] mana;
+    public Window[,] manaWindow;
     public Segment Reddoor, Bluedoor;
     public Window ReddoorWindow, BluedoorWindow;
     public Vector2 ReddoorCoor, BluedoorCoor;
@@ -102,6 +107,7 @@ public class Game1 : Game
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         gamescene = GameScene.Title;
+        GameObject.game = this;
     }
 
     protected override void Initialize()
@@ -240,19 +246,19 @@ public class Game1 : Game
 
     public Enemy NewEnemy(Name name, Segment segment, float progress)
     {
-        return enemy.AddLast(new Enemy(this, name, segment, progress)).Value;
+        return enemy.AddLast(new Enemy(name, segment, progress)).Value;
     }
     public Projectile NewProjectile(Name name, Vector2 coordinate, Vector2 velocity)
     {
-        return projectile.AddLast(new Projectile(this, name, coordinate, velocity)).Value;
+        return projectile.AddLast(new Projectile(name, coordinate, velocity)).Value;
     }
     public Spell NewSpell(Name name, Name summonedEntity = Name.Null)
     {
-        return spell.AddLast(new Spell(this, name, summonedEntity)).Value;
+        return spell.AddLast(new Spell(name, summonedEntity)).Value;
     }
     public Spellcast NewSpellcast(Spell spell, Cast cast)
     {
-        return spellcast.AddLast(new Spellcast(this, spell, cast)).Value;
+        return spellcast.AddLast(new Spellcast(spell, cast)).Value;
     }
 
     public IEnumerable<Entity> entities()
@@ -393,6 +399,14 @@ public class Game1 : Game
         }
         
         // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
+        #region mana
+        var oldmana = (float[,])mana.Clone();
+        for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y)
+        {
+            mana[x,y] += 0.1f * (oldmana[(x+1)%xGrid,y] + oldmana[(x+xGrid-1)%xGrid,y] + oldmana[x,(y+1)%yGrid] + oldmana[x,(y+yGrid-1)%yGrid] - 4*oldmana[x,y]); // 法术流动        
+            mana[x,y] += 0.01f * (manaMax-oldmana[x,y]); // 法术恢复
+        }
+        #endregion
         foreach(Spell s in spell)
             s.TickCast(); // 待施放的法术进行施放
         foreach(Spellcast sc in spellcast)
@@ -443,7 +457,36 @@ public class Game1 : Game
 
 
 
-    private void InitMap(int numX, int numY, Func<int, bool> pathRoadNum)
+    private void ClearMap()
+    {
+        _clearMapFlag = true;
+        
+        tick = 0;
+
+        enemy = new();
+        neutral = new();
+        projectile = new();
+
+        spellcast = new();
+        enemyStack = new();
+
+        if(blocks != null) foreach(Block b in blocks) foreach(Tower t in b.tower) MoveToInventory(t.spell);
+
+        _clearMapFlag = false;
+    }
+    private void RefreshMap()
+    {
+        tick = 0;
+        timeBank = 0;
+
+        enemy = new();
+        neutral = new();
+        projectile = new();
+
+        spellcast = new();
+        enemyStack = new();
+    }
+    private void InitMap(int numX, int numY, Func<int, bool> pathRoadNum, float manaMax, Color manaColor)
     {
         ClearMap();
         _view = Matrix.Identity;
@@ -494,8 +537,13 @@ public class Game1 : Game
         #endregion
         
         #region mana field
+        this.manaMax = manaMax;
         xGrid = Block.numX * Block.Dgrid;
         yGrid = Block.numY * Block.Dgrid;
+        mana = new float[xGrid, yGrid];
+        for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y) mana[x,y] = 0;
+        manaWindow = new Window[xGrid, yGrid];
+        for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y) manaWindow[x,y] = new(this, WindowType.Mana, whiteTexture, manaColor, clickable:false){manaX = x, manaY = y};
 
         #endregion
         // foreach(Block b in blocks) foreach(Tower t in b.tower)
@@ -599,37 +647,6 @@ public class Game1 : Game
         Spell spell = NewSpell(RandomSpellName.Next(), RandomProjectileName.Next());
         return spell;
     }
-
-
-    private void ClearMap()
-    {
-        _clearMapFlag = true;
-        
-        tick = 0;
-
-        enemy = new();
-        neutral = new();
-        projectile = new();
-
-        spellcast = new();
-        enemyStack = new();
-
-        if(blocks != null) foreach(Block b in blocks) foreach(Tower t in b.tower) MoveToInventory(t.spell);
-
-        _clearMapFlag = false;
-    }
-    private void RefreshMap()
-    {
-        tick = 0;
-        timeBank = 0;
-
-        enemy = new();
-        neutral = new();
-        projectile = new();
-
-        spellcast = new();
-        enemyStack = new();
-    }
     private void BattleEnd(bool win)
     {
         if(win)
@@ -687,13 +704,13 @@ public class Game1 : Game
         switch(stage)
         {
             case 1:
-                InitMap(5, 3, x => x>=10 && x%2 == 1);
+                InitMap(5, 3, x => x>=10 && x%2 == 1, 512, Color.Gray);
                 break;
             case 2:
-                InitMap(6, 4, x => x>=20);
+                InitMap(6, 4, x => x>=20, 1024, Color.DarkCyan);
                 break;
             case 3:
-                InitMap(7, 5, x => x>=30);
+                InitMap(7, 5, x => x>=30, 2048, Color.Purple);
                 break;
         }
     }
@@ -732,8 +749,9 @@ public class Game1 : Game
         MouseJ = (int)MathF.Floor(MouseCoor.Y / 64f);
         if (Keyboard.HasBeenPressed(Keys.F11))
             ToggleBorderless();
-        if (Keyboard.HasBeenPressed(Keys.Escape))
-            Exit();
+        if (Keyboard.IsPressed(Keys.Escape))
+            {if(_exitPower++>=10) Exit();}
+        else _exitPower = 0;
         if (Keyboard.HasBeenPressed(Keys.F12))
         {
             _graphics.PreferredBackBufferWidth = 1920;
@@ -748,6 +766,15 @@ public class Game1 : Game
                     _view = Matrix.Identity; // 恢复视角至初始状态
                 if (gamescene == GameScene.Build && (Keyboard.IsPressed(Keys.LeftControl) || Keyboard.IsPressed(Keys.RightControl)) && Keyboard.HasBeenPressed(Keys.Enter))
                     BattleBegin();
+                #region debug cheat
+                if(CHEATALLOWED)
+                {
+                    if((Keyboard.IsPressed(Keys.LeftControl) || Keyboard.IsPressed(Keys.RightControl)) && Keyboard.HasBeenPressed(Keys.N))
+                    {
+                        BattleEnd(true);
+                    }
+                }
+                #endregion 
 
                 // 这部分是鼠标滚轮缩放
                 #region zoom
@@ -1078,6 +1105,9 @@ public class Game1 : Game
 
                 // 区块
                 // foreach(Block b in blocks) DrawWindow(b.window, new(b.Coordinate().ToPoint(),new(Block.Dgrid*64,Block.Dgrid*64)), null);
+
+                // mana
+                for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y) DrawWindow(manaWindow[x,y], new(x*64,y*64,64,64), new());
 
                 // 路
                 foreach(Block b in blocks) foreach(Road r in b.road) DrawWindow(r.window, new(b.Coordinate().ToPoint(), new(Block.Dgrid*64,Block.Dgrid*64)), new());

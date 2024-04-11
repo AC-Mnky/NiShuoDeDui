@@ -80,7 +80,7 @@ abstract public class Entity : Thing
         {Name.EnemyVeryFast, 1},
     };
     public static Dictionary<Name, Texture2D> Texture = new();
-    public Entity(Game1 game, Name name) : base(game,name)
+    public Entity(Name name) : base(name)
     {
         size = Size[name];
         health = maxhealth = DefaultHealth[name];
@@ -96,8 +96,8 @@ abstract public class Entity : Thing
     // public List<Entity> Collisions() {return game.Collisions(this);}
     virtual public void TickUpdateCoordinate()
     {
-        coordinate.X -= MathF.Floor(coordinate.X/Game1.xPeriod) * Game1.xPeriod;
-        coordinate.Y -= MathF.Floor(coordinate.Y/Game1.yPeriod) * Game1.yPeriod;
+        coordinate.X -= MathF.Floor(coordinate.X/game.xPeriod) * game.xPeriod;
+        coordinate.Y -= MathF.Floor(coordinate.Y/game.yPeriod) * game.yPeriod;
     }
     public Vector2 velocity;
     public double maxhealth;

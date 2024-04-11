@@ -29,9 +29,10 @@ public class Spell : Thing
     public Point UIsize;
     public bool showUI = false;
     public double showLayer = 0;
+    public float manaCost = 100;
     public int price = 2;
     public bool used = false;
-    public Spell(Game1 game, Name name, Name summonedEntity = Name.Null) : base(game, name)
+    public Spell(Name name, Name summonedEntity = Name.Null) : base(name)
     {
         this.summonedEntity = summonedEntity;
         price = 2*Game1.SpellPrice.GetValueOrDefault(name == Name.SummonProjectile ? summonedEntity : name);
@@ -215,11 +216,17 @@ public class Spell : Thing
     {
         bool oldused = used;
         foreach(Cast c in toCastNextTick)
+        {
+            int x = (int)MathF.Floor(c.CurrentCoordinate().X/64);
+            int y = (int)MathF.Floor(c.CurrentCoordinate().Y/64);
             // if(!(dependentOnly[name] && c.type == CastType.Independent))
+            if(game.mana[x,y] > manaCost)
             {
-                game.NewSpellcast(this, c); // 其实不一定成功，所以以后要加上if
+                game.NewSpellcast(this, c);
+                game.mana[x,y] -= manaCost;
                 used = true;
             }
+        }
         toCastNextTick.Clear();
         if(!oldused && used) price /= 2;
     }

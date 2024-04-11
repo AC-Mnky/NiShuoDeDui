@@ -1,13 +1,14 @@
 
 
 using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
-public enum WindowType {SpellIcon, SpellSlot, SpellSlots, SpellDescription, NewGame, Title, Win, GameOver, InventorySlot, ShopSlot, Tower, Block, Entity, Road, Reddoor, Bluedoor, Shop, Money, Inventory, Life};
+public enum WindowType {SpellIcon, SpellSlot, SpellSlots, SpellDescription, NewGame, Title, Win, GameOver, InventorySlot, ShopSlot, Tower, Block, Mana, Entity, Road, Reddoor, Bluedoor, Shop, Money, Inventory, Life};
 
-public class Window
+public class Window : GameObject
 {
     public bool clickable;
     public object parent;
@@ -18,6 +19,7 @@ public class Window
     public Color color;
     public WindowType type;
     public int rank = -1;
+    public int manaX, manaY;
     public float rotation = 0;
     public string text = null;
     public string text2 = null;
@@ -41,7 +43,10 @@ public class Window
         switch(type)
         {
             case WindowType.Road:
-                color = Color.White * (((Road)parent).isPath ? 0.5f : 0.0f);
+                color = originalColor * (((Road)parent).isPath ? 0.5f : 0.0f);
+                break;
+            case WindowType.Mana:
+                color = originalColor * (game.mana[manaX,manaY] / game.manaMax);
                 break;
             case WindowType.Entity:
                 color = originalColor * (float)(0.5+0.5*((Entity)parent).health/((Entity)parent).maxhealth);

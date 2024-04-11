@@ -22,6 +22,11 @@ public class Cast
         type = CastType.Dependent;
         this.subject = subject;
     }
+    public Vector2 CurrentCoordinate()
+    {
+        if (type == CastType.Dependent) return subject.coordinate;
+        else return coordinate;
+    }
 
     public Cast Clone()
     {
