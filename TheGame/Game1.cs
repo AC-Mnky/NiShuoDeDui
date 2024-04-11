@@ -521,8 +521,8 @@ public class Game1 : Game
             m2 = n.Next;
             if(!n.Value.alive) spellcast.Remove(n); // 移除被标记为死亡的Spellcast
         }
-        foreach(Spell s in spell)
-            s.TickUpdate(); // 法术更新（其实只有地图上的法术会发生变化）
+        foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null)
+            t.TickUpdate(); // 塔施法
         if (gamescene == GameScene.Battle)
         {
             if (life <= 0) BattleEnd(false);

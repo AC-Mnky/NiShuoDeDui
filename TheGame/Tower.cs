@@ -7,12 +7,13 @@ public class Tower
     public int relativeI;
     public int relativeJ;
     public int coolDownMax;
+    public int coolDown;
     public Block block;
     public Window window;
     public Spell spell = null;
     public Vector2 Coordinate()
     {
-        return block.Coordinate() + new Vector2(relativeI*64f+32f,relativeJ*64f+32f);
+        return new Vector2(MapI()*64f+32f,MapJ()*64f+32f);
     }
     public int MapI() {return block.x*Block.Dgrid+relativeI;}
     public int MapJ() {return block.y*Block.Dgrid+relativeJ;}
@@ -23,5 +24,13 @@ public class Tower
         this.relativeJ = relativeJ;
         this.coolDownMax = coolDownMax;
         window = new Window(this, WindowType.Tower, Game1.slotTexture, Color.White);
+    }
+
+    public void TickUpdate(){
+        if(--coolDown <= 0 && spell != null)
+        {
+            spell.toCastNextTick.Add(new Cast(Coordinate()));
+            coolDown = coolDownMax;
+        }
     }
 }

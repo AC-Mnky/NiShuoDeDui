@@ -16,10 +16,8 @@ public class Spell : Thing
     public static Dictionary<Name, Texture2D> TextureIcon = new();
     public static Dictionary<(int, int), Texture2D> TextureSlot = new();
     public Attachment attachment = new();
-    public Vector2 Coordinate() {return attachment.tower.Coordinate();}
     public Spell[] children; // 子法术列表（第零项是后继法术）
     public List<Cast> toCastNextTick = new(); // 一个列表，存放下一刻开始时将要进行的施放
-    public long coolDown;
     public Name summonedEntity;
     public Window windowIcon;
     public Window windowSlot;
@@ -179,9 +177,7 @@ public class Spell : Thing
             }
             case Attachment.Type.Tower:
             {
-                // game.spellAt[target.tower.MapI(), target.tower.MapJ()] = this;
                 target.tower.spell = this;
-                coolDown = attachment.tower.coolDownMax;
                 windowSlot.texture = Game1.slotTexture;
                 break;
             }
@@ -203,15 +199,7 @@ public class Spell : Thing
 
     public override void TickUpdate()
     {
-        if(attachment.type == Attachment.Type.Tower)
-        {
-            if(coolDown > 1) --coolDown;
-            else
-            {
-                toCastNextTick.Add(new Cast(Coordinate()));
-                coolDown = attachment.tower.coolDownMax;
-            }
-        }
+        throw new Exception("what?");
     }
     public void TickCast()
     {
@@ -220,7 +208,6 @@ public class Spell : Thing
         {
             int x = (int)MathF.Floor(c.CurrentCoordinate().X/64);
             int y = (int)MathF.Floor(c.CurrentCoordinate().Y/64);
-            // if(!(dependentOnly[name] && c.type == CastType.Independent))
             if(game.mana[x,y] > manaCost)
             {
                 game.NewSpellcast(this, c);

@@ -19,6 +19,7 @@ code dummies
 more spells
 scaling spell
 pause and double speed
+rotation and arrow texture
 (not urgent)improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version and does not represent the final quality of the game]
 (not urgent)draw perk, code perk
 (not urgent)better map generation
