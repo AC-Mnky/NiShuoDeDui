@@ -645,6 +645,9 @@ public class Game1 : Game
                 rank = i,
             });
         }
+        NewSpell(Name.SummonProjectile, Name.Projectile1).ReAttach(new(1));
+        NewSpell(Name.AimMouse).ReAttach(new(2));
+        NewSpell(Name.AddSpeed).ReAttach(new(3));
     }
     private void InitShop(int shopSize)
     {
