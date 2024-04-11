@@ -40,6 +40,7 @@ public class Game1 : Game
     public Vector2 MouseCoor = new();
     public Vector2 LeftTop = new();
     public Vector2 RightBottom = new();
+    public static float xGrid, yGrid;
     public static float xPeriod, yPeriod;
     public int MouseI = 0, MouseJ = 0;
     int width;
@@ -442,18 +443,22 @@ public class Game1 : Game
 
 
 
-    private void InitMap()
+    private void InitMap(int numX, int numY, Func<int, bool> pathRoadNum)
     {
         ClearMap();
         _view = Matrix.Identity;
+        
         #region blocks
+        Block.numX = numX;
+        Block.numY = numY;
         blocks = new Block[Block.numX,Block.numY];
         do{
             for(int x=0;x<Block.numX;++x) for(int y=0;y<Block.numY;++y)
                 blocks[x,y] = new(RandomBlockName.Next(), x,y);
             BluedoorIndex = rand.Next(8);
             Bluedoor = RefindPath(Blocks(rand.Next(Block.numX), rand.Next(Block.numY)),BluedoorIndex);
-        } while(_pathRoadNum != 35);
+        } while(!pathRoadNum(_pathRoadNum));
+        // } while(_pathRoadNum != 35);
         // } while(_pathRoadNum < 30 || _pathRoadNum > 40);
         foreach(Block b in blocks) b.Initialize();
 
@@ -485,6 +490,12 @@ public class Game1 : Game
         ReddoorCoor = Reddoor.block.Coordinate() + (ReddoorIndex switch{0 => new(128,0), 1 => new(256,0), 2 => new(0,64), 3 => new(0,192), 4 => new(64,320), 5 => new(192,320), 6 => new(320,128), 7 => new(320,256), _ => throw new ArgumentOutOfRangeException()});
         
 
+
+        #endregion
+        
+        #region mana field
+        xGrid = Block.numX * Block.Dgrid;
+        yGrid = Block.numY * Block.Dgrid;
 
         #endregion
         // foreach(Block b in blocks) foreach(Tower t in b.tower)
@@ -673,7 +684,18 @@ public class Game1 : Game
     }
     private void StageBegin()
     {
-        InitMap();
+        switch(stage)
+        {
+            case 1:
+                InitMap(5, 3, x => x>=10 && x%2 == 1);
+                break;
+            case 2:
+                InitMap(6, 4, x => x>=20);
+                break;
+            case 3:
+                InitMap(7, 5, x => x>=30);
+                break;
+        }
     }
     private void GameBegin()
     {

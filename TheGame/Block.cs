@@ -21,8 +21,8 @@ public class Block
         {BlockName.B,new(){{(0,0,STANDARD),1},{(0,2,STANDARD),1},{(0,4,STANDARD),1},{(2,0,STANDARD),1},{(2,2,STANDARD),1},{(2,4,STANDARD),1},{(4,0,STANDARD),1},{(4,2,STANDARD),1},{(4,4,STANDARD),1}}},
     };
     public BlockName name;
-    public const int numX = 5;
-    public const int numY = 5;
+    public static int numX;
+    public static int numY;
     public const int Dgrid = 5;
     public int x;
     public int y;
