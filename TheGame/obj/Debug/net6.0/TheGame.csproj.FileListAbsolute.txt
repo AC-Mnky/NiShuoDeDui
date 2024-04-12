@@ -51,7 +51,6 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB02.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB16.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB34.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\blockB57.xnb
-D:\Game202402\TheGame\bin\Debug\net6.0\Content\Fonts\untitledfont.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\Untitled.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\newgame.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemyfast.xnb
@@ -87,3 +86,15 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemycircle1.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemycross1.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemydiamond1.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemysquare1.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\cast16timesslow.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\cast4timesslow.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\doublecast.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\doublespeed.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonarrow.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonprojectile1.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonspike.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonstone.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\twicecast.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\cast64times.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonexposion.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonexplosion.xnb

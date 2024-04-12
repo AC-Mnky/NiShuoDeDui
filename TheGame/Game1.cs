@@ -305,8 +305,8 @@ public class Game1 : Game
         Entity.Texture[Name.SquareD6] = whiteTexture;
         Entity.Texture[Name.ExplosionSquareD6] = whiteTexture;
 
-        Spell.TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
-        Spell.TextureIcon[Name.SummonProjectile] = Content.Load<Texture2D>("SummonProjectile1icon");
+        // Spell.TextureIcon[Name.SummonEnemy] = Content.Load<Texture2D>("SummonEnemy1icon");
+        // Spell.TextureIcon[Name.SummonProjectile] = Content.Load<Texture2D>("SummonProjectile1icon");
         Spell.TextureIcon[Name.VelocityZero] = Content.Load<Texture2D>("velocityzeroicon");
         Spell.TextureIcon[Name.AddSpeed] = Content.Load<Texture2D>("addspeedicon");
         Spell.TextureIcon[Name.Add10Speed] = Content.Load<Texture2D>("add5speedicon");
@@ -323,6 +323,18 @@ public class Game1 : Game
         Spell.TextureIcon[Name.AimRight] = Content.Load<Texture2D>("aimrighticon");
         Spell.TextureIcon[Name.AimBack] = Content.Load<Texture2D>("aimbackicon");
         Spell.TextureIcon[Name.Wait60Ticks] = Content.Load<Texture2D>("wait60ticksicon");
+        Spell.TextureIcon[Name.DoubleSpeed] = Content.Load<Texture2D>("doublespeed");
+        Spell.TextureIcon[Name.DoubleCast] = Content.Load<Texture2D>("DoubleCast");
+        Spell.TextureIcon[Name.TwiceCast] = Content.Load<Texture2D>("TwiceCast");
+        Spell.TextureIcon[Name.CastEvery64Ticks] = Content.Load<Texture2D>("cast4timesslow");
+        Spell.TextureIcon[Name.CastEvery8Ticks] = Content.Load<Texture2D>("cast16timesslow");
+        Spell.TextureIcon[Name.CastEveryTick] = Content.Load<Texture2D>("cast64times");
+
+        Spell.TextureIcon[Name.Projectile1] = Content.Load<Texture2D>("summonProjectile1");
+        Spell.TextureIcon[Name.Stone] = Content.Load<Texture2D>("summonStone");
+        Spell.TextureIcon[Name.Spike] = Content.Load<Texture2D>("summonSpike");
+        Spell.TextureIcon[Name.Arrow] = Content.Load<Texture2D>("summonArrow");
+        Spell.TextureIcon[Name.ExplosionSquareD6] = Content.Load<Texture2D>("summonexplosion");
 
         Spell.TextureSlot[(2,0)] = Content.Load<Texture2D>("spellgui2slot0");
         Spell.TextureSlot[(2,1)] = Content.Load<Texture2D>("spellgui2slot1");

@@ -24,10 +24,15 @@
     <File>D:/Game202402/TheGame/Content/blockB34.png</File>
     <File>D:/Game202402/TheGame/Content/blockB57.png</File>
     <File>D:/Game202402/TheGame/Content/blockdefault.png</File>
+    <File>D:/Game202402/TheGame/Content/cast16timesslow.png</File>
+    <File>D:/Game202402/TheGame/Content/cast4timesslow.png</File>
+    <File>D:/Game202402/TheGame/Content/cast64times.png</File>
     <File>D:/Game202402/TheGame/Content/darkgrey.png</File>
     <File>D:/Game202402/TheGame/Content/default.png</File>
     <File>D:/Game202402/TheGame/Content/defaulticon.png</File>
     <File>D:/Game202402/TheGame/Content/door.png</File>
+    <File>D:/Game202402/TheGame/Content/doublecast.png</File>
+    <File>D:/Game202402/TheGame/Content/doublespeed.png</File>
     <File>D:/Game202402/TheGame/Content/enemy1.png</File>
     <File>D:/Game202402/TheGame/Content/enemycircle1.png</File>
     <File>D:/Game202402/TheGame/Content/enemycross1.png</File>
@@ -36,7 +41,6 @@
     <File>D:/Game202402/TheGame/Content/enemysquare1.png</File>
     <File>D:/Game202402/TheGame/Content/enemyveryfast.png</File>
     <File>D:/Game202402/TheGame/Content/font.png</File>
-    <File>D:/Game202402/TheGame/Content/Fonts/File.spritefont</File>
     <File>D:/Game202402/TheGame/Content/lightgrey.png</File>
     <File>D:/Game202402/TheGame/Content/map-shader.fx</File>
     <File>D:/Game202402/TheGame/Content/newgame.png</File>
@@ -51,12 +55,18 @@
     <File>D:/Game202402/TheGame/Content/SpellGUI2.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI2slot0.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI2slot1.png</File>
+    <File>D:/Game202402/TheGame/Content/summonarrow.png</File>
     <File>D:/Game202402/TheGame/Content/summonenemy1icon.png</File>
+    <File>D:/Game202402/TheGame/Content/summonexplosion.png</File>
+    <File>D:/Game202402/TheGame/Content/summonprojectile1.png</File>
     <File>D:/Game202402/TheGame/Content/summonprojectile1icon.png</File>
+    <File>D:/Game202402/TheGame/Content/summonspike.png</File>
+    <File>D:/Game202402/TheGame/Content/summonstone.png</File>
     <File>D:/Game202402/TheGame/Content/templateicon.png</File>
     <File>D:/Game202402/TheGame/Content/towerGUI.png</File>
     <File>D:/Game202402/TheGame/Content/transparent.png</File>
     <File>D:/Game202402/TheGame/Content/triggerupondeathicon.png</File>
+    <File>D:/Game202402/TheGame/Content/twicecast.png</File>
     <File>D:/Game202402/TheGame/Content/Untitled.png</File>
     <File>D:/Game202402/TheGame/Content/velocityzeroicon.png</File>
     <File>D:/Game202402/TheGame/Content/wait60ticksicon.png</File>
@@ -95,7 +105,17 @@
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
-    <File>Fonts/untitledfont.spritefont</File>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
