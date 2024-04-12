@@ -26,8 +26,8 @@ public enum GameScene {Title, Perk, Build, Battle, Win, Lose, Options, Loading}
 public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
-    static bool CHEATALLOWED = false;
-    static bool SHOPALWAYSMAX = false;
+    static bool CHEATALLOWED = true;
+    static bool SHOPALWAYSMAX = true;
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
     private double _time;
     private int _exitPower;
@@ -63,6 +63,7 @@ public class Game1 : Game
     private LinkedList<Spell> spell; // 十分关键的字典，其中每个spell都有一个唯一的id
     private LinkedList<Spellcast> spellcast; // 十分关键的字典，其中每个spellcast都有一个唯一的id
     private List<Spell> enemyStack;
+    private List<Name> cardDeck;
     private int enemyRate;
     private Block[,] blocks;
     public float manaMax;
@@ -90,11 +91,14 @@ public class Game1 : Game
     public int stage, wave;
     // private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
     private Dictionary<Name, Spell> enemySpell = null;
+    public Spell summoncross1;
     public static Texture2D slotTexture, slotLeftTexture, slotUpTexture;
     public static Texture2D doorTexture;
     public static Texture2D defaultTexture;
     public static Texture2D whiteTexture;
     public static Texture2D transparentTexture;
+
+    public static Texture2D invin2ed;
 
     private bool _predraw = false;
     public bool _hasdrawn;
@@ -280,6 +284,19 @@ public class Game1 : Game
         Entity.Texture[Name.Circle1] = Content.Load<Texture2D>("enemyCircle1");
         Entity.Texture[Name.Cross1] = Content.Load<Texture2D>("enemyCross1");
 
+        Entity.Texture[Name.Square2] = Content.Load<Texture2D>("Square2");
+        Entity.Texture[Name.Diamond2] = Content.Load<Texture2D>("Diamond2");
+        Entity.Texture[Name.Circle2] = Content.Load<Texture2D>("Circle2");
+        Entity.Texture[Name.Runner2] = Content.Load<Texture2D>("Runner2");
+        Entity.Texture[Name.Phasor2] = Content.Load<Texture2D>("Phasor2");
+        Entity.Texture[Name.Crossgen2] = Content.Load<Texture2D>("Crossgen2");
+        Entity.Texture[Name.Heal2] = Content.Load<Texture2D>("Heal2");
+        Entity.Texture[Name.Dark2] = Content.Load<Texture2D>("Dark2");
+        Entity.Texture[Name.Invin2] = Content.Load<Texture2D>("Invin2");
+        invin2ed = Content.Load<Texture2D>("Invin2ed");
+        Entity.Texture[Name.Ghost2] = Content.Load<Texture2D>("Ghost2");
+
+
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.Stone] = Content.Load<Texture2D>("Stone");
         Entity.Texture[Name.Spike] = Content.Load<Texture2D>("Spike");
@@ -383,9 +400,9 @@ public class Game1 : Game
         paused = new Window(this, WindowType.Paused, transparentTexture, Color.Transparent, clickable: false){
             textScale = 3,
         };
-        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.Brown, clickable: false);
+        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.SaddleBrown, clickable: false);
         inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.DarkBlue, clickable: false);
-        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Brown){
+        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.SaddleBrown){
             textScale = 2,
             textOffset = new(15,15)
         };
@@ -446,9 +463,9 @@ public class Game1 : Game
 
     public IEnumerable<Entity> entities()
     {
-        foreach(Entity e in enemy) yield return e;
-        foreach(Entity e in neutral) yield return e;
         foreach(Entity e in projectile) yield return e;
+        foreach(Entity e in neutral) yield return e;
+        foreach(Entity e in enemy) yield return e;
     }
     public IEnumerable<Entity> Collisions(Entity e) // 简单的碰撞判定算法。之后可能会出现圆形的东西，从而需要修改。另外以后算法上可能会需要优化。
     {
@@ -556,7 +573,7 @@ public class Game1 : Game
         if(gamescene == GameScene.Battle) life -= i;
         // Debug.Print("life: " + life.ToString());
     }
-    public void GenerateEnemyStack()
+    public void GenerateCardDeck()
     {
         if(enemySpell == null)
         {
@@ -566,6 +583,18 @@ public class Game1 : Game
                 {Name.Diamond1, NewSpell(Name.SummonEnemy, Name.Diamond1)},
                 {Name.Circle1, NewSpell(Name.SummonEnemy, Name.Circle1)},
                 {Name.Cross1, NewSpell(Name.SummonEnemy, Name.Cross1)},
+
+                {Name.Square2, NewSpell(Name.SummonEnemy, Name.Square2)},
+                {Name.Diamond2, NewSpell(Name.SummonEnemy, Name.Diamond2)},
+                {Name.Circle2, NewSpell(Name.SummonEnemy, Name.Circle2)},
+                {Name.Runner2, NewSpell(Name.SummonEnemy, Name.Runner2)},
+                {Name.Phasor2, NewSpell(Name.SummonEnemy, Name.Phasor2)},
+                {Name.Crossgen2, NewSpell(Name.SummonEnemy, Name.Crossgen2)},
+                {Name.Heal2, NewSpell(Name.SummonEnemy, Name.Heal2)},
+                {Name.Dark2, NewSpell(Name.SummonEnemy, Name.Dark2)},
+                {Name.Invin2, NewSpell(Name.SummonEnemy, Name.Invin2)},
+                {Name.Ghost2, NewSpell(Name.SummonEnemy, Name.Ghost2)},
+
             };
             Spell x1 = NewSpell(Name.SummonEnemy, Name.Cross1);
             Spell x2 = NewSpell(Name.SummonEnemy, Name.Cross1);
@@ -573,9 +602,13 @@ public class Game1 : Game
             x1.ReAttach(new(enemySpell[Name.Cross1], 0));
             x2.ReAttach(new(x1, 0));
             x3.ReAttach(new(x2, 0));
+
+            summoncross1 = NewSpell(Name.SummonEnemy, Name.Cross1);
         }
-        
-        List<Name> cardDeck = new();
+
+
+
+        cardDeck = new();
         switch(stage)
         {
             case 1:
@@ -586,24 +619,29 @@ public class Game1 : Game
                 }
                 break;
             case 2:
-                for(int i=0;i<wave switch{1=>1*3,2=>2*3,3=>3*3,4=>5*3,5=>10*3,_=>throw new ArgumentOutOfRangeException()};++i)
+                for(int i=0;i<wave switch{1=>1,2=>2,3=>3,4=>5,5=>10,_=>throw new ArgumentOutOfRangeException()};++i)
                 {
                     cardDeck.Add(Entity.RandomCard[2].Next());
                 }
                 break;
             case 3:
-                for(int i=0;i<wave switch{1=>1*6,2=>2*6,3=>3*6,4=>5*6,5=>10*6,_=>throw new ArgumentOutOfRangeException()};++i)
+                for(int i=0;i<wave switch{1=>1,2=>2,3=>3,4=>5,5=>10,_=>throw new ArgumentOutOfRangeException()};++i)
                 {
                     cardDeck.Add(Entity.RandomCard[3].Next());
                 }
                 break;
             case 4:
-                for(int i=0;i<wave switch{1=>500,_=>throw new ArgumentOutOfRangeException()};++i)
+                for(int i=0;i<wave switch{1=>10,_=>throw new ArgumentOutOfRangeException()};++i)
                 {
                     cardDeck.Add(Entity.RandomCard[4].Next());
                 }
                 break;
         }
+}
+    public void GenerateEnemyStack()
+    {
+        
+        enemyStack = new();
         foreach(Name e in cardDeck)
             for(int i=0;i<Entity.CardNum[e];++i)
                 enemyStack.Add(enemySpell[e]);
@@ -732,6 +770,10 @@ public class Game1 : Game
         if(blocks != null) foreach(Block b in blocks) foreach(Tower t in b.tower) MoveToInventory(t.spell);
 
         _clearMapFlag = false;
+
+        _spawnedenemy = 0;
+        _lastenemyspawntick = 0;
+
     }
     private void RefreshMap()
     {
@@ -746,6 +788,9 @@ public class Game1 : Game
         enemyStack = new();
 
         for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y) mana[x,y] = 0;
+
+        _spawnedenemy = 0;
+        _lastenemyspawntick = 0;
     }
     #region InitMap
     private void InitMap(int numX, int numY, Func<int, bool> pathRoadNum, float manaMax, Color manaColor)
@@ -793,7 +838,7 @@ public class Game1 : Game
         };
         BluedoorCoor = Bluedoor.block.Coordinate() + (BluedoorIndex switch{0 => new(128,0), 1 => new(256,0), 2 => new(0,64), 3 => new(0,192), 4 => new(64,320), 5 => new(192,320), 6 => new(320,128), 7 => new(320,256), _ => throw new ArgumentOutOfRangeException()});
         ReddoorCoor = Reddoor.block.Coordinate() + (ReddoorIndex switch{0 => new(128,0), 1 => new(256,0), 2 => new(0,64), 3 => new(0,192), 4 => new(64,320), 5 => new(192,320), 6 => new(320,128), 7 => new(320,256), _ => throw new ArgumentOutOfRangeException()});
-        doorCoor = (BluedoorCoor + ReddoorCoor) / 2;
+        doorCoor = ReddoorCoor;
         _view = Matrix.CreateTranslation(width/2-doorCoor.X, height/2-doorCoor.Y, 0); // 恢复视角至初始状态
 
 
@@ -964,7 +1009,8 @@ public class Game1 : Game
         {(Name.AimRight, 0), 1.0f},
         {(Name.AimUp, 0), 1.0f},
         {(Name.AimDown, 0), 1.0f},
-        // {(Name.DoubleCast,) 20},
+        {(Name.DoubleCast, 0), 1.0f},
+        {(Name.DoubleCast, 1), 1.0f},
         {(Name.TwiceCast, 0), 1.5f},
         {(Name.CastEveryTick, 0), 3.0f},
         {(Name.CastEvery8Ticks, 0), 2.0f},
@@ -1027,16 +1073,17 @@ public class Game1 : Game
 
         enemyRate = stage switch{
             1 or 2 or 3 => wave switch{
-                1 => 120/stage,
-                2 => 60/stage,
-                3 => 40/stage,
-                4 => 24/stage,
-                5 => 15/stage,
+                1 => 120,
+                2 => 60,
+                3 => 40,
+                4 => 24,
+                5 => 15,
                 _ => throw new ArgumentOutOfRangeException(),
             },
             4 => 1,
             _ => throw new ArgumentOutOfRangeException(),
         };
+        GenerateCardDeck();
 
         RefreshMap();
     }

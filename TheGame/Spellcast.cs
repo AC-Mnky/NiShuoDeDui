@@ -35,7 +35,7 @@ public class Spellcast : Thing
             switch(spell.name)
             {
                 case Name.SummonEnemy:
-                    x = game.NewEnemy(spell.summonedEntity, game.Reddoor, 0f);
+                    x = game.NewEnemy(spell.summonedEntity, cast.segment??game.Reddoor, cast.progress);
                     AttemptCastChild(1, new(x));
                     alive = false;
                     break;

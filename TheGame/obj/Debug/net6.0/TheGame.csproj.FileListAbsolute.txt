@@ -101,3 +101,14 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonexplosion.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\arrow.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\spike.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\stone.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\circle2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\crossgen2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\dark2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\diamond2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\ghost2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\heal2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\invin2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\invin2ed.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\phasor2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\runner2.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\square2.xnb

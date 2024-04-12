@@ -22,6 +22,17 @@ Diamond1,
 Circle1,
 Cross1,
 
+Square2,
+Diamond2,
+Circle2,
+Runner2,
+Phasor2,
+Crossgen2,
+Heal2,
+Dark2,
+Invin2,
+Ghost2,
+
 
 
 Projectile1, 
