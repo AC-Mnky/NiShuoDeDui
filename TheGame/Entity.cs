@@ -48,7 +48,7 @@ abstract public class Entity : Thing
     };
     protected static Dictionary<Name, float> DefaultSpeed = new() {
         {Name.Enemy1, 1f},
-        {Name.EnemyEasy, 5f},
+        {Name.EnemyEasy, 3f},
         {Name.EnemyFast, 10f},
         {Name.EnemyVeryFast, 20f}
     };
@@ -95,6 +95,10 @@ abstract public class Entity : Thing
     {
         coordinate.X -= MathF.Floor(coordinate.X/game.xPeriod) * game.xPeriod;
         coordinate.Y -= MathF.Floor(coordinate.Y/game.yPeriod) * game.yPeriod;
+        UpdateHitbox();
+    }
+    public void UpdateHitbox()
+    {
         hitbox = new RectangleF(coordinate.X-size.X/2,coordinate.Y-size.Y/2,size.X,size.Y);
     }
     public Vector2 velocity;

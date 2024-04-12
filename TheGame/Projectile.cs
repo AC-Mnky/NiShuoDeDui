@@ -10,6 +10,7 @@ public class Projectile : Entity
     {
         this.coordinate = coordinate;
         this.velocity = velocity;
+        UpdateHitbox();
     }
 
 

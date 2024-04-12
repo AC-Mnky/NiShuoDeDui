@@ -16,6 +16,7 @@ public class Enemy : Entity
         this.progress = progress;
         coordinate = segment.CoordinateAtProgress(progress);
         speed = DefaultSpeed[name];
+        UpdateHitbox();
     }
 
 

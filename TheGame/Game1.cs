@@ -27,7 +27,7 @@ public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
     static bool CHEATALLOWED = true;
-    static bool SHOPALWAYSMAX = false;
+    static bool SHOPALWAYSMAX = true;
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
     private double _time;
     private int _exitPower;
