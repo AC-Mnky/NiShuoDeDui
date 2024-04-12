@@ -24,7 +24,11 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/defaulticon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/defaulticon.xnb","TextureProcessor","Texture2DContent",236,5269,0.1941831
 "D:/Game202402/TheGame/Content/door.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/door.xnb","TextureProcessor","Texture2DContent",231,16469,0.2005765
 "D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",159,4181,0.2155331
+"D:/Game202402/TheGame/Content/enemycircle1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemycircle1.xnb","TextureProcessor","Texture2DContent",198,2389,0.1980864
+"D:/Game202402/TheGame/Content/enemycross1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemycross1.xnb","TextureProcessor","Texture2DContent",104,229,0.0031883
+"D:/Game202402/TheGame/Content/enemydiamond1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemydiamond1.xnb","TextureProcessor","Texture2DContent",174,1109,0.0034524
 "D:/Game202402/TheGame/Content/enemyfast.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemyfast.xnb","TextureProcessor","Texture2DContent",152,1109,0.2016727
+"D:/Game202402/TheGame/Content/enemysquare1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemysquare1.xnb","TextureProcessor","Texture2DContent",116,1109,0.0031708
 "D:/Game202402/TheGame/Content/enemyveryfast.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemyveryfast.xnb","TextureProcessor","Texture2DContent",173,1109,0.0046251
 "D:/Game202402/TheGame/Content/font.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/font.xnb","TextureProcessor","Texture2DContent",1457,39989,0.1998816
 "D:/Game202402/TheGame/Content/Fonts/File.spritefont","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/Fonts/untitledfont.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21535,0.1654831

@@ -24,6 +24,7 @@ begin battle button
 rotation and arrow texture
 improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version that does not represent the final quality of the game]
 bluereddoor fix
+bluereddoor at center
 (not urgent)draw perk, code perk
 (not urgent)better map generation
 (not urgent)better better collision

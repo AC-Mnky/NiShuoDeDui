@@ -83,3 +83,7 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\slot.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\slotLeft.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\slotUp.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\templateicon.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemycircle1.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemycross1.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemydiamond1.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\enemysquare1.xnb

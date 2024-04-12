@@ -97,6 +97,9 @@ public class Game1 : Game
     private bool _onMap;
     private bool _clearMapFlag = false;
 
+    private long _lastenemyspawntick;
+    private int _spawnedenemy;
+
 
 
     public Game1()
@@ -293,10 +296,10 @@ public class Game1 : Game
         Entity.Texture[Name.EnemyFast] = Content.Load<Texture2D>("enemyfast");
         Entity.Texture[Name.EnemyVeryFast] = Content.Load<Texture2D>("enemyveryfast");
 
-        Entity.Texture[Name.Square1] = 
-        Entity.Texture[Name.Diamond1] = 
-        Entity.Texture[Name.Circle1] = 
-        Entity.Texture[Name.Cross1] = whiteTexture;
+        Entity.Texture[Name.Square1] = Content.Load<Texture2D>("enemysquare1");
+        Entity.Texture[Name.Diamond1] = Content.Load<Texture2D>("enemyDiamond1");
+        Entity.Texture[Name.Circle1] = Content.Load<Texture2D>("enemyCircle1");
+        Entity.Texture[Name.Cross1] = Content.Load<Texture2D>("enemyCross1");
 
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.SquareD6] = whiteTexture;
@@ -513,7 +516,16 @@ public class Game1 : Game
                 enemyStack.Add(enemySpell[e]);
         Shuffle(enemyStack);
     }
-
+    public bool shouldSpawnEnemy()
+    {
+        if(tick==0) return true;
+        long interval = tick - _lastenemyspawntick;
+        if(interval < enemyRate / 3) return false;
+        if(interval > enemyRate * 2) if(rand.Next(1 + enemyRate) == 0) return true;
+        if(tick > enemyRate * _spawnedenemy) if(rand.Next(1 + enemyRate) == 0) return true;
+        if(rand.Next(1 + enemyRate * 2 / 3) == 0) return true;
+        else return false;
+    }
 
 
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
@@ -524,10 +536,12 @@ public class Game1 : Game
                 break;
             case GameScene.Battle:
                 if(tick == 0) GenerateEnemyStack();
-                if(rand.Next(enemyRate) == 0 && enemyStack.Count > 0)
+                if(enemyStack.Count > 0 && shouldSpawnEnemy())
                 {
                     NewSpellcast(enemyStack.Last(), new(new Vector2()));
                     enemyStack.RemoveAt(enemyStack.Count - 1);
+                    _lastenemyspawntick = tick;
+                    ++_spawnedenemy;
                 }
                 break;
             default:
