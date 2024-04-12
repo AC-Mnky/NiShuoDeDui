@@ -90,7 +90,7 @@ abstract public class Entity : Thing
         {Name.Cross1, 1d},
 
         {Name.Projectile1, 1d},
-        {Name.Stone, 5d},
+        {Name.Stone, 3d},
         {Name.Arrow, 1d},
         {Name.Spike, 1d},
         {Name.SquareD6, -1d},

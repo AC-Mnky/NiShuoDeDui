@@ -943,9 +943,9 @@ public class Game1 : Game
     };
     public static readonly Dictionary<(Name,int), float> ManaMul = new(){
         {(Name.Projectile1, 1), 1.5f},
-        {(Name.Stone, 1), 1.5f},
-        {(Name.Arrow, 1), 1.5f},
-        {(Name.Spike, 1), 1.5f},
+        {(Name.Stone, 1), 5.0f},
+        {(Name.Arrow, 1), 3.0f},
+        {(Name.Spike, 1), 3.0f},
         {(Name.ExplosionSquareD6, 1), 1.5f},
         // {(Name.Add10Speed, 50},
         {(Name.AddSpeed, 0), 1.0f},
