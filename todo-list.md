@@ -17,14 +17,14 @@
 <!-- more enemies -->
 <!-- code dummies -->
 <!-- rotation and arrow texture -->
+<!-- pause and double speed -->
+<!-- begin battle button -->
 more more enemies
 more spells
-scaling spell
-pause and double speed
-begin battle button
 improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version that does not represent the final quality of the game]
 bluereddoor fix
 bluereddoor at center
+scaling spell
 (not urgent)draw perk, code perk
 (not urgent)better map generation
 (not urgent)better better collision

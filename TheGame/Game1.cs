@@ -51,11 +51,11 @@ public class Game1 : Game
     public long tick; // 游戏从开始经过的刻数
     // private long thingCount; // 游戏从开始产生的Entity, Spell, Spellcast总数
     private double timeBank;
-    private GameStatus gamestatus; // 是不是暂停
+    public GameStatus gamestatus; // 是不是暂停
     public GameScene gamescene;
     public int life;
     public int money;
-    private int tps; // 每秒多少刻（控制倍速，60刻是一倍速）
+    public int tps; // 每秒多少刻（控制倍速，60刻是一倍速）
     // private LinkedList<Entity> entities;
     private LinkedList<Enemy> enemy;
     private LinkedList<Entity> neutral;
@@ -81,6 +81,8 @@ public class Game1 : Game
     public List<Window> inventorySlot;
     public List<Window> shopSlot;
     private Window title, newGame, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
+    private Window startBattle;
+    private Window stageWave, gamespeed, paused; 
     private int shopWidth, inventoryWidth;
     private bool shopOpen, inventoryOpen, inventoryAvailable;
     public int stage, wave;
@@ -138,6 +140,7 @@ public class Game1 : Game
         var characters = new List<char>(){
             ' ','!','\"','#','$','%','&','\'','(',')','*','+',',','-','.','/',
             '0','1','2','3','4','5','6','7','8','9',
+            '?',
             'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
             '[','\\',']','^','_','`',
             'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
@@ -147,10 +150,11 @@ public class Game1 : Game
         var glyphBounds = new List<Rectangle>();
         for(int i=0;i<16;++i) glyphBounds.Add(new(9*i,0,7,7));
         for(int i=0;i<10;++i) glyphBounds.Add(new(9*i,9,7,7));
-        for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,18,7,7));
-        for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,27,7,7));
-        for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,18,7,7));
+        for(int i=0;i<1;++i) glyphBounds.Add(new(9*i,18,7,7));
+        for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,27,7,7));
         for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,36,7,7));
+        for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,27,7,7));
+        for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,48,7,7));
         glyphBounds.Add(new(225,27,7,7));
         
         var cropping = new List<Rectangle>
@@ -173,6 +177,9 @@ public class Game1 : Game
             new(0, 0, 5, 7), // /
         };
         for(int i=0;i<10;++i) cropping.Add(new(0,0,4,7));
+        cropping.AddRange(new List<Rectangle>(){
+            new(0, 0, 5, 7), // ?
+        });
         for(int i=0;i<26;++i) cropping.Add(new(0,0,7,7));
         cropping.AddRange(new List<Rectangle>(){
             new(0, 0, 4, 7), // [
@@ -213,6 +220,9 @@ public class Game1 : Game
             new(1, 5, 1), // /
         };
         for(int i=0;i<10;++i) kerning.Add(new(1,4,1));
+        kerning.AddRange(new List<Vector3>(){
+            new(1, 5, 1), // ?
+        });
         for(int i=0;i<26;++i) kerning.Add(new(1,7,1));
         kerning.AddRange(new List<Vector3>(){
             new(1, 4, 1), // [
@@ -257,15 +267,28 @@ public class Game1 : Game
         };
         gameover = new Window(this, WindowType.GameOver, transparentTexture, Color.Transparent, clickable: false){
             text = "GAME OVER",
-            textScale = 4
+            textScale = 4,
+        };
+        stageWave = new Window(this, WindowType.StageWave, transparentTexture, Color.Transparent, clickable: false){
+            textScale = 3,
+        };
+        gamespeed = new Window(this, WindowType.GameSpeed, transparentTexture, Color.Transparent, clickable: false){
+            textScale = 3,
+        };
+        paused = new Window(this, WindowType.Paused, transparentTexture, Color.Transparent, clickable: false){
+            textScale = 3,
         };
         shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.Brown, clickable: false);
         inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.DarkBlue, clickable: false);
-        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Brown, clickable: true){
+        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Brown){
             textScale = 2,
             textOffset = new(15,15)
         };
-        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.DarkBlue, clickable: true){
+        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.DarkBlue){
+            textScale = 2,
+            textOffset = new(15,15)
+        };
+        startBattle = new Window(this, WindowType.StartBattle, whiteTexture, Color.Black, clickable: true){
             textScale = 2,
             textOffset = new(15,15)
         };
@@ -991,7 +1014,7 @@ public class Game1 : Game
         ClearMap();
         gamescene = GameScene.Title;
     }
-
+    #region Update
     protected override void Update(GameTime gameTime) // 窗口每帧更新（和暂停或倍速无关），这里主要负责一些输入输出的计算
     {
         #region some shit
@@ -1142,6 +1165,10 @@ public class Game1 : Game
                     {
                         ToggleShop();
                     }
+                    else if(mouseOn?.type == WindowType.StartBattle && gamescene == GameScene.Build)
+                    {
+                        BattleBegin();
+                    }
                 }
                 if(Mouse.LeftDeClicked() && !Keyboard.IsPressed(Keys.LeftControl))
                 {
@@ -1237,6 +1264,7 @@ public class Game1 : Game
         }
         base.Update(gameTime);
     }
+    #endregion
     private bool TakeAble(Spell s)
     {
         if(!inventoryAvailable) return false;
@@ -1324,6 +1352,7 @@ public class Game1 : Game
             }
         }
     }
+    #region draw
     protected override void Draw(GameTime gameTime) // 显示
     {
         width = GraphicsDevice.Viewport.Width;
@@ -1390,6 +1419,7 @@ public class Game1 : Game
                 // 物品栏
                 DrawWindow(inventoryWindow, new(shopWidth,0,inventoryWidth,height), null);
                 DrawWindow(lifeWindow, new(shopWidth+inventoryWidth+20,height-128,216,44), null);
+                DrawWindow(startBattle, new(shopWidth+inventoryWidth+20-256,height-128,216,44), null);
                 
                 // 物品栏法术
                 for(int i=1;i<inventory.Count;++i) DrawWindow(inventorySlot[i], new(new Point(shopWidth+inventoryWidth-256,0)+InventoryOffset(i),new(64,64)), new(new Point(shopWidth+inventoryWidth-256+10,10)+InventoryOffset(i),new(44,44)));
@@ -1406,6 +1436,11 @@ public class Game1 : Game
                 l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
                 for(int i=1;i<shop.Count;++i) if(shop[i] != null) l.Add(shop[i].showLayer, (shop[i],new Point(shopWidth-256,0)+ShopOffset(i)));
                 foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
+
+                // 右上文字
+                DrawStringWindowRightTop(stageWave, new(width-12, 21), mouseCatch: false);
+                DrawStringWindowRightTop(gamespeed, new(width-12, 54), mouseCatch: false);
+                DrawStringWindowRightTop(paused, new(width-12, 87), mouseCatch: false);
 
                 // 鼠标上的法术
                 if(!_predraw) if(inventory[0] != null) DrawWindow(inventory[0].windowIcon, new(Mouse.Pos().ToPoint(),new(36,36)), new());
@@ -1444,7 +1479,7 @@ public class Game1 : Game
         if(!_predraw) base.Draw(gameTime);
         if(!_predraw) _hasdrawn = true;
     }
-
+    #endregion
     protected Point InventoryOffset(int i)
     {
         const int SPACING = 32;
@@ -1476,7 +1511,13 @@ public class Game1 : Game
     }
     protected void DrawStringWindow(Window w, Point position, bool mouseCatch = true)
     {
+        w.Update();
         DrawWindow(w, new(position - (_font.MeasureString(w.text) * w.textScale / 2).ToPoint(), (_font.MeasureString(w.text)*w.textScale).ToPoint()), mouseCatch ? null : new());
+    }
+    protected void DrawStringWindowRightTop(Window w, Point position, bool mouseCatch = true)
+    {
+        w.Update();
+        DrawWindow(w, new(new(position.X - (_font.MeasureString(w.text) * w.textScale).ToPoint().X,position.Y), (_font.MeasureString(w.text)*w.textScale).ToPoint()), mouseCatch ? null : new());
     }
     protected void DrawWindow(Window w, Rectangle RectRender, Rectangle? RectMouseCatch)
     {

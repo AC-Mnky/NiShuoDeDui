@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace TheGame;
-public enum WindowType {SpellIcon, SpellSlot, SpellSlots, SpellDescription, NewGame, Title, Win, GameOver, InventorySlot, ShopSlot, Tower, Block, Mana, Entity, Road, Reddoor, Bluedoor, Shop, Money, Inventory, Life};
+public enum WindowType {SpellIcon, SpellSlot, SpellSlots, SpellDescription, NewGame, Title, Win, GameOver, InventorySlot, ShopSlot, Tower, Block, Mana, Entity, Road, Reddoor, Bluedoor, Shop, Money, Inventory, Life, StartBattle, StageWave, GameSpeed, Paused};
 
 public class Window : GameObject
 {
@@ -62,6 +62,19 @@ public class Window : GameObject
                 break;
             case WindowType.Life:
                 text = "LIFE  " + ((Game1)parent).life.ToString() + 'λ';
+                break;
+            case WindowType.StartBattle:
+                text = "battle";
+                textOffset = new Point(108,26)-game._font.MeasureString(text).ToPoint();
+                break;
+            case WindowType.StageWave:
+                text = (game.stage==4 ? "???" : game.stage + "-" + game.wave) + (game.gamescene == GameScene.Build ? " preview":" battle");
+                break;
+            case WindowType.GameSpeed:
+                text = ((float)game.tps)/60 + "*speed";
+                break;
+            case WindowType.Paused:
+                text = game.gamestatus == GameStatus.Paused ? "paused" : "";
                 break;
             case WindowType.Money:
                 text = "MONEY "+ ((Game1)parent).money.ToString() + '$';
