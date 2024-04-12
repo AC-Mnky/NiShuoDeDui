@@ -302,6 +302,9 @@ public class Game1 : Game
         Entity.Texture[Name.Cross1] = Content.Load<Texture2D>("enemyCross1");
 
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
+        Entity.Texture[Name.Stone] = Content.Load<Texture2D>("Stone");
+        Entity.Texture[Name.Spike] = Content.Load<Texture2D>("Spike");
+        Entity.Texture[Name.Arrow] = Content.Load<Texture2D>("Arrow");
         Entity.Texture[Name.SquareD6] = whiteTexture;
         Entity.Texture[Name.ExplosionSquareD6] = whiteTexture;
 

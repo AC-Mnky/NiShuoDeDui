@@ -15,6 +15,7 @@
     <File>D:/Game202402/TheGame/Content/aimmouse.png</File>
     <File>D:/Game202402/TheGame/Content/aimright.png</File>
     <File>D:/Game202402/TheGame/Content/aimup.png</File>
+    <File>D:/Game202402/TheGame/Content/arrow.png</File>
     <File>D:/Game202402/TheGame/Content/blockA04.png</File>
     <File>D:/Game202402/TheGame/Content/blockA15.png</File>
     <File>D:/Game202402/TheGame/Content/blockA26.png</File>
@@ -55,6 +56,8 @@
     <File>D:/Game202402/TheGame/Content/SpellGUI2.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI2slot0.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI2slot1.png</File>
+    <File>D:/Game202402/TheGame/Content/spike.png</File>
+    <File>D:/Game202402/TheGame/Content/stone.png</File>
     <File>D:/Game202402/TheGame/Content/summonarrow.png</File>
     <File>D:/Game202402/TheGame/Content/summonenemy1icon.png</File>
     <File>D:/Game202402/TheGame/Content/summonexplosion.png</File>
@@ -73,6 +76,9 @@
     <File>D:/Game202402/TheGame/Content/white.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

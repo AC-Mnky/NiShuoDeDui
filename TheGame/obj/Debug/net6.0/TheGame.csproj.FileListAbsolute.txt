@@ -98,3 +98,6 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\twicecast.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\cast64times.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonexposion.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\summonexplosion.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\arrow.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\spike.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\stone.xnb

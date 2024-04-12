@@ -24,6 +24,9 @@ abstract public class Entity : Thing
         {Name.Cross1, new(-6f,-6f)},
 
         {Name.Projectile1, new(-8f,-8f)},
+        {Name.Stone, new(-12f,-12f)},
+        {Name.Arrow, new(-8f,-5f)},
+        {Name.Spike, new(-8f,-7f)},
         {Name.SquareD6, new(-3*64f,-3*64f)},
         {Name.ExplosionSquareD6, new(-3*64f,-3*64f)},
     };
@@ -39,9 +42,9 @@ abstract public class Entity : Thing
         {Name.Cross1, new(12f,12f)},
 
         {Name.Projectile1, new(16f,16f)},
-        {Name.Stone, new(16f,16f)},
-        {Name.Arrow, new(16f,16f)},
-        {Name.Spike, new(16f,16f)},
+        {Name.Stone, new(24f,24f)},
+        {Name.Arrow, new(16f,10f)},
+        {Name.Spike, new(16f,14f)},
         {Name.SquareD6, new(6*64f,6*64f)},
         {Name.ExplosionSquareD6, new(6*64f,6*64f)}
     };
@@ -199,8 +202,16 @@ abstract public class Entity : Thing
     }
     public Vector2 RenderCoordinate()
     {
-        if(Texture.ContainsKey(name)) return Vector2.Round(coordinate + RenderCoordinateOffset[name]);
-        else return Vector2.Round(coordinate + RenderCoordinateOffset[Name.Projectile1]);
+        Name n = Texture.ContainsKey(name) ? name : Name.Projectile1;
+        Vector2 offset = RenderCoordinateOffset[n];
+        // offset = new();
+        
+        return Vector2.Round(coordinate + Vector2.Transform(offset, Matrix.CreateRotationZ(Rotation())));
     }
 
+    public float Rotation()
+    {
+        if(this is Enemy) return 0;
+        else return MathF.Atan2(velocity.Y, velocity.X);
+    }
 }

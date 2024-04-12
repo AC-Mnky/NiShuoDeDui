@@ -16,12 +16,12 @@
 <!-- manaMul -->
 <!-- more enemies -->
 <!-- code dummies -->
+<!-- rotation and arrow texture -->
 more more enemies
 more spells
 scaling spell
 pause and double speed
 begin battle button
-rotation and arrow texture
 improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version that does not represent the final quality of the game]
 bluereddoor fix
 bluereddoor at center
