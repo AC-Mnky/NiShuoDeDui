@@ -81,6 +81,9 @@ TwiceCast,
 CastEveryTick,
 CastEvery8Ticks,
 CastEvery64Ticks,
+RandomAim,
+RandomWait,
+Aiming,
 };
 
 abstract public class Thing : GameObject

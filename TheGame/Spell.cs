@@ -58,7 +58,7 @@ public class Spell : Thing
         windowUI = new Window(this, WindowType.SpellDescription, Game1.whiteTexture, Color.Black, clickable: false){
             text = name switch{
                 Name.SummonProjectile => "SUMMON " + summonedEntity switch{
-                    Name.Projectile1 => "AN ORDINARY PROJECTILE",
+                    Name.Projectile1 => "A MAGICAL PROJECTILE",
                     Name.Stone => "A STONE",
                     Name.Arrow => "AN ARROW",
                     Name.Spike => "A SPIKE",
@@ -87,6 +87,10 @@ public class Spell : Thing
                 Name.CastEveryTick => "CAST A SPELL 64 TIMES",
                 Name.CastEvery8Ticks => "SLOWLY CAST A SPELL 16 TIMES",
                 Name.CastEvery64Ticks => "VERT SLOWLY CAST A SPELL 4 TIMES",
+                Name.RandomAim => "AIM RANDOM DIRECTION",
+                Name.RandomWait => "WAIT RANDOM TIME",
+                Name.Aiming => "AIM AT CLOSEST ENEMY",
+
                 _ => "THIS IS A BUG"
             },
             text2 = manaCost.ToString() + "µ",

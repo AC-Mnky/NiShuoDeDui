@@ -32,6 +32,7 @@ public class Spellcast : Thing
         else
         {
             Entity x;
+            float minDistance;
             switch(spell.name)
             {
                 case Name.SummonEnemy:
@@ -78,7 +79,7 @@ public class Spellcast : Thing
                     break;
                 case Name.AimClosestInSquareD6:
                     x = game.NewProjectile(Name.SquareD6, CurrentCoordinate(), Vector2.Zero);
-                    float minDistance = float.PositiveInfinity;
+                    minDistance = float.PositiveInfinity;
                     foreach(Entity e in game.Collisions(x)) if(e is Enemy)
                     {
                         Vector2 r = Closest(e.coordinate-x.coordinate);
@@ -159,6 +160,27 @@ public class Spellcast : Thing
                         alive = false;
                         return;
                     }
+                    break;
+                case Name.RandomAim:
+                    cast.direction = Randomdirection();
+                    alive = false;
+                    break;
+                case Name.RandomWait:
+                    if(game.rand.Next(64) == 0) alive = false;
+                    break;
+                case Name.Aiming:
+                    minDistance = float.PositiveInfinity;
+                    foreach(Entity e in game.enemy)
+                    {
+                        Vector2 r = Closest(e.coordinate-cast.CurrentCoordinate());
+                        float l = r.Length();
+                        if(l < minDistance)
+                        {
+                            minDistance = l;
+                            cast.direction = r;
+                        }
+                    }
+                    alive = false;
                     break;
             }
         }

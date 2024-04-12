@@ -57,7 +57,7 @@ public class Game1 : Game
     public int money;
     public int tps = 60; // 每秒多少刻（控制倍速，60刻是一倍速）
     // private LinkedList<Entity> entities;
-    private LinkedList<Enemy> enemy;
+    public LinkedList<Enemy> enemy;
     private LinkedList<Entity> neutral;
     private LinkedList<Projectile> projectile;
     private LinkedList<Spell> spell; // 十分关键的字典，其中每个spell都有一个唯一的id
@@ -395,7 +395,7 @@ public class Game1 : Game
 
 
         win = new Window(this, WindowType.Win, transparentTexture, Color.Transparent, clickable: false){
-            text = "YOU WIN",
+            text = "GAME (DEMO VERSION) COMPLETED\n\nTHANKS FOR PLAYING!",
             textScale = 4,
             textColor = Color.Black
         };
@@ -927,28 +927,32 @@ public class Game1 : Game
     };
     private static readonly RanDict<Name> RandomSpellName = new(){
         {Name.SummonProjectile, 6},
-        {Name.Add10Speed, 2},
-        {Name.AddSpeed, 1},
+        {Name.Add10Speed, 3},
+        {Name.AddSpeed, 3},
         {Name.DoubleSpeed, 1},
-        {Name.AddXVelocity, 0.25},
-        {Name.AddYVelocity, 0.25},
-        {Name.ReduceXVelocity, 0.25},
-        {Name.ReduceYVelocity, 0.25},
+        {Name.AddXVelocity, 0.5},
+        {Name.AddYVelocity, 0.5},
+        {Name.ReduceXVelocity, 0.5},
+        {Name.ReduceYVelocity, 0.5},
         {Name.AimClosestInSquareD6, 1},
         {Name.TriggerUponDeath, 1},
         {Name.VelocityZero, 0.5},
         {Name.Wait60Ticks, 1},
         {Name.AimMouse, 1},
         {Name.AimBack, 0.5},
-        {Name.AimLeft, 0.25},
-        {Name.AimRight, 0.25},
-        {Name.AimUp, 0.25},
-        {Name.AimDown, 0.25},
+        {Name.AimLeft, 0.5},
+        {Name.AimRight, 0.5},
+        {Name.AimUp, 0.5},
+        {Name.AimDown, 0.5},
         {Name.DoubleCast, 1},
         {Name.TwiceCast, 1},
-        {Name.CastEveryTick, 1},
-        {Name.CastEvery8Ticks, 1},
-        {Name.CastEvery64Ticks, 1},
+        {Name.CastEveryTick, 0.25},
+        {Name.CastEvery8Ticks, 0.5},
+        {Name.CastEvery64Ticks, 0.5},
+        {Name.RandomAim, 1},
+        {Name.RandomWait, 1},
+        {Name.Aiming, 1},
+
     };
     public static readonly Dictionary<Name, int> SpellPrice = new(){
         {Name.Projectile1, 1},
@@ -956,7 +960,7 @@ public class Game1 : Game
         {Name.Arrow, 2},
         {Name.Spike, 2},
         {Name.ExplosionSquareD6, 10},
-        {Name.Add10Speed, 2},
+        {Name.Add10Speed, 3},
         {Name.AddSpeed, 1},
         {Name.DoubleSpeed, 2},
         {Name.AddXVelocity, 1},
@@ -964,8 +968,8 @@ public class Game1 : Game
         {Name.ReduceXVelocity, 1},
         {Name.ReduceYVelocity, 1},
         {Name.AimClosestInSquareD6, 2},
-        {Name.TriggerUponDeath, 2},
-        {Name.Wait60Ticks, 2},
+        {Name.TriggerUponDeath, 4},
+        {Name.Wait60Ticks, 8},
         {Name.VelocityZero, 1},
         {Name.AimMouse, 2},
         {Name.AimBack, 1},
@@ -975,9 +979,12 @@ public class Game1 : Game
         {Name.AimDown, 1},
         {Name.DoubleCast, 1},
         {Name.TwiceCast, 5},
-        {Name.CastEveryTick, 10},
-        {Name.CastEvery8Ticks, 8},
+        {Name.CastEveryTick, 20},
+        {Name.CastEvery8Ticks, 10},
         {Name.CastEvery64Ticks, 5},
+        {Name.RandomAim, 1},
+        {Name.RandomWait, 4},
+        {Name.Aiming, 3},
     };
     public static readonly Dictionary<Name, float> SpellCost = new(){
         {Name.Projectile1, 30},
@@ -1003,13 +1010,16 @@ public class Game1 : Game
         {Name.AimUp, 2},
         {Name.AimDown, 2},
         {Name.DoubleCast, 20},
-        {Name.TwiceCast, 100},
-        {Name.CastEveryTick, 400},
-        {Name.CastEvery8Ticks, 300},
-        {Name.CastEvery64Ticks, 200},
+        {Name.TwiceCast, 50},
+        {Name.CastEveryTick, 200},
+        {Name.CastEvery8Ticks, 150},
+        {Name.CastEvery64Ticks, 100},
+        {Name.RandomAim, 0},
+        {Name.RandomWait, 20},
+        {Name.Aiming, 10},
     };
     public static readonly Dictionary<(Name,int), float> ManaMul = new(){
-        {(Name.Projectile1, 1), 1.5f},
+        {(Name.Projectile1, 1), 1.2f},
         {(Name.Stone, 1), 5.0f},
         {(Name.Arrow, 1), 3.0f},
         {(Name.Spike, 1), 3.0f},
@@ -1024,7 +1034,7 @@ public class Game1 : Game
         {(Name.AimClosestInSquareD6, 0), 1.2f},
         {(Name.TriggerUponDeath, 0), 1.5f},
         {(Name.Wait60Ticks, 0), 1.5f},
-        {(Name.VelocityZero, 0),  0.9f},
+        {(Name.VelocityZero, 0),  1.0f},
         {(Name.AimMouse, 0), 2.0f},
         {(Name.AimBack, 0), 1.0f},
         {(Name.AimLeft, 0), 1.0f},
@@ -1037,7 +1047,10 @@ public class Game1 : Game
         {(Name.CastEveryTick, 0), 3.0f},
         {(Name.CastEvery8Ticks, 0), 2.0f},
         {(Name.CastEvery64Ticks, 0), 1.5f},
-    };
+        {(Name.RandomAim, 0), 1.0f},
+        {(Name.RandomWait, 0), 1.0f},
+        {(Name.Aiming, 0), 1.3f},
+   };
 
     private Spell RandomNewSpell()
     {
@@ -1058,6 +1071,11 @@ public class Game1 : Game
             {
                 wave = 1;
                 ++stage;
+                if(stage==4)
+                {
+                    Ending();
+                    return;
+                }
                 StageBegin();
             }
             WaveBegin();
@@ -1096,10 +1114,10 @@ public class Game1 : Game
         enemyRate = stage switch{
             1 or 2 or 3 => wave switch{
                 1 => 120,
-                2 => 60,
-                3 => 40,
-                4 => 24,
-                5 => 15,
+                2 => 80,
+                3 => 60,
+                4 => 40,
+                5 => 30,
                 _ => throw new ArgumentOutOfRangeException(),
             },
             4 => 1,
