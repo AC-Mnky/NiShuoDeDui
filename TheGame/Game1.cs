@@ -255,13 +255,13 @@ public class Game1 : Game
             text = "GAME OVER",
             textScale = 4
         };
-        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.BlueViolet, clickable: false);
-        inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.Blue, clickable: false);
-        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.BlueViolet, clickable: true){
+        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.Brown, clickable: false);
+        inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.DarkBlue, clickable: false);
+        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Brown, clickable: true){
             textScale = 2,
             textOffset = new(15,15)
         };
-        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.Blue, clickable: true){
+        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.DarkBlue, clickable: true){
             textScale = 2,
             textOffset = new(15,15)
         };
@@ -516,10 +516,10 @@ public class Game1 : Game
         foreach(Entity e in entities())
             e.TickUpdate(); // 实体更新（期间不应该移动！）
         LinkedListNode<Spellcast> m2;
-        for(var n = spellcast.First;n!=null;n=m2)
+        for(var n = spellcast.First;n!=null;n=m2) // 移除被标记为死亡的Spellcast
         {
             m2 = n.Next;
-            if(!n.Value.alive) spellcast.Remove(n); // 移除被标记为死亡的Spellcast
+            if(!n.Value.alive) spellcast.Remove(n);
         }
         foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null)
             t.TickUpdate(); // 塔施法

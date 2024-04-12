@@ -19,8 +19,10 @@ code dummies
 more spells
 scaling spell
 pause and double speed
+begin battle button
 rotation and arrow texture
-(not urgent)improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version and does not represent the final quality of the game]
+improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version that does not represent the final quality of the game]
+bluereddoor fix
 (not urgent)draw perk, code perk
 (not urgent)better map generation
 (not urgent)better better collision
@@ -49,5 +51,12 @@ Spell.cs/Projectile description
 Game1.cs/RandomProjectileName
 Game1.cs/Price, Cost
 (draw projectile)
+(mgcb editor)
+Game1.cs/Texture
+
+To add an enemy:
+Thing.cs/name
+Entity.cs/a lot of shit
+(draw texture)
 (mgcb editor)
 Game1.cs/Texture
