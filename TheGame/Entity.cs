@@ -48,7 +48,7 @@ abstract public class Entity : Thing
     };
     protected static Dictionary<Name, float> DefaultSpeed = new() {
         {Name.Enemy1, 1f},
-        {Name.EnemyEasy, 3f},
+        {Name.EnemyEasy, 8f},
         {Name.EnemyFast, 10f},
         {Name.EnemyVeryFast, 20f}
     };
