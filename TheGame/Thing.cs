@@ -14,6 +14,16 @@ Enemy1,
 EnemyEasy, 
 EnemyFast, 
 EnemyVeryFast, 
+
+
+
+Square1,
+Diamond1,
+Circle1,
+Cross1,
+
+
+
 Projectile1, 
 Stone, 
 Arrow, 

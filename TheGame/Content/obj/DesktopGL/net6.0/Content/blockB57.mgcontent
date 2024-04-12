@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>D:/Game202402/TheGame/Content/blockB57.png</SourceFile>
-  <SourceTime>2024-03-07T23:42:51.8512227+08:00</SourceTime>
+  <SourceTime>2024-04-12T17:30:33.0113502+08:00</SourceTime>
   <DestFile>D:/Game202402/TheGame/Content/bin/DesktopGL/Content/blockB57.xnb</DestFile>
-  <DestTime>2024-03-07T23:44:51.4354565+08:00</DestTime>
+  <DestTime>2024-04-12T17:30:39.8138127+08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T19:44:56+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

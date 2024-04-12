@@ -14,11 +14,16 @@ namespace TheGame;
 abstract public class Entity : Thing
 {
     protected static Dictionary<Name, Vector2> RenderCoordinateOffset = new() {
-        {Name.Enemy1, new Vector2(-16f,-16f)},
-        {Name.EnemyEasy, new Vector2(-16f,-16f)},
-        {Name.EnemyFast, new Vector2(-8f,-8f)},
-        {Name.EnemyVeryFast, new Vector2(-8f,-8f)},
-        {Name.Projectile1, new Vector2(-8f,-8f)},
+        {Name.Enemy1, new(-16f,-16f)},
+        {Name.EnemyEasy, new(-16f,-16f)},
+        {Name.EnemyFast, new(-8f,-8f)},
+
+        {Name.Square1, new(-16f,-16f)},
+        {Name.Diamond1, new(-16f,-16f)},
+        {Name.Circle1, new(-24f,-24f)},
+        {Name.Cross1, new(-6f,-6f)},
+
+        {Name.Projectile1, new(-8f,-8f)},
         {Name.SquareD6, new(-3*64f,-3*64f)},
         {Name.ExplosionSquareD6, new(-3*64f,-3*64f)},
     };
@@ -27,6 +32,12 @@ abstract public class Entity : Thing
         {Name.EnemyEasy, new(32f,32f)},
         {Name.EnemyFast, new(16f,16f)},
         {Name.EnemyVeryFast, new(16f,16f)},
+
+        {Name.Square1, new(32f,32f)},
+        {Name.Diamond1, new(32f,32f)},
+        {Name.Circle1, new(48f,48f)},
+        {Name.Cross1, new(12f,12f)},
+
         {Name.Projectile1, new(16f,16f)},
         {Name.Stone, new(16f,16f)},
         {Name.Arrow, new(16f,16f)},
@@ -39,6 +50,12 @@ abstract public class Entity : Thing
         {Name.EnemyEasy, Color.Red},
         {Name.EnemyFast, Color.Red},
         {Name.EnemyVeryFast, Color.Red},
+
+        {Name.Square1, Color.Red},
+        {Name.Diamond1, Color.OrangeRed},
+        {Name.Circle1, Color.SaddleBrown},
+        {Name.Cross1, Color.Black},
+
         {Name.Projectile1, Color.Blue},
         {Name.Stone, Color.DarkGray},
         {Name.Arrow, Color.White},
@@ -50,13 +67,25 @@ abstract public class Entity : Thing
         {Name.Enemy1, 1f},
         {Name.EnemyEasy, 8f},
         {Name.EnemyFast, 10f},
-        {Name.EnemyVeryFast, 20f}
+        {Name.EnemyVeryFast, 20f},
+
+        {Name.Square1, 3f},
+        {Name.Diamond1, 8f},
+        {Name.Circle1, 1f},
+        {Name.Cross1, 5f},
+
     };
     protected static Dictionary<Name, double> DefaultHealth = new() {
         {Name.Enemy1, 10d},
         {Name.EnemyEasy, 10d},
         {Name.EnemyFast, 10d},
         {Name.EnemyVeryFast, 10d},
+
+        {Name.Square1, 10d},
+        {Name.Diamond1, 5d},
+        {Name.Circle1, 50d},
+        {Name.Cross1, 1d},
+
         {Name.Projectile1, 1d},
         {Name.Stone, 5d},
         {Name.Arrow, 1d},
@@ -69,6 +98,12 @@ abstract public class Entity : Thing
         {Name.EnemyEasy, 1d},
         {Name.EnemyFast, 1d},
         {Name.EnemyVeryFast, 1d},
+
+        {Name.Square1, 1d},
+        {Name.Diamond1, 5d},
+        {Name.Circle1, 0.5d},
+        {Name.Cross1, 5d},
+
         {Name.Projectile1, 1d},
         {Name.SquareD6, 0d},
         {Name.ExplosionSquareD6, 5d},
@@ -78,7 +113,52 @@ abstract public class Entity : Thing
         {Name.EnemyEasy, 1},
         {Name.EnemyFast, 1},
         {Name.EnemyVeryFast, 1},
+
+        {Name.Square1, 2},
+        {Name.Diamond1, 4},
+        {Name.Circle1, 5},
+        {Name.Cross1, 1},
+
     };
+    public static Dictionary<Name, int> CardNum = new() {
+        {Name.Enemy1, 20},
+        {Name.EnemyEasy, 20},
+        {Name.EnemyFast, 20},
+        {Name.EnemyVeryFast, 20},
+
+        {Name.Square1, 10},
+        {Name.Diamond1, 5},
+        {Name.Circle1, 4},
+        {Name.Cross1, 10},
+
+    };
+    public static Dictionary<int, RanDict<Name>> RandomCard = new(){
+        {1, new(){
+        {Name.Square1, 0},
+        {Name.Diamond1, 2},
+        {Name.Circle1, 2},
+        {Name.Cross1, 1},
+            }},
+        {2, new(){
+        {Name.Square1, 0},
+        {Name.Diamond1, 2},
+        {Name.Circle1, 2},
+        {Name.Cross1, 1},
+            }},
+        {3, new(){
+        {Name.Square1, 0},
+        {Name.Diamond1, 2},
+        {Name.Circle1, 2},
+        {Name.Cross1, 1},
+            }},
+        {4, new(){
+        {Name.Square1, 0},
+        {Name.Diamond1, 2},
+        {Name.Circle1, 2},
+        {Name.Cross1, 1},
+            }},
+    };
+
     public static Dictionary<Name, Texture2D> Texture = new();
     public Entity(Name name) : base(name)
     {

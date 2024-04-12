@@ -62,7 +62,7 @@ public class Game1 : Game
     private LinkedList<Projectile> projectile;
     private LinkedList<Spell> spell; // 十分关键的字典，其中每个spell都有一个唯一的id
     private LinkedList<Spellcast> spellcast; // 十分关键的字典，其中每个spellcast都有一个唯一的id
-    private Stack enemyStack;
+    private List<Spell> enemyStack;
     private int enemyRate;
     private Block[,] blocks;
     public float manaMax;
@@ -84,7 +84,8 @@ public class Game1 : Game
     private int shopWidth, inventoryWidth;
     private bool shopOpen, inventoryOpen, inventoryAvailable;
     public int stage, wave;
-    private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
+    // private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
+    private Dictionary<Name, Spell> enemySpell = null;
     public static Texture2D slotTexture, slotLeftTexture, slotUpTexture;
     public static Texture2D doorTexture;
     public static Texture2D defaultTexture;
@@ -291,6 +292,12 @@ public class Game1 : Game
         Entity.Texture[Name.EnemyEasy] = Content.Load<Texture2D>("enemy1");
         Entity.Texture[Name.EnemyFast] = Content.Load<Texture2D>("enemyfast");
         Entity.Texture[Name.EnemyVeryFast] = Content.Load<Texture2D>("enemyveryfast");
+
+        Entity.Texture[Name.Square1] = 
+        Entity.Texture[Name.Diamond1] = 
+        Entity.Texture[Name.Circle1] = 
+        Entity.Texture[Name.Cross1] = whiteTexture;
+
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.SquareD6] = whiteTexture;
         Entity.Texture[Name.ExplosionSquareD6] = whiteTexture;
@@ -455,11 +462,56 @@ public class Game1 : Game
     }
     public void GenerateEnemyStack()
     {
-        summonenemy1 = NewSpell(Name.SummonEnemy, Name.Enemy1);
-        summonenemyEasy = NewSpell(Name.SummonEnemy, Name.EnemyEasy);
-        summonenemyFast = NewSpell(Name.SummonEnemy, Name.EnemyFast);
-        summonenemyVeryFast = NewSpell(Name.SummonEnemy, Name.EnemyVeryFast);
-        for(int i=0;i<20;++i) enemyStack.Push(summonenemyEasy);
+        if(enemySpell == null)
+        {
+            enemySpell = new()
+            {
+                {Name.Square1, NewSpell(Name.SummonEnemy, Name.Square1)},
+                {Name.Diamond1, NewSpell(Name.SummonEnemy, Name.Diamond1)},
+                {Name.Circle1, NewSpell(Name.SummonEnemy, Name.Circle1)},
+                {Name.Cross1, NewSpell(Name.SummonEnemy, Name.Cross1)},
+            };
+            Spell x1 = NewSpell(Name.SummonEnemy, Name.Cross1);
+            Spell x2 = NewSpell(Name.SummonEnemy, Name.Cross1);
+            Spell x3 = NewSpell(Name.SummonEnemy, Name.Cross1);
+            x1.ReAttach(new(enemySpell[Name.Cross1], 0));
+            x2.ReAttach(new(x1, 0));
+            x3.ReAttach(new(x2, 0));
+        }
+        
+        List<Name> cardDeck = new();
+        switch(stage)
+        {
+            case 1:
+                cardDeck.Add(Name.Square1);
+                for(int i=1;i<wave switch{1=>1,2=>2,3=>3,4=>5,5=>10,_=>throw new ArgumentOutOfRangeException()};++i)
+                {
+                    cardDeck.Add(Entity.RandomCard[1].Next());
+                }
+                break;
+            case 2:
+                for(int i=0;i<wave switch{1=>1,2=>2,3=>3,4=>5,5=>10,_=>throw new ArgumentOutOfRangeException()};++i)
+                {
+                    cardDeck.Add(Entity.RandomCard[2].Next());
+                }
+                break;
+            case 3:
+                for(int i=0;i<wave switch{1=>1,2=>2,3=>3,4=>5,5=>10,_=>throw new ArgumentOutOfRangeException()};++i)
+                {
+                    cardDeck.Add(Entity.RandomCard[3].Next());
+                }
+                break;
+            case 4:
+                for(int i=0;i<wave switch{1=>50,_=>throw new ArgumentOutOfRangeException()};++i)
+                {
+                    cardDeck.Add(Entity.RandomCard[4].Next());
+                }
+                break;
+        }
+        foreach(Name e in cardDeck)
+            for(int i=0;i<Entity.CardNum[e];++i)
+                enemyStack.Add(enemySpell[e]);
+        Shuffle(enemyStack);
     }
 
 
@@ -472,7 +524,11 @@ public class Game1 : Game
                 break;
             case GameScene.Battle:
                 if(tick == 0) GenerateEnemyStack();
-                if(rand.Next(enemyRate) == 0 && enemyStack.Count > 0) NewSpellcast((Spell)enemyStack.Pop(), new(new Vector2()));
+                if(rand.Next(enemyRate) == 0 && enemyStack.Count > 0)
+                {
+                    NewSpellcast(enemyStack.Last(), new(new Vector2()));
+                    enemyStack.RemoveAt(enemyStack.Count - 1);
+                }
                 break;
             default:
                 return;
@@ -840,7 +896,18 @@ public class Game1 : Game
         if(!inventoryOpen) ToggleInventory();
         inventoryAvailable = true;
 
-        enemyRate = 120 - 10 * (wave-1) - 20 * (stage-1);
+        enemyRate = stage switch{
+            1 or 2 or 3 => wave switch{
+                1 => 120,
+                2 => 60,
+                3 => 40,
+                4 => 24,
+                5 => 15,
+                _ => throw new ArgumentOutOfRangeException(),
+            },
+            4 => 1,
+            _ => throw new ArgumentOutOfRangeException(),
+        };
 
         RefreshMap();
     }
@@ -1476,7 +1543,16 @@ public class Game1 : Game
     
     #endregion
 
+    public void Shuffle<T>(IList<T> list)  
+    {  
+        int n = list.Count;  
+        while (n > 1) {  
+            n--;  
+            int k = rand.Next(n + 1);
+            (list[n], list[k]) = (list[k], list[n]);
+        }
 
+    }
 }
 
 #region Dupilcate Key

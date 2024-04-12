@@ -14,8 +14,9 @@
 <!-- (not urgent) font ,. -->
 <!-- shop shows price -->
 <!-- manaMul -->
-more enemies
+<!-- more enemies -->
 code dummies
+more more enemies
 more spells
 scaling spell
 pause and double speed
