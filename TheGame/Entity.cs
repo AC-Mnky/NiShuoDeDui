@@ -163,7 +163,7 @@ abstract public class Entity : Thing
     public Entity(Name name) : base(name)
     {
         size = Size[name];
-        health = maxhealth = DefaultHealth[name];
+        health = maxhealth = DefaultHealth[name] / ((game.gamescene == GameScene.Build && this is Enemy) ? 5 : 1);
         window = new Window(this, WindowType.Entity, EntityTexture(), DefaultColor[name], true);
     }
     public Vector2 coordinate;

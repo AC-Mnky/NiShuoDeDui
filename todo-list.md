@@ -15,7 +15,7 @@
 <!-- shop shows price -->
 <!-- manaMul -->
 <!-- more enemies -->
-code dummies
+<!-- code dummies -->
 more more enemies
 more spells
 scaling spell

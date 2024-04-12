@@ -52,7 +52,7 @@ public class Game1 : Game
     // private long thingCount; // 游戏从开始产生的Entity, Spell, Spellcast总数
     private double timeBank;
     private GameStatus gamestatus; // 是不是暂停
-    private GameScene gamescene;
+    public GameScene gamescene;
     public int life;
     public int money;
     private int tps; // 每秒多少刻（控制倍速，60刻是一倍速）
@@ -472,7 +472,7 @@ public class Game1 : Game
     }
     public void Penetrated(int i)
     {
-        life -= i;
+        if(gamescene == GameScene.Battle) life -= i;
         // Debug.Print("life: " + life.ToString());
     }
     public void GenerateEnemyStack()
@@ -539,12 +539,22 @@ public class Game1 : Game
         else return false;
     }
 
-
+    #region TickUpdate
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
         switch(gamescene)
         {
             case GameScene.Build:
+                enemyRate *= 3;
+                if(enemyStack.Count == 0) GenerateEnemyStack();
+                if(enemyStack.Count > 0 && shouldSpawnEnemy())
+                {
+                    NewSpellcast(enemyStack.Last(), new(new Vector2()));
+                    enemyStack.RemoveAt(enemyStack.Count - 1);
+                    _lastenemyspawntick = tick;
+                    ++_spawnedenemy;
+                }
+                enemyRate /= 3;
                 break;
             case GameScene.Battle:
                 if(tick == 0) GenerateEnemyStack();
@@ -616,7 +626,7 @@ public class Game1 : Game
         // Debug.Print(spellcasts.Count.ToString());
         // Debug.Print(entities.Count.ToString());
     }
-
+    #endregion
 
 
     private void ClearMap()

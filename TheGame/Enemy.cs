@@ -46,7 +46,7 @@ public class Enemy : Entity
         if(health <= 0d)
         {
             alive = false;
-            game.money += Money[name];
+            if(game.gamescene == GameScene.Battle) game.money += Money[name];
         }
     }
 

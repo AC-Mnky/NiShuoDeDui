@@ -49,7 +49,9 @@ public class Window : GameObject
                 color = originalColor * (game.mana[manaX,manaY] / game.manaMax);
                 break;
             case WindowType.Entity:
-                color = originalColor * (float)(0.5+0.5*((Entity)parent).health/((Entity)parent).maxhealth);
+                color = originalColor;
+                if(parent is Enemy && game.gamescene == GameScene.Build) color = Color.White * 0.2f;
+                color *= (float)(0.5+0.5*((Entity)parent).health/((Entity)parent).maxhealth);
                 break;
             case WindowType.SpellDescription:
                 text2Color = game.manaColor;
