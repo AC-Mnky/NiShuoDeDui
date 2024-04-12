@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,6 +12,7 @@ public enum RoadName {A04, A15, A26, A37, B02, B16, B34, B57};
 
 public class Block
 {
+    public bool title = false;
     public static Dictionary<BlockName, Texture2D> Texture = new();
     public static RanDict<int> RandomTowerNumber = new(){
         {1,20},{2,10},{3,5},{4,1}
@@ -31,9 +33,23 @@ public class Block
     public int[] otherDoor = new int[8];
     public Tower[] tower;
     public Window window;
+    public Vector2 titleCoordinate;
     public Vector2 Coordinate()
     {
+        if(title) return titleCoordinate;
         return new Vector2(x*Dgrid*64,y*Dgrid*64);
+    }
+    public Block(bool title, Vector2 Coordinate)
+    {
+        Debug.Assert(title);
+        this.title = true;
+        titleCoordinate = Coordinate;
+        tower = new Tower[5];
+        tower[0] = new(this, 2, 0, STANDARD);
+        tower[1] = new(this, 3, 0, STANDARD);
+        tower[2] = new(this, 4, 0, STANDARD);
+        tower[3] = new(this, 0, 2, STANDARD);
+        tower[4] = new(this, 0, 4, STANDARD);
     }
     public Block(BlockName name, int x, int y)
     {

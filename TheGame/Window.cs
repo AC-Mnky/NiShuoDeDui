@@ -54,8 +54,10 @@ public class Window : GameObject
                 if(parent is Enemy && game.gamescene == GameScene.Build) color = Color.White * 0.2f;
                 color *= (float)(0.5+0.5*((Entity)parent).health/((Entity)parent).maxhealth);
                 break;
-            case WindowType.SpellDescription:
+            case WindowType.SpellDescription or WindowType.SpellSlots:
                 text2Color = game.manaColor;
+                if(game.gamescene == GameScene.Title) text2Scale = 0;
+                else text2Scale = 2;
                 break;
             case WindowType.SpellIcon:
                 color = ((Spell)parent).used ? originalColor : Color.Gold;

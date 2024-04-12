@@ -36,7 +36,7 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
     private Effect _mapShader;
     // private Effect _guiShader;
-    private Matrix _view = Matrix.Identity;
+    private Matrix _view = Matrix.CreateTranslation(720,405,0);
     private Matrix _zeroview = Matrix.Identity;
     private bool _zoomEnabled = false;
     private Matrix projection = Matrix.CreateOrthographicOffCenter(0, 800, 600, 0, 0, 1);
@@ -80,8 +80,9 @@ public class Game1 : Game
     public List<Spell> shop;
     public List<Window> inventorySlot;
     public List<Window> shopSlot;
-    private Window title, newGame, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
-    private Window fullscreen, rightmouse, leftmouse, space, numbers;
+    private Window title, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
+    private Window fullscreen, rightmouse, leftmouse, space, numbers, newgame, quit;
+    private Block titleBlock;
     private Window startBattle;
     private Window stageWave, gamespeed, paused; 
     private int shopWidth, inventoryWidth;
@@ -96,7 +97,7 @@ public class Game1 : Game
     public static Texture2D transparentTexture;
 
     private bool _predraw = false;
-    private bool _hasdrawn;
+    public bool _hasdrawn;
     private bool _onMap;
     private bool _clearMapFlag = false;
 
@@ -117,7 +118,6 @@ public class Game1 : Game
         IsMouseVisible = true;
         gamescene = GameScene.Title;
         GameObject.game = this;
-        InitInventory(1);
     }
 
     protected override void Initialize()
@@ -137,6 +137,13 @@ public class Game1 : Game
     protected override void LoadContent() // 加载材质
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        defaultTexture = Content.Load<Texture2D>("default");
+        whiteTexture = Content.Load<Texture2D>("white");
+        transparentTexture = Content.Load<Texture2D>("transparent");
+        slotTexture = Content.Load<Texture2D>("slot");
+        slotUpTexture = Content.Load<Texture2D>("slotUp");
+        slotLeftTexture = Content.Load<Texture2D>("slotLeft");
+        doorTexture = Content.Load<Texture2D>("door");
 
         #region font
         
@@ -250,81 +257,6 @@ public class Game1 : Game
         
         #endregion
 
-        #region random shit
-        defaultTexture = Content.Load<Texture2D>("default");
-        whiteTexture = Content.Load<Texture2D>("white");
-        transparentTexture = Content.Load<Texture2D>("transparent");
-        
-        title = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "THE GAME IS A TOWER DEFENSE GAME NAMED ",
-            textScale = 4
-        };
-        fullscreen = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "press f11 to fullscreen",
-            textScale = 2
-        };
-        rightmouse = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "use right mouse to move map",
-            textScale = 2
-        };
-        leftmouse = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "use left mouse to move spells",
-            textScale = 2
-        };
-        space = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "press space to pause",
-            textScale = 2
-        };
-        numbers = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "press numbers to change game speed",
-            textScale = 2
-        };
-        Debug.Print(_font.MeasureString(title.text).ToString());
-        newGame = new Window(this, WindowType.NewGame, transparentTexture, Color.Transparent){
-            text = "new game",
-            textScale = 2
-        };
-        win = new Window(this, WindowType.Win, transparentTexture, Color.Transparent, clickable: false){
-            text = "YOU WIN",
-            textScale = 4,
-            textColor = Color.Black
-        };
-        gameover = new Window(this, WindowType.GameOver, transparentTexture, Color.Transparent, clickable: false){
-            text = "GAME OVER",
-            textScale = 4,
-        };
-        stageWave = new Window(this, WindowType.StageWave, transparentTexture, Color.Transparent, clickable: false){
-            textScale = 3,
-        };
-        gamespeed = new Window(this, WindowType.GameSpeed, transparentTexture, Color.Transparent, clickable: false){
-            textScale = 3,
-        };
-        paused = new Window(this, WindowType.Paused, transparentTexture, Color.Transparent, clickable: false){
-            textScale = 3,
-        };
-        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.Brown, clickable: false);
-        inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.DarkBlue, clickable: false);
-        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Brown){
-            textScale = 2,
-            textOffset = new(15,15)
-        };
-        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.DarkBlue){
-            textScale = 2,
-            textOffset = new(15,15)
-        };
-        startBattle = new Window(this, WindowType.StartBattle, whiteTexture, Color.Black, clickable: true){
-            textScale = 2,
-            textOffset = new(15,15)
-        };
-        slotTexture = Content.Load<Texture2D>("slot");
-        slotUpTexture = Content.Load<Texture2D>("slotUp");
-        slotLeftTexture = Content.Load<Texture2D>("slotLeft");
-        doorTexture = Content.Load<Texture2D>("door");
-        // _lightgrey = Content.Load<Texture2D>("lightgrey");
-        // _darkgrey = Content.Load<Texture2D>("darkgrey");
-
-        #endregion
-
         #region texture
         Block.Texture[BlockName.A] = Content.Load<Texture2D>("blockdefault");
         Block.Texture[BlockName.B] = Content.Load<Texture2D>("blockdefault");
@@ -391,10 +323,109 @@ public class Game1 : Game
         Spell.TextureSlot[(1,0)] = Content.Load<Texture2D>("spellgui1slot0");
         #endregion
 
+        #region random shit
+        
+        title = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "THE GAME IS A TOWER DEFENSE GAME NAMED ",
+            textScale = 4
+        };
+        fullscreen = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "press f11 to fullscreen",
+            textScale = 2
+        };
+        rightmouse = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "use right mouse to move map",
+            textScale = 2
+        };
+        leftmouse = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "use left mouse to move spells",
+            textScale = 2
+        };
+        space = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "press space to pause",
+            textScale = 2
+        };
+        numbers = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "press numbers to change game speed",
+            textScale = 2
+        };
+        newgame = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "new game",
+            textScale = 2
+        };
+        quit = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "quit",
+            textScale = 2
+        };
+        // newGame = new Window(this, WindowType.NewGame, transparentTexture, Color.Transparent){
+        //     text = "new game",
+        //     textScale = 2
+        // };
+
+
+
+
+        win = new Window(this, WindowType.Win, transparentTexture, Color.Transparent, clickable: false){
+            text = "YOU WIN",
+            textScale = 4,
+            textColor = Color.Black
+        };
+        gameover = new Window(this, WindowType.GameOver, transparentTexture, Color.Transparent, clickable: false){
+            text = "GAME OVER",
+            textScale = 4,
+        };
+        stageWave = new Window(this, WindowType.StageWave, transparentTexture, Color.Transparent, clickable: false){
+            textScale = 3,
+        };
+        gamespeed = new Window(this, WindowType.GameSpeed, transparentTexture, Color.Transparent, clickable: false){
+            textScale = 3,
+        };
+        paused = new Window(this, WindowType.Paused, transparentTexture, Color.Transparent, clickable: false){
+            textScale = 3,
+        };
+        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.Brown, clickable: false);
+        inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.DarkBlue, clickable: false);
+        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.Brown){
+            textScale = 2,
+            textOffset = new(15,15)
+        };
+        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.DarkBlue){
+            textScale = 2,
+            textOffset = new(15,15)
+        };
+        startBattle = new Window(this, WindowType.StartBattle, whiteTexture, Color.Black, clickable: true){
+            textScale = 2,
+            textOffset = new(15,15)
+        };
+        // _lightgrey = Content.Load<Texture2D>("lightgrey");
+        // _darkgrey = Content.Load<Texture2D>("darkgrey");
+
+        #endregion
+
         _mapShader = Content.Load<Effect>("map-shader");
+
+
+        InitTitle();
     }
     #endregion
 
+    public void InitTitle()
+    {
+        _view = Matrix.CreateTranslation(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2,0);
+        ClearMap();
+        mana = null;
+        titleBlock = new(true, new(-160,600));
+        blocks = new Block[1,1];
+        blocks[0,0] = titleBlock;
+        spell = new();
+        InitInventory(0);
+        inventoryAvailable = true;
+        NewSpell(Name.SummonProjectile, Name.Projectile1).ReAttach(new(titleBlock.tower[0]));
+        NewSpell(Name.AimLeft).ReAttach(new(titleBlock.tower[1]));
+        NewSpell(Name.Add10Speed, Name.Projectile1).ReAttach(new(titleBlock.tower[2]));
+        enemy.AddLast(Enemy.Title(new(0,760), true));
+        enemy.AddLast(Enemy.Title(new(0,888), false));
+    }
 
     public Enemy NewEnemy(Name name, Segment segment, float progress)
     {
@@ -592,6 +623,7 @@ public class Game1 : Game
     #region TickUpdate
     protected void TickUpdate() // 游戏内每刻更新（暂停时不会调用，倍速时会更频繁调用），这里主要负责核心内部机制的计算
     {
+        if(!_hasdrawn) return;
         switch(gamescene)
         {
             case GameScene.Build:
@@ -616,17 +648,18 @@ public class Game1 : Game
                     ++_spawnedenemy;
                 }
                 break;
-            default:
-                return;
         }
         
         // 修改这里的顺序前务必仔细思考，否则可能会出现意想不到的情况
         #region mana
-        var oldmana = (float[,])mana.Clone();
-        for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y)
+        if(gamescene != GameScene.Title && mana != null)
         {
-            mana[x,y] += 0.125f * (oldmana[(x+1)%xGrid,y] + oldmana[(x+xGrid-1)%xGrid,y] + oldmana[x,(y+1)%yGrid] + oldmana[x,(y+yGrid-1)%yGrid] - 4*oldmana[x,y]); // 法术流动        
-            mana[x,y] += 0.005f * (manaMax-oldmana[x,y]); // 法术恢复
+            var oldmana = (float[,])mana.Clone();
+            for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y)
+            {
+                mana[x,y] += 0.125f * (oldmana[(x+1)%xGrid,y] + oldmana[(x+xGrid-1)%xGrid,y] + oldmana[x,(y+1)%yGrid] + oldmana[x,(y+yGrid-1)%yGrid] - 4*oldmana[x,y]); // 法术流动        
+                mana[x,y] += 0.005f * (manaMax-oldmana[x,y]); // 法术恢复
+            }
         }
         #endregion
         foreach(Spell s in spell)
@@ -1047,6 +1080,7 @@ public class Game1 : Game
     {
         ClearMap();
         gamescene = GameScene.Title;
+        InitTitle();
     }
     #region Update
     protected override void Update(GameTime gameTime) // 窗口每帧更新（和暂停或倍速无关），这里主要负责一些输入输出的计算
@@ -1280,11 +1314,11 @@ public class Game1 : Game
             case GameScene.Title:
                 if(Mouse.LeftClicked())
                 {
-                    if(mouseOn == newGame)
-                    {
-                        gamescene = GameScene.Loading;
-                        _hasdrawn = false;
-                    }
+                    // if(mouseOn == newGame)
+                    // {
+                    //     gamescene = GameScene.Loading;
+                    //     _hasdrawn = false;
+                    // }
                 }
                 break;
             case GameScene.Loading:
@@ -1440,7 +1474,7 @@ public class Game1 : Game
                 // 塔和法术
                 foreach(Block b in blocks) foreach(Tower t in b.tower) DrawWindow(t.window, new((int)t.Coordinate().X-32,(int)t.Coordinate().Y-32,64,64), new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44));
                 var l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
-                foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null) l.Add(t.spell.showLayer, (t.spell, new(t.MapI()*64, t.MapJ()*64)));
+                foreach(Block b in blocks) foreach(Tower t in b.tower) if(t.spell != null) l.Add(t.spell.showLayer, (t.spell, t.Coordinate().ToPoint()-new Point(32,32)));
                 foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
 
                 
@@ -1479,7 +1513,6 @@ public class Game1 : Game
 
                 // 鼠标上的法术
                 if(!_predraw) if(inventory[0] != null) DrawWindow(inventory[0].windowIcon, new(Mouse.Pos().ToPoint(),new(36,36)), new());
-                // _spriteBatch.Draw(Spell.TextureIcon[inventory[0].name], Mouse.Pos(), Color.Yellow);
 
                 if(!_predraw) _spriteBatch.End();
 
@@ -1498,12 +1531,24 @@ public class Game1 : Game
                     _mapShader.Parameters["view_projection"].SetValue(_view * projection);
                 }
                 _onMap = true;
-                DrawStringWindow(title, new(width/2,height/2-50));
-                DrawStringWindow(fullscreen, new(width/2,height/2+100));
-                DrawStringWindow(rightmouse, new(width/2,height/2+415));
-                DrawStringWindow(leftmouse, new(width/2,height/2+550));
-                DrawStringWindow(space, new(width/2,height/2+900));
-                DrawStringWindow(numbers, new(width/2,height/2+900+48));
+                DrawStringWindow(title, new(0,-50));
+                DrawStringWindow(fullscreen, new(0,+100));
+                DrawStringWindow(rightmouse, new(0,+415));
+                DrawStringWindow(leftmouse, new(0,+550));
+                DrawStringWindow(space, new(0,+1000));
+                DrawStringWindow(numbers, new(0,+1000+48));
+                DrawStringWindow(newgame, new(100,760+4));
+                DrawStringWindow(quit, new(66,888+4));
+
+
+                // 实体
+                foreach(Entity e in entities())  if(e.window.texture != null) DrawWindow(e.window, new(e.RenderCoordinate().ToPoint(), e.size.ToPoint()), new());
+
+                foreach(Tower t in titleBlock.tower) DrawWindow(t.window, new((int)t.Coordinate().X-32,(int)t.Coordinate().Y-32,64,64), new((int)t.Coordinate().X-22,(int)t.Coordinate().Y-22,44,44));
+                l = new SortedList<double, (Spell, Point)>(new DuplicateKeyComparer<double>());
+                foreach(Tower t in titleBlock.tower) if(t.spell != null) l.Add(t.spell.showLayer, (t.spell, t.Coordinate().ToPoint()-new Point(32,32)));
+                foreach((Spell,Point) sv in l.Values) DrawSpellUI(sv.Item1, sv.Item2.X, sv.Item2.Y);
+
                 // DrawStringWindow(newGame, new(width/2,height/2+20));
                 if(!_predraw) _spriteBatch.End();
 
@@ -1512,6 +1557,10 @@ public class Game1 : Game
 
                 DrawStringWindowRightTop(gamespeed, new(width-12, 54), mouseCatch: false);
                 DrawStringWindowRightTop(paused, new(width-12, 87), mouseCatch: false);
+
+                // 鼠标上的法术
+                if(!_predraw) if(inventory[0] != null) DrawWindow(inventory[0].windowIcon, new(Mouse.Pos().ToPoint(),new(36,36)), new());
+
                 if(!_predraw) _spriteBatch.End();
                 
                 break;
@@ -1639,12 +1688,16 @@ public class Game1 : Game
         ApplyFullscreenChange(oldIsFullscreen);
     }
     public void ToggleBorderless() {
+        _view *= Matrix.CreateTranslation(-GraphicsDevice.Viewport.Width/2,-GraphicsDevice.Viewport.Height/2,0);
+
         bool oldIsFullscreen = _isFullscreen;
 
         _isBorderless = !_isBorderless;
         _isFullscreen = _isBorderless;
 
         ApplyFullscreenChange(oldIsFullscreen);
+
+        _view *= Matrix.CreateTranslation(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2,0);
     }
 
     private void ApplyFullscreenChange(bool oldIsFullscreen) {

@@ -225,15 +225,23 @@ public class Spell : Thing
         {
             int x = (int)MathF.Floor(c.CurrentCoordinate().X/64);
             int y = (int)MathF.Floor(c.CurrentCoordinate().Y/64);
-            if(game.mana[x,y] > manaCost * c.manaMul)
+            if(game.gamescene != GameScene.Title && game.mana != null)
             {
-                game.NewSpellcast(this, c);
-                game.mana[x,y] -= manaCost * c.manaMul;
-                used = true;
+                if(game.mana[x,y] > manaCost * c.manaMul)
+                {
+                    game.NewSpellcast(this, c);
+                    game.mana[x,y] -= manaCost * c.manaMul;
+                    used = true;
+                }
+                else
+                {
+                    Debug.Print(game.tick.ToString() + ' ' + x + ' ' + y);
+                }
             }
             else
             {
-                Debug.Print(game.tick.ToString() + ' ' + x + ' ' + y);
+                game.NewSpellcast(this, c);
+                used = true;
             }
         }
         toCastNextTick.Clear();

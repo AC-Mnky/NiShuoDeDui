@@ -10,13 +10,28 @@ public class Enemy : Entity
     public Segment segment;
     public float progress;
     public float speed;
+    public bool title = false;
+    public bool newgame;
     public Enemy(Name name, Segment segment, float progress) : base(name)
     {
         this.segment = segment;
         this.progress = progress;
-        coordinate = segment.CoordinateAtProgress(progress);
+        if(segment!=null) coordinate = segment.CoordinateAtProgress(progress);
         speed = DefaultSpeed[name];
         UpdateHitbox();
+    }
+
+    public static Enemy Title(Vector2 coordinate, bool newgame)
+    {
+        Enemy e = new(Name.Square1, null, 0)
+        {
+            coordinate = coordinate,
+            speed = 0,
+            newgame = newgame,
+            title = true,
+        };
+        e.UpdateHitbox();
+        return e;
     }
 
 
@@ -24,6 +39,7 @@ public class Enemy : Entity
 
     public override void TickUpdateCoordinate()
     {
+        if(title) return;
         if(!alive) return;
         progress += speed;
         while(progress > segment.length)
@@ -47,6 +63,18 @@ public class Enemy : Entity
         {
             alive = false;
             if(game.gamescene == GameScene.Battle) game.money += Money[name];
+            if(title)
+            {
+                if(newgame)
+                {
+                    game.gamescene = GameScene.Loading;
+                    game._hasdrawn = false;
+                }
+                else
+                {
+                    game.Exit();
+                }
+            }
         }
     }
 

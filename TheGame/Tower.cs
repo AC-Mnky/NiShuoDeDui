@@ -13,7 +13,7 @@ public class Tower
     public Spell spell = null;
     public Vector2 Coordinate()
     {
-        return new Vector2(MapI()*64f+32f,MapJ()*64f+32f);
+        return block.Coordinate() + new Vector2(relativeI*64f+32f,relativeJ*64f+32f);
     }
     public int MapI() {return block.x*Block.Dgrid+relativeI;}
     public int MapJ() {return block.y*Block.Dgrid+relativeJ;}
