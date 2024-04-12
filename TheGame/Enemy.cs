@@ -72,10 +72,15 @@ public class Enemy : Entity
                 hit = true;
             }
         }
+        int x,y;
         switch(name)
         {
             case Name.Runner2:
                 if(hit) speed = 20f;
+                else speed -= (speed-5f)*0.05f;
+                break;
+            case Name.Runner3:
+                if(hit) speed = 40f;
                 else speed -= (speed-5f)*0.05f;
                 break;
             case Name.Phasor2:
@@ -83,6 +88,16 @@ public class Enemy : Entity
                 if((game.tick-tickBirth)%64==0)
                 {
                     speed = 192;
+                    healthfix = health;
+                    ticksInvin = 1;
+                }
+                break;
+            case Name.Phasor3:
+                if(speed > 0) speed = 0;
+                if((game.tick-tickBirth)%48==0)
+                {
+                    speed = 192;
+                    healthfix = health;
                     ticksInvin = 1;
                 }
                 break;
@@ -95,19 +110,28 @@ public class Enemy : Entity
             case Name.Heal2:
                 health += (maxhealth - health) * 0.002f;
                 break;
+            case Name.Heal3:
+                health += (maxhealth - health) * 0.0025f;
+                break;
             case Name.Dark2:
-                int x = (int)MathF.Floor(coordinate.X/64);
-                int y = (int)MathF.Floor(coordinate.Y/64);
+                x = (int)MathF.Floor(coordinate.X/64);
+                y = (int)MathF.Floor(coordinate.Y/64);
                 game.mana[x,y] = 0;
+                break;
+            case Name.Dark3:
+                x = (int)MathF.Floor(coordinate.X/64);
+                y = (int)MathF.Floor(coordinate.Y/64);
+                game.mana[x,y] = -game.manaMax;
                 break;
             case Name.Invin2:
                 if(ticksInvin <= 0 && hit)
                 {
+                    healthfix = health;
                     ticksInvin = 32;
                 }
                 break;
-            case Name.Ghost2:
-                break;
+            // case Name.InvinField3:
+            //     break;
             default:
                 break;
         }

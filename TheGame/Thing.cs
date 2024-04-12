@@ -33,6 +33,17 @@ Dark2,
 Invin2,
 Ghost2,
 
+Runner3,
+Phasor3,
+SpeedField3,
+Circle3,
+ShieldField3,
+Heal3,
+HealField3,
+Dark3,
+InvinField3,
+Ghost3,
+
 
 
 Projectile1, 

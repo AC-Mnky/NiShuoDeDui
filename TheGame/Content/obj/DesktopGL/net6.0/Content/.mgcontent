@@ -29,8 +29,10 @@
     <File>D:/Game202402/TheGame/Content/cast4timesslow.png</File>
     <File>D:/Game202402/TheGame/Content/cast64times.png</File>
     <File>D:/Game202402/TheGame/Content/circle2.png</File>
+    <File>D:/Game202402/TheGame/Content/circle3.png</File>
     <File>D:/Game202402/TheGame/Content/crossgen2.png</File>
     <File>D:/Game202402/TheGame/Content/dark2.png</File>
+    <File>D:/Game202402/TheGame/Content/dark3.png</File>
     <File>D:/Game202402/TheGame/Content/darkgrey.png</File>
     <File>D:/Game202402/TheGame/Content/default.png</File>
     <File>D:/Game202402/TheGame/Content/defaulticon.png</File>
@@ -47,20 +49,28 @@
     <File>D:/Game202402/TheGame/Content/enemyveryfast.png</File>
     <File>D:/Game202402/TheGame/Content/font.png</File>
     <File>D:/Game202402/TheGame/Content/ghost2.png</File>
+    <File>D:/Game202402/TheGame/Content/ghost3.png</File>
     <File>D:/Game202402/TheGame/Content/heal2.png</File>
+    <File>D:/Game202402/TheGame/Content/heal3.png</File>
+    <File>D:/Game202402/TheGame/Content/healfield3.png</File>
     <File>D:/Game202402/TheGame/Content/invin2.png</File>
     <File>D:/Game202402/TheGame/Content/invin2ed.png</File>
+    <File>D:/Game202402/TheGame/Content/invinfield3.png</File>
     <File>D:/Game202402/TheGame/Content/lightgrey.png</File>
     <File>D:/Game202402/TheGame/Content/map-shader.fx</File>
     <File>D:/Game202402/TheGame/Content/newgame.png</File>
     <File>D:/Game202402/TheGame/Content/phasor2.png</File>
+    <File>D:/Game202402/TheGame/Content/phasor3.png</File>
     <File>D:/Game202402/TheGame/Content/projectile1.png</File>
     <File>D:/Game202402/TheGame/Content/reducexvelocityicon.png</File>
     <File>D:/Game202402/TheGame/Content/reduceyvelocityicon.png</File>
     <File>D:/Game202402/TheGame/Content/runner2.png</File>
+    <File>D:/Game202402/TheGame/Content/runner3.png</File>
+    <File>D:/Game202402/TheGame/Content/shieldfield3.png</File>
     <File>D:/Game202402/TheGame/Content/slot.png</File>
     <File>D:/Game202402/TheGame/Content/slotLeft.png</File>
     <File>D:/Game202402/TheGame/Content/slotUp.png</File>
+    <File>D:/Game202402/TheGame/Content/speedfield3.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI1.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI1Slot0.png</File>
     <File>D:/Game202402/TheGame/Content/SpellGUI2.png</File>
@@ -87,6 +97,16 @@
     <File>D:/Game202402/TheGame/Content/white.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

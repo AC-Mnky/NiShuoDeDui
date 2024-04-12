@@ -59,6 +59,8 @@ Game1.cs/Texture
 To add an enemy:
 Thing.cs/name
 Entity.cs/a lot of shit
+Game1.cs/GenerateCardDeck
+Enemy/TickUpdate
 (draw texture)
 (mgcb editor)
 Game1.cs/Texture

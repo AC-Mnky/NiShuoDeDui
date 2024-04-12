@@ -296,6 +296,18 @@ public class Game1 : Game
         invin2ed = Content.Load<Texture2D>("Invin2ed");
         Entity.Texture[Name.Ghost2] = Content.Load<Texture2D>("Ghost2");
 
+        Entity.Texture[Name.Runner3] = Content.Load<Texture2D>("Runner3");
+        Entity.Texture[Name.Phasor3] = Content.Load<Texture2D>("Phasor3");
+        Entity.Texture[Name.SpeedField3] = Content.Load<Texture2D>("SpeedField3");
+        Entity.Texture[Name.Circle3] = Content.Load<Texture2D>("Circle3");
+        Entity.Texture[Name.ShieldField3] = Content.Load<Texture2D>("ShieldField3");
+        Entity.Texture[Name.Heal3] = Content.Load<Texture2D>("Heal3");
+        Entity.Texture[Name.HealField3] = Content.Load<Texture2D>("HealField3");
+        Entity.Texture[Name.Dark3] = Content.Load<Texture2D>("Dark3");
+        Entity.Texture[Name.InvinField3] = Content.Load<Texture2D>("InvinField3");
+        Entity.Texture[Name.Ghost3] = Content.Load<Texture2D>("Ghost3");
+
+
 
         Entity.Texture[Name.Projectile1] = Content.Load<Texture2D>("projectile1");
         Entity.Texture[Name.Stone] = Content.Load<Texture2D>("Stone");
@@ -595,6 +607,16 @@ public class Game1 : Game
                 {Name.Invin2, NewSpell(Name.SummonEnemy, Name.Invin2)},
                 {Name.Ghost2, NewSpell(Name.SummonEnemy, Name.Ghost2)},
 
+                {Name.Runner3, NewSpell(Name.SummonEnemy, Name.Runner3)},
+                {Name.Phasor3, NewSpell(Name.SummonEnemy, Name.Phasor3)},
+                {Name.SpeedField3, NewSpell(Name.SummonEnemy, Name.SpeedField3)},
+                {Name.Circle3, NewSpell(Name.SummonEnemy, Name.Circle3)},
+                {Name.ShieldField3, NewSpell(Name.SummonEnemy, Name.ShieldField3)},
+                {Name.Heal3, NewSpell(Name.SummonEnemy, Name.Heal3)},
+                {Name.HealField3, NewSpell(Name.SummonEnemy, Name.HealField3)},
+                {Name.Dark3, NewSpell(Name.SummonEnemy, Name.Dark3)},
+                {Name.InvinField3, NewSpell(Name.SummonEnemy, Name.InvinField3)},
+                {Name.Ghost3, NewSpell(Name.SummonEnemy, Name.Ghost3)},
             };
             Spell x1 = NewSpell(Name.SummonEnemy, Name.Cross1);
             Spell x2 = NewSpell(Name.SummonEnemy, Name.Cross1);
@@ -631,7 +653,7 @@ public class Game1 : Game
                 }
                 break;
             case 4:
-                for(int i=0;i<wave switch{1=>10,_=>throw new ArgumentOutOfRangeException()};++i)
+                for(int i=0;i<wave switch{1=>1,_=>throw new ArgumentOutOfRangeException()};++i)
                 {
                     cardDeck.Add(Entity.RandomCard[4].Next());
                 }
@@ -665,7 +687,7 @@ public class Game1 : Game
         switch(gamescene)
         {
             case GameScene.Build:
-                enemyRate *= 3;
+                // enemyRate *= 2;
                 if(enemyStack.Count == 0) GenerateEnemyStack();
                 if(enemyStack.Count > 0 && shouldSpawnEnemy())
                 {
@@ -674,7 +696,7 @@ public class Game1 : Game
                     _lastenemyspawntick = tick;
                     ++_spawnedenemy;
                 }
-                enemyRate /= 3;
+                // enemyRate /= 2;
                 break;
             case GameScene.Battle:
                 if(tick == 0) GenerateEnemyStack();
