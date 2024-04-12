@@ -39,7 +39,7 @@ Spell.cs/description
 (?)Spell.cs/dependentonly
 Spellcast.cs/TickUpdate
 Game1.cs/RandomSpellName
-Game1.cs/Price, Cost
+Game1.cs/Price, Cost, manamul
 (draw icon)
 (mgcb editor)
 (Game1.cs/_TextureIcon)
@@ -51,7 +51,7 @@ Entity.cs/Damage
 Projectile.cs/TickUpdate
 Spell.cs/Projectile description
 Game1.cs/RandomProjectileName
-Game1.cs/Price, Cost
+Game1.cs/Price, Cost, manamul
 (draw projectile)
 (mgcb editor)
 Game1.cs/Texture
