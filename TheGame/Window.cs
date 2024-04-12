@@ -71,7 +71,7 @@ public class Window : GameObject
                 text = (game.stage==4 ? "???" : game.stage + "-" + game.wave) + (game.gamescene == GameScene.Build ? " preview":" battle");
                 break;
             case WindowType.GameSpeed:
-                text = ((float)game.tps)/60 + "*speed";
+                text = game.tps==60 ? "" : ((float)game.tps)/60 + "*speed";
                 break;
             case WindowType.Paused:
                 text = game.gamestatus == GameStatus.Paused ? "paused" : "";

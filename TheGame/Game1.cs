@@ -51,11 +51,11 @@ public class Game1 : Game
     public long tick; // 游戏从开始经过的刻数
     // private long thingCount; // 游戏从开始产生的Entity, Spell, Spellcast总数
     private double timeBank;
-    public GameStatus gamestatus; // 是不是暂停
+    public GameStatus gamestatus = GameStatus.Running; // 是不是暂停
     public GameScene gamescene;
     public int life;
     public int money;
-    public int tps; // 每秒多少刻（控制倍速，60刻是一倍速）
+    public int tps = 60; // 每秒多少刻（控制倍速，60刻是一倍速）
     // private LinkedList<Entity> entities;
     private LinkedList<Enemy> enemy;
     private LinkedList<Entity> neutral;
@@ -81,6 +81,7 @@ public class Game1 : Game
     public List<Window> inventorySlot;
     public List<Window> shopSlot;
     private Window title, newGame, win, gameover, shopWindow, moneyWindow, inventoryWindow, lifeWindow;
+    private Window fullscreen, rightmouse, leftmouse, space, numbers;
     private Window startBattle;
     private Window stageWave, gamespeed, paused; 
     private int shopWidth, inventoryWidth;
@@ -116,6 +117,7 @@ public class Game1 : Game
         IsMouseVisible = true;
         gamescene = GameScene.Title;
         GameObject.game = this;
+        InitInventory(1);
     }
 
     protected override void Initialize()
@@ -131,6 +133,7 @@ public class Game1 : Game
         base.Initialize();
     }
 
+    #region LoadContent
     protected override void LoadContent() // 加载材质
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -154,7 +157,7 @@ public class Game1 : Game
         for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,27,7,7));
         for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,36,7,7));
         for(int i=0;i<26;++i) glyphBounds.Add(new(9*i,27,7,7));
-        for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,48,7,7));
+        for(int i=0;i<6;++i) glyphBounds.Add(new(9*i,45,7,7));
         glyphBounds.Add(new(225,27,7,7));
         
         var cropping = new List<Rectangle>
@@ -253,9 +256,30 @@ public class Game1 : Game
         transparentTexture = Content.Load<Texture2D>("transparent");
         
         title = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "THE GAME IS A TOWER DEFENSE GAME NAMED THE GAME IS A TOWER DEFENSE GAME NAMED THE GAME IS A TOWER DEFENSE GAME",
+            text = "THE GAME IS A TOWER DEFENSE GAME NAMED ",
             textScale = 4
         };
+        fullscreen = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "press f11 to fullscreen",
+            textScale = 2
+        };
+        rightmouse = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "use right mouse to move map",
+            textScale = 2
+        };
+        leftmouse = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "use left mouse to move spells",
+            textScale = 2
+        };
+        space = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "press space to pause",
+            textScale = 2
+        };
+        numbers = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
+            text = "press numbers to change game speed",
+            textScale = 2
+        };
+        Debug.Print(_font.MeasureString(title.text).ToString());
         newGame = new Window(this, WindowType.NewGame, transparentTexture, Color.Transparent){
             text = "new game",
             textScale = 2
@@ -369,7 +393,7 @@ public class Game1 : Game
 
         _mapShader = Content.Load<Effect>("map-shader");
     }
-
+    #endregion
 
 
     public Enemy NewEnemy(Name name, Segment segment, float progress)
@@ -770,9 +794,12 @@ public class Game1 : Game
                 rank = i,
             });
         }
-        NewSpell(Name.SummonProjectile, Name.Projectile1).ReAttach(new(1));
-        NewSpell(Name.AimMouse).ReAttach(new(2));
-        NewSpell(Name.AddSpeed).ReAttach(new(3));
+        if(gamescene == GameScene.Build)
+        {    
+            NewSpell(Name.SummonProjectile, Name.Projectile1).ReAttach(new(1));
+            NewSpell(Name.AimMouse).ReAttach(new(2));
+            NewSpell(Name.AddSpeed).ReAttach(new(3));
+        }
     }
     private void InitShop(int shopSize)
     {
@@ -1043,6 +1070,150 @@ public class Game1 : Game
             _graphics.ApplyChanges();
         }
         #endregion
+
+        #region map dragging
+        if(Mouse.RightClicked())
+        {
+            _zeroview = _view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0);
+        }
+        if(Mouse.RightDown())
+        {
+            _view = _zeroview * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
+        }
+        #endregion
+                
+        #region spell UI // 此region已成屎山, 能不动就不动
+        if(Mouse.LeftClicked())
+        {
+            if(mouseOn?.parent is Spell)
+            {
+                Spell s = (Spell)mouseOn.parent;
+                if(s.showUI && mouseOn.type == WindowType.SpellIcon)
+                {
+                    s.showUI = false;
+                    s.showLayer = 0;
+                }
+                else
+                {
+                    s.showUI = true;
+                    s.showLayer = _time;
+                    while(s.attachment.type==Attachment.Type.Child)
+                    {
+                        s = s.attachment.parent;
+                        s.showLayer = _time;
+                    }
+                }
+
+
+                s = (Spell)mouseOn.parent;
+                if(mouseOn.type == WindowType.SpellIcon)
+                {
+                    holdingSpell = s;
+                    if(Keyboard.IsPressed(Keys.LeftControl) && TakeAble(s))
+                    {
+                        MoveToInventory(s);
+                    }
+                }
+            }
+            else if(mouseOn?.type == WindowType.Life && gamescene == GameScene.Build)
+            {
+                ToggleInventory();
+            }
+            else if(mouseOn?.type == WindowType.Money && gamescene == GameScene.Build)
+            {
+                ToggleShop();
+            }
+            else if(mouseOn?.type == WindowType.StartBattle && gamescene == GameScene.Build)
+            {
+                BattleBegin();
+            }
+        }
+        if(Mouse.LeftDeClicked() && !Keyboard.IsPressed(Keys.LeftControl))
+        {
+            if(inventory[0] != null && TakeAble(inventory[0]))
+            {
+                inventory[0].showLayer = _time;
+
+                if(mouseOn?.parent is Spell && mouseOn.type == WindowType.SpellSlots)
+                {
+                    if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
+                        MoveSpell(inventory[0], new Attachment((Spell)mouseOn.parent, mouseOn.rank));
+                }
+                else if (mouseOn?.type == WindowType.Tower)
+                {
+                    if(((Tower)mouseOn.parent).spell == null)
+                        MoveSpell(inventory[0], new Attachment((Tower)mouseOn.parent));
+                }
+                else if (mouseOn?.type == WindowType.InventorySlot)
+                {
+                    if(inventory[mouseOn.rank] == null)
+                        MoveSpell(inventory[0], new Attachment(mouseOn.rank));
+                }
+                else if (mouseOn?.type == WindowType.ShopSlot)
+                {
+                    if(shop[-mouseOn.rank] == null)
+                        MoveSpell(inventory[0], new Attachment(mouseOn.rank));
+                }
+                else
+                {
+                    // MoveSpell(inventory[0], oldAtt);
+                }
+            }
+        }
+        if(Mouse.LeftDown() && Mouse.FirstMovementSinceLastLeftClick())
+        {
+            // Debug.Print("First move!");
+            if(holdingSpell != null && inventory[0] == null && TakeAble(holdingSpell))
+            {
+                oldAtt = MoveSpell(holdingSpell, new Attachment(0));
+                holdingSpell.showUI = true;
+            }
+        }
+        if(!Mouse.LeftDown()) holdingSpell = null;
+        #endregion
+        
+        #region tickupdate
+        if (Keyboard.HasBeenPressed(Keys.T) && gamestatus == GameStatus.Paused)
+            TickUpdate(); // 暂停状态下，按一次T增加一刻
+        if (Keyboard.HasBeenPressed(Keys.Space))
+            if (gamestatus == GameStatus.Paused) gamestatus = GameStatus.Running;
+            else gamestatus = GameStatus.Paused;
+        if (Keyboard.HasBeenPressed(Keys.OemTilde))
+            tps = 30; // 半速
+        if (Keyboard.HasBeenPressed(Keys.D1))
+            tps = 60; // 一倍速
+        if (Keyboard.HasBeenPressed(Keys.D2))
+            tps = 120; // 二倍速
+        if (Keyboard.HasBeenPressed(Keys.D3))
+            tps = 180; // 三倍速
+        if (Keyboard.HasBeenPressed(Keys.D4))
+            tps = 240;
+        if (Keyboard.HasBeenPressed(Keys.D5))
+            tps = 300;
+        if (Keyboard.HasBeenPressed(Keys.D6))
+            tps = 360;
+        if (Keyboard.HasBeenPressed(Keys.D7))
+            tps = 420;
+        if (Keyboard.HasBeenPressed(Keys.D8))
+            tps = 480;
+        if (Keyboard.HasBeenPressed(Keys.D9))
+            tps = 540;
+        if (Keyboard.HasBeenPressed(Keys.D0))
+            tps = 600; // 不是，我为什么要加这么多奇怪的倍速啊[捂脸]
+        timeBank += gameTime.ElapsedGameTime.TotalSeconds;
+        if (gamestatus == GameStatus.Paused) timeBank = 0d;
+        else 
+        {
+            int TickUpdateMax = 10; // 采用的倍速机制使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过十倍速
+            while(timeBank > 0d && TickUpdateMax > 0)
+            {
+                TickUpdate();
+                --TickUpdateMax;
+                timeBank -= 1d / tps;
+            }
+        }
+        #endregion
+
         switch (gamescene)
         {
             case GameScene.Build or GameScene.Battle:
@@ -1078,149 +1249,6 @@ public class Game1 : Game
                 }
                 #endregion
 
-                #region map dragging
-                if(Mouse.RightClicked())
-                {
-                    _zeroview = _view * Matrix.CreateTranslation(-Mouse.X(),-Mouse.Y(),0);
-                }
-                if(Mouse.RightDown())
-                {
-                    _view = _zeroview * Matrix.CreateTranslation(Mouse.X(),Mouse.Y(),0);
-                }
-                #endregion
-
-                #region tickupdate
-                if (Keyboard.HasBeenPressed(Keys.T) && gamestatus == GameStatus.Paused)
-                    TickUpdate(); // 暂停状态下，按一次T增加一刻
-                if (Keyboard.HasBeenPressed(Keys.Space))
-                    if (gamestatus == GameStatus.Paused) gamestatus = GameStatus.Running;
-                    else gamestatus = GameStatus.Paused;
-                if (Keyboard.HasBeenPressed(Keys.OemTilde))
-                    tps = 30; // 半速
-                if (Keyboard.HasBeenPressed(Keys.D1))
-                    tps = 60; // 一倍速
-                if (Keyboard.HasBeenPressed(Keys.D2))
-                    tps = 120; // 二倍速
-                if (Keyboard.HasBeenPressed(Keys.D3))
-                    tps = 180; // 三倍速
-                if (Keyboard.HasBeenPressed(Keys.D4))
-                    tps = 240;
-                if (Keyboard.HasBeenPressed(Keys.D5))
-                    tps = 300;
-                if (Keyboard.HasBeenPressed(Keys.D6))
-                    tps = 360;
-                if (Keyboard.HasBeenPressed(Keys.D7))
-                    tps = 420;
-                if (Keyboard.HasBeenPressed(Keys.D8))
-                    tps = 480;
-                if (Keyboard.HasBeenPressed(Keys.D9))
-                    tps = 540;
-                if (Keyboard.HasBeenPressed(Keys.D0))
-                    tps = 600; // 不是，我为什么要加这么多奇怪的倍速啊[捂脸]
-                timeBank += gameTime.ElapsedGameTime.TotalSeconds;
-                if (gamestatus == GameStatus.Paused) timeBank = 0d;
-                else 
-                {
-                    int TickUpdateMax = 10; // 采用的倍速机制使得如果游戏卡顿的话，卡顿结束后游戏会加速来补齐原来的时间流动，但不会超过十倍速
-                    while(timeBank > 0d && TickUpdateMax > 0)
-                    {
-                        TickUpdate();
-                        --TickUpdateMax;
-                        timeBank -= 1d / tps;
-                    }
-                }
-                #endregion
-                
-                #region spell UI // 此region已成屎山, 能不动就不动
-                if(Mouse.LeftClicked())
-                {
-                    if(mouseOn?.parent is Spell)
-                    {
-                        Spell s = (Spell)mouseOn.parent;
-                        if(s.showUI && mouseOn.type == WindowType.SpellIcon)
-                        {
-                            s.showUI = false;
-                            s.showLayer = 0;
-                        }
-                        else
-                        {
-                            s.showUI = true;
-                            s.showLayer = _time;
-                            while(s.attachment.type==Attachment.Type.Child)
-                            {
-                                s = s.attachment.parent;
-                                s.showLayer = _time;
-                            }
-                        }
-
-
-                        s = (Spell)mouseOn.parent;
-                        if(mouseOn.type == WindowType.SpellIcon)
-                        {
-                            holdingSpell = s;
-                            if(Keyboard.IsPressed(Keys.LeftControl) && TakeAble(s))
-                            {
-                                MoveToInventory(s);
-                            }
-                        }
-                    }
-                    else if(mouseOn?.type == WindowType.Life && gamescene == GameScene.Build)
-                    {
-                        ToggleInventory();
-                    }
-                    else if(mouseOn?.type == WindowType.Money && gamescene == GameScene.Build)
-                    {
-                        ToggleShop();
-                    }
-                    else if(mouseOn?.type == WindowType.StartBattle && gamescene == GameScene.Build)
-                    {
-                        BattleBegin();
-                    }
-                }
-                if(Mouse.LeftDeClicked() && !Keyboard.IsPressed(Keys.LeftControl))
-                {
-                    if(inventory[0] != null && TakeAble(inventory[0]))
-                    {
-                        inventory[0].showLayer = _time;
-
-                        if(mouseOn?.parent is Spell && mouseOn.type == WindowType.SpellSlots)
-                        {
-                            if(((Spell)mouseOn.parent).children[mouseOn.rank] == null)
-                                MoveSpell(inventory[0], new Attachment((Spell)mouseOn.parent, mouseOn.rank));
-                        }
-                        else if (mouseOn?.type == WindowType.Tower)
-                        {
-                            if(((Tower)mouseOn.parent).spell == null)
-                                MoveSpell(inventory[0], new Attachment((Tower)mouseOn.parent));
-                        }
-                        else if (mouseOn?.type == WindowType.InventorySlot)
-                        {
-                            if(inventory[mouseOn.rank] == null)
-                                MoveSpell(inventory[0], new Attachment(mouseOn.rank));
-                        }
-                        else if (mouseOn?.type == WindowType.ShopSlot)
-                        {
-                            if(shop[-mouseOn.rank] == null)
-                                MoveSpell(inventory[0], new Attachment(mouseOn.rank));
-                        }
-                        else
-                        {
-                            // MoveSpell(inventory[0], oldAtt);
-                        }
-                    }
-                }
-                if(Mouse.LeftDown() && Mouse.FirstMovementSinceLastLeftClick())
-                {
-                    // Debug.Print("First move!");
-                    if(holdingSpell != null && inventory[0] == null && TakeAble(holdingSpell))
-                    {
-                        oldAtt = MoveSpell(holdingSpell, new Attachment(0));
-                        holdingSpell.showUI = true;
-                    }
-                }
-                if(!Mouse.LeftDown()) holdingSpell = null;
-                #endregion
-                
                 #region shop inventory
                 if(Keyboard.HasBeenPressed(Keys.S) && gamescene == GameScene.Build)
                 {
@@ -1459,12 +1487,33 @@ public class Game1 : Game
                 break;
             case GameScene.Title:
 
-                if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                _onMap = false;
+                if(!_predraw) _spriteBatch.Begin(sortMode: SpriteSortMode.Deferred, effect: _mapShader, samplerState: SamplerState.PointClamp);
+                if(_predraw)
+                {
+                    LeftTop = Vector2.Transform(new Vector2(0,0), Matrix.Invert(_view));
+                    RightBottom = Vector2.Transform(new Vector2(width,height), Matrix.Invert(_view));
+                    xPeriod = 1340;
+                    yPeriod = 1080*2;
+                    projection = Matrix.CreateOrthographicOffCenter(0, width, height, 0, 0, 1);
+                    _mapShader.Parameters["view_projection"].SetValue(_view * projection);
+                }
+                _onMap = true;
                 DrawStringWindow(title, new(width/2,height/2-50));
-                DrawStringWindow(newGame, new(width/2,height/2+20));
+                DrawStringWindow(fullscreen, new(width/2,height/2+100));
+                DrawStringWindow(rightmouse, new(width/2,height/2+415));
+                DrawStringWindow(leftmouse, new(width/2,height/2+550));
+                DrawStringWindow(space, new(width/2,height/2+900));
+                DrawStringWindow(numbers, new(width/2,height/2+900+48));
+                // DrawStringWindow(newGame, new(width/2,height/2+20));
                 if(!_predraw) _spriteBatch.End();
 
+                if(!_predraw) _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                _onMap = false;
+
+                DrawStringWindowRightTop(gamespeed, new(width-12, 54), mouseCatch: false);
+                DrawStringWindowRightTop(paused, new(width-12, 87), mouseCatch: false);
+                if(!_predraw) _spriteBatch.End();
+                
                 break;
             case GameScene.Win:
                 if(!_predraw) GraphicsDevice.Clear(Color.White);

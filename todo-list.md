@@ -21,9 +21,9 @@
 <!-- begin battle button -->
 <!-- bluereddoor fix -->
 <!-- bluereddoor at center -->
+improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version that does not represent the final quality of the game]
 more more enemies
 more spells
-improve title : introduction to fullscreen, map dragging, loop space, options, quit [this is a demo version that does not represent the final quality of the game]
 scaling spell
 (not urgent)draw perk, code perk
 (not urgent)better map generation
