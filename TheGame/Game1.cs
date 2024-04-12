@@ -71,7 +71,7 @@ public class Game1 : Game
     public Color manaColor;
     public Segment Reddoor, Bluedoor;
     public Window ReddoorWindow, BluedoorWindow;
-    public Vector2 ReddoorCoor, BluedoorCoor;
+    public Vector2 ReddoorCoor, BluedoorCoor, doorCoor;
     public int ReddoorIndex, BluedoorIndex;
     private Window mouseOn;
     private Spell holdingSpell = null;
@@ -655,6 +655,10 @@ public class Game1 : Game
     #endregion
 
 
+
+
+
+
     private void ClearMap()
     {
         _clearMapFlag = true;
@@ -686,6 +690,7 @@ public class Game1 : Game
 
         for(int x=0;x<xGrid;++x) for(int y=0;y<yGrid;++y) mana[x,y] = 0;
     }
+    #region InitMap
     private void InitMap(int numX, int numY, Func<int, bool> pathRoadNum, float manaMax, Color manaColor)
     {
         ClearMap();
@@ -731,7 +736,8 @@ public class Game1 : Game
         };
         BluedoorCoor = Bluedoor.block.Coordinate() + (BluedoorIndex switch{0 => new(128,0), 1 => new(256,0), 2 => new(0,64), 3 => new(0,192), 4 => new(64,320), 5 => new(192,320), 6 => new(320,128), 7 => new(320,256), _ => throw new ArgumentOutOfRangeException()});
         ReddoorCoor = Reddoor.block.Coordinate() + (ReddoorIndex switch{0 => new(128,0), 1 => new(256,0), 2 => new(0,64), 3 => new(0,192), 4 => new(64,320), 5 => new(192,320), 6 => new(320,128), 7 => new(320,256), _ => throw new ArgumentOutOfRangeException()});
-        
+        doorCoor = (BluedoorCoor + ReddoorCoor) / 2;
+        _view = Matrix.CreateTranslation(width/2-doorCoor.X, height/2-doorCoor.Y, 0); // 恢复视角至初始状态
 
 
         #endregion
@@ -752,6 +758,7 @@ public class Game1 : Game
         //     RandomNewSpell().ReAttach(new(t));
         // }
     }
+    #endregion
     private void InitInventory(int inventorySize)
     {
         inventory = new(1 + inventorySize);
@@ -1040,7 +1047,7 @@ public class Game1 : Game
         {
             case GameScene.Build or GameScene.Battle:
                 if (Keyboard.HasBeenPressed(Keys.R))
-                    _view = Matrix.Identity; // 恢复视角至初始状态
+                    _view = Matrix.CreateTranslation(width/2-doorCoor.X, height/2-doorCoor.Y, 0); // 恢复视角至初始状态
                 if (gamescene == GameScene.Build && (Keyboard.IsPressed(Keys.LeftControl) || Keyboard.IsPressed(Keys.RightControl)) && Keyboard.HasBeenPressed(Keys.Enter))
                     BattleBegin();
                 #region debug cheat
