@@ -26,8 +26,8 @@ public enum GameScene {Title, Perk, Build, Battle, Win, Lose, Options, Loading}
 public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
-    static bool CHEATALLOWED = true;
-    static bool SHOPALWAYSMAX = true;
+    static bool CHEATALLOWED = false;
+    static bool SHOPALWAYSMAX = false;
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
     private double _time;
     private int _exitPower;
@@ -586,19 +586,19 @@ public class Game1 : Game
                 }
                 break;
             case 2:
-                for(int i=0;i<wave switch{1=>1,2=>2,3=>3,4=>5,5=>10,_=>throw new ArgumentOutOfRangeException()};++i)
+                for(int i=0;i<wave switch{1=>1*3,2=>2*3,3=>3*3,4=>5*3,5=>10*3,_=>throw new ArgumentOutOfRangeException()};++i)
                 {
                     cardDeck.Add(Entity.RandomCard[2].Next());
                 }
                 break;
             case 3:
-                for(int i=0;i<wave switch{1=>1,2=>2,3=>3,4=>5,5=>10,_=>throw new ArgumentOutOfRangeException()};++i)
+                for(int i=0;i<wave switch{1=>1*6,2=>2*6,3=>3*6,4=>5*6,5=>10*6,_=>throw new ArgumentOutOfRangeException()};++i)
                 {
                     cardDeck.Add(Entity.RandomCard[3].Next());
                 }
                 break;
             case 4:
-                for(int i=0;i<wave switch{1=>50,_=>throw new ArgumentOutOfRangeException()};++i)
+                for(int i=0;i<wave switch{1=>500,_=>throw new ArgumentOutOfRangeException()};++i)
                 {
                     cardDeck.Add(Entity.RandomCard[4].Next());
                 }
@@ -1027,11 +1027,11 @@ public class Game1 : Game
 
         enemyRate = stage switch{
             1 or 2 or 3 => wave switch{
-                1 => 120,
-                2 => 60,
-                3 => 40,
-                4 => 24,
-                5 => 15,
+                1 => 120/stage,
+                2 => 60/stage,
+                3 => 40/stage,
+                4 => 24/stage,
+                5 => 15/stage,
                 _ => throw new ArgumentOutOfRangeException(),
             },
             4 => 1,
