@@ -1524,6 +1524,9 @@ public class Game1 : Game
         w.Update();
         Rectangle rectMouseCatch = RectMouseCatch??RectRender;
 
+        Vector2 LeftTop = this.LeftTop - new Vector2(64,64);
+        Vector2 RightBottom = this.RightBottom + new Vector2(64,64);
+
         if(_predraw)
         {
             if(_onMap)
