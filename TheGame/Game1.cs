@@ -383,12 +383,14 @@ public class Game1 : Game
             textScale = 2
         };
         newgame = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "new game",
-            textScale = 2
+            text = "destroy this to start new game",
+            textScale = 2,
+            textColor = Color.Red * 0.5f,
         };
         quit = new Window(this, WindowType.Title, transparentTexture, Color.Transparent, clickable: false){
-            text = "quit",
-            textScale = 2
+            text = "destroy this to quit",
+            textScale = 2,
+            textColor = Color.Red * 0.5f,
         };
         // newGame = new Window(this, WindowType.NewGame, transparentTexture, Color.Transparent){
         //     text = "new game",
@@ -1645,8 +1647,8 @@ public class Game1 : Game
                 DrawStringWindow(leftmouse, new(0,+550));
                 DrawStringWindow(space, new(0,+1000));
                 DrawStringWindow(numbers, new(0,+1000+48));
-                DrawStringWindow(newgame, new(100,760+4));
-                DrawStringWindow(quit, new(66,888+4));
+                DrawStringWindowLeftTop(newgame, new(18,760+4));
+                DrawStringWindowLeftTop(quit, new(18,888+4));
 
 
                 // 实体
@@ -1731,6 +1733,11 @@ public class Game1 : Game
     {
         w.Update();
         DrawWindow(w, new(new(position.X - (_font.MeasureString(w.text) * w.textScale).ToPoint().X,position.Y), (_font.MeasureString(w.text)*w.textScale).ToPoint()), mouseCatch ? null : new());
+    }
+    protected void DrawStringWindowLeftTop(Window w, Point position, bool mouseCatch = true)
+    {
+        w.Update();
+        DrawWindow(w, new(position, (_font.MeasureString(w.text)*w.textScale).ToPoint()), mouseCatch ? null : new());
     }
     protected void DrawWindow(Window w, Rectangle RectRender, Rectangle? RectMouseCatch)
     {
