@@ -90,6 +90,8 @@ public class Spell : Thing
                 Name.RandomAim => "AIM RANDOM DIRECTION",
                 Name.RandomWait => "WAIT RANDOM TIME",
                 Name.Aiming => "AIM AT CLOSEST ENEMY",
+                Name.ScaleUp => "CAST THE SPELL WITH DOUBLE POWER",
+                Name.ScaleDown => "CAST THE SPELL WITH HALF POWER",
 
                 _ => "THIS IS A BUG"
             },

@@ -84,6 +84,8 @@ CastEvery64Ticks,
 RandomAim,
 RandomWait,
 Aiming,
+ScaleUp,
+ScaleDown,
 };
 
 abstract public class Thing : GameObject

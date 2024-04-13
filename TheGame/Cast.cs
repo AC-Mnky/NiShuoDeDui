@@ -13,6 +13,7 @@ public class Cast
     public Entity subject = null;
     public Vector2 direction = Vector2.Zero;
     public float manaMul = 1;
+    public float scale = 1;
     public Segment segment = null;
     public float progress = 0;
     public Cast(Vector2 coordinate)
@@ -32,6 +33,7 @@ public class Cast
         subject = forceIndependent ? null : c.subject;
         direction = c.direction;
         manaMul = c.manaMul;
+        scale = c.scale;
     }
     public Vector2 CurrentCoordinate()
     {

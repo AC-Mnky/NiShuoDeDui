@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework;
 
 namespace TheGame;
@@ -37,12 +38,14 @@ public class Spellcast : Thing
             {
                 case Name.SummonEnemy:
                     x = game.NewEnemy(spell.summonedEntity, cast.segment??game.Reddoor, cast.progress);
-                    AttemptCastChild(1, new(x));
+                    x.health = x.maxhealth *= cast.scale;
+                    AttemptCastChild(1, new(x){scale = cast.scale});
                     alive = false;
                     break;
                 case Name.SummonProjectile:
                     x = game.NewProjectile(spell.summonedEntity, CurrentCoordinate(), Vector2.Zero);
-                    AttemptCastChild(1, new(x){direction = cast.direction});
+                    x.health = x.maxhealth *= cast.scale;
+                    AttemptCastChild(1, new(x){direction = cast.direction, scale = cast.scale});
                     alive = false;
                     break;
                 case Name.VelocityZero:
@@ -50,31 +53,31 @@ public class Spellcast : Thing
                     alive = false;
                     break;
                 case Name.AddSpeed:
-                    cast.subject.velocity += 2 * Normalized(cast.direction);
+                    cast.subject.velocity += 2 * Normalized(cast.direction) * cast.scale;
                     alive = false;
                     break;
                 case Name.Add10Speed:
-                    cast.subject.velocity += 10 * Normalized(cast.direction);
+                    cast.subject.velocity += 10 * Normalized(cast.direction) * cast.scale;
                     alive = false;
                     break;
                 case Name.DoubleSpeed:
-                    cast.subject.velocity *= 2;
+                    cast.subject.velocity *= 2 * cast.scale;
                     alive = false;
                     break;
                 case Name.AddXVelocity:
-                    cast.subject.velocity.X += 2;
+                    cast.subject.velocity.X += 2 * cast.scale;
                     alive = false;
                     break;
                 case Name.AddYVelocity:
-                    cast.subject.velocity.Y += 2;
+                    cast.subject.velocity.Y += 2 * cast.scale;
                     alive = false;
                     break;
                 case Name.ReduceXVelocity:
-                    cast.subject.velocity.X -= 2;
+                    cast.subject.velocity.X -= 2 * cast.scale;
                     alive = false;
                     break;
                 case Name.ReduceYVelocity:
-                    cast.subject.velocity.Y -= 2;
+                    cast.subject.velocity.Y -= 2 * cast.scale;
                     alive = false;
                     break;
                 case Name.AimClosestInSquareD6:
@@ -87,38 +90,38 @@ public class Spellcast : Thing
                         if(l < minDistance)
                         {
                             minDistance = l;
-                            cast.direction = r;
+                            cast.direction = r * cast.scale;
                         }
                     }
                     x.alive = false;
                     alive = false;
                     break;
                 case Name.AimBack:
-                    cast.direction = -cast.direction;
+                    cast.direction = -cast.direction * cast.scale;
                     alive = false;
                     break;
                 case Name.AimUp:
-                    cast.direction = new(0,-1);
+                    cast.direction = new Vector2(0,-1) * cast.scale;
                     alive = false;
                     break;
                 case Name.AimDown:
-                    cast.direction = new(0,1);
+                    cast.direction = new Vector2(0,1) * cast.scale;
                     alive = false;
                     break;
                 case Name.AimLeft:
-                    cast.direction = new(-1,0);
+                    cast.direction = new Vector2(-1,0) * cast.scale;
                     alive = false;
                     break;
                 case Name.AimRight:
-                    cast.direction = new(1,0);
+                    cast.direction = new Vector2(1,0) * cast.scale;
                     alive = false;
                     break;
                 case Name.AimMouse:
-                    cast.direction = Closest(game.MouseCoor - CurrentCoordinate()) / 64;
+                    cast.direction = Closest(game.MouseCoor - CurrentCoordinate()) / 64 * cast.scale;
                     alive = false;
                     break;
                 case Name.Wait60Ticks:
-                    if(game.tick - tickBirth >= 60) alive = false;
+                    if(game.tick - tickBirth >= 60 * cast.scale) alive = false;
                     break;
                 case Name.DoubleCast:
                     AttemptCastChild(1);
@@ -162,7 +165,7 @@ public class Spellcast : Thing
                     }
                     break;
                 case Name.RandomAim:
-                    cast.direction = Randomdirection();
+                    cast.direction = Randomdirection() * cast.scale;
                     alive = false;
                     break;
                 case Name.RandomWait:
@@ -177,9 +180,17 @@ public class Spellcast : Thing
                         if(l < minDistance)
                         {
                             minDistance = l;
-                            cast.direction = r;
+                            cast.direction = r * cast.scale;
                         }
                     }
+                    alive = false;
+                    break;
+                case Name.ScaleUp:
+                    cast.scale *= 2;
+                    alive = false;
+                    break;
+                case Name.ScaleDown:
+                    cast.scale /= 2;
                     alive = false;
                     break;
             }

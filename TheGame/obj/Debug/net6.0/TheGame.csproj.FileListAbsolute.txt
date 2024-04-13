@@ -122,3 +122,8 @@ D:\Game202402\TheGame\bin\Debug\net6.0\Content\phasor3.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\runner3.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\shieldfield3.xnb
 D:\Game202402\TheGame\bin\Debug\net6.0\Content\speedfield3.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\aiming.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\randomaim.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\randomwait.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\scaledown.xnb
+D:\Game202402\TheGame\bin\Debug\net6.0\Content\scaleup.xnb

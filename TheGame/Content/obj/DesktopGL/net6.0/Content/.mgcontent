@@ -11,6 +11,7 @@
     <File>D:/Game202402/TheGame/Content/aimback.png</File>
     <File>D:/Game202402/TheGame/Content/aimclosestinsquared6icon.png</File>
     <File>D:/Game202402/TheGame/Content/aimdown.png</File>
+    <File>D:/Game202402/TheGame/Content/aiming.png</File>
     <File>D:/Game202402/TheGame/Content/aimleft.png</File>
     <File>D:/Game202402/TheGame/Content/aimmouse.png</File>
     <File>D:/Game202402/TheGame/Content/aimright.png</File>
@@ -62,10 +63,14 @@
     <File>D:/Game202402/TheGame/Content/phasor2.png</File>
     <File>D:/Game202402/TheGame/Content/phasor3.png</File>
     <File>D:/Game202402/TheGame/Content/projectile1.png</File>
+    <File>D:/Game202402/TheGame/Content/randomaim.png</File>
+    <File>D:/Game202402/TheGame/Content/randomwait.png</File>
     <File>D:/Game202402/TheGame/Content/reducexvelocityicon.png</File>
     <File>D:/Game202402/TheGame/Content/reduceyvelocityicon.png</File>
     <File>D:/Game202402/TheGame/Content/runner2.png</File>
     <File>D:/Game202402/TheGame/Content/runner3.png</File>
+    <File>D:/Game202402/TheGame/Content/scaledown.png</File>
+    <File>D:/Game202402/TheGame/Content/scaleup.png</File>
     <File>D:/Game202402/TheGame/Content/shieldfield3.png</File>
     <File>D:/Game202402/TheGame/Content/slot.png</File>
     <File>D:/Game202402/TheGame/Content/slotLeft.png</File>
@@ -97,6 +102,11 @@
     <File>D:/Game202402/TheGame/Content/white.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

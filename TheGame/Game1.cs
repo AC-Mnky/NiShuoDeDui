@@ -340,6 +340,11 @@ public class Game1 : Game
         Spell.TextureIcon[Name.CastEvery64Ticks] = Content.Load<Texture2D>("cast4timesslow");
         Spell.TextureIcon[Name.CastEvery8Ticks] = Content.Load<Texture2D>("cast16timesslow");
         Spell.TextureIcon[Name.CastEveryTick] = Content.Load<Texture2D>("cast64times");
+        Spell.TextureIcon[Name.RandomAim] = Content.Load<Texture2D>("RandomAim");
+        Spell.TextureIcon[Name.RandomWait] = Content.Load<Texture2D>("RandomWait");
+        Spell.TextureIcon[Name.Aiming] = Content.Load<Texture2D>("Aiming");
+        Spell.TextureIcon[Name.ScaleUp] = Content.Load<Texture2D>("ScaleUp");
+        Spell.TextureIcon[Name.ScaleDown] = Content.Load<Texture2D>("ScaleDown");
 
         Spell.TextureIcon[Name.Projectile1] = Content.Load<Texture2D>("summonProjectile1");
         Spell.TextureIcon[Name.Stone] = Content.Load<Texture2D>("summonStone");
@@ -952,6 +957,8 @@ public class Game1 : Game
         {Name.RandomAim, 1},
         {Name.RandomWait, 1},
         {Name.Aiming, 1},
+        {Name.ScaleUp, 0.5},
+        {Name.ScaleDown, 0.5},
 
     };
     public static readonly Dictionary<Name, int> SpellPrice = new(){
@@ -985,6 +992,8 @@ public class Game1 : Game
         {Name.RandomAim, 1},
         {Name.RandomWait, 4},
         {Name.Aiming, 3},
+        {Name.ScaleUp, 20},
+        {Name.ScaleDown, 20},
     };
     public static readonly Dictionary<Name, float> SpellCost = new(){
         {Name.Projectile1, 30},
@@ -1017,6 +1026,8 @@ public class Game1 : Game
         {Name.RandomAim, 0},
         {Name.RandomWait, 20},
         {Name.Aiming, 10},
+        {Name.ScaleUp, 50},
+        {Name.ScaleDown, 25},
     };
     public static readonly Dictionary<(Name,int), float> ManaMul = new(){
         {(Name.Projectile1, 1), 1.2f},
@@ -1050,6 +1061,8 @@ public class Game1 : Game
         {(Name.RandomAim, 0), 1.0f},
         {(Name.RandomWait, 0), 1.0f},
         {(Name.Aiming, 0), 1.3f},
+        {(Name.ScaleUp, 0), 2.0f},
+        {(Name.ScaleDown, 0), 0.5f},
    };
 
     private Spell RandomNewSpell()

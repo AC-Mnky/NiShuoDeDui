@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Game202402/TheGame/Content/aimleft.png</SourceFile>
-  <SourceTime>2024-04-13T07:49:41.6276643+08:00</SourceTime>
-  <DestFile>D:/Game202402/TheGame/Content/bin/DesktopGL/Content/aimleft.xnb</DestFile>
-  <DestTime>2024-04-13T07:56:54.1910797+08:00</DestTime>
+  <SourceFile>D:/Game202402/TheGame/Content/randomaim.png</SourceFile>
+  <SourceTime>2024-04-13T07:49:16.1063774+08:00</SourceTime>
+  <DestFile>D:/Game202402/TheGame/Content/bin/DesktopGL/Content/randomaim.xnb</DestFile>
+  <DestTime>2024-04-13T07:56:54.2140833+08:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T19:44:56+08:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
