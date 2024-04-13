@@ -34,7 +34,7 @@ Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Siz
 "D:/Game202402/TheGame/Content/defaulticon.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/defaulticon.xnb","TextureProcessor","Texture2DContent",236,5269,0.1941831
 "D:/Game202402/TheGame/Content/diamond2.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/diamond2.xnb","TextureProcessor","Texture2DContent",264,4181,0.0018098
 "D:/Game202402/TheGame/Content/door.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/door.xnb","TextureProcessor","Texture2DContent",231,16469,0.2005765
-"D:/Game202402/TheGame/Content/doublecast.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/doublecast.xnb","TextureProcessor","Texture2DContent",130,1381,0.0020486
+"D:/Game202402/TheGame/Content/doublecast.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/doublecast.xnb","TextureProcessor","Texture2DContent",163,1381,0.1836888
 "D:/Game202402/TheGame/Content/doublespeed.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/doublespeed.xnb","TextureProcessor","Texture2DContent",202,1381,0.0019516
 "D:/Game202402/TheGame/Content/enemy1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemy1.xnb","TextureProcessor","Texture2DContent",159,4181,0.2155331
 "D:/Game202402/TheGame/Content/enemycircle1.png","D:/Game202402/TheGame/Content/bin/DesktopGL/Content/enemycircle1.xnb","TextureProcessor","Texture2DContent",198,2389,0.1980864

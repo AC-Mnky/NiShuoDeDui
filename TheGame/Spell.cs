@@ -22,8 +22,8 @@ public class Spell : Thing
     public Name summonedEntity;
     public Window windowIcon;
     public Window windowSlot;
-    public Window windowUIouter;
-    public Window windowUI;
+    public Window windowDescriptionOuter;
+    public Window windowDescription;
     public Window[] windowSlots;
     public Point UIsize;
     public bool showUI = false;
@@ -31,6 +31,7 @@ public class Spell : Thing
     public float manaCost;
     public int price;
     public bool used = false;
+    public String manaTextAppendix = "";
     public Name ImplicitName()
     {
         return name == Name.SummonProjectile ? summonedEntity : name;
@@ -54,8 +55,8 @@ public class Spell : Thing
         windowIcon = new Window(this, WindowType.SpellIcon, IconTexture(), Color.White);
         windowSlot = new Window(this, WindowType.SpellSlot, null, Color.White);
         UIsize = new(64,64);
-        windowUIouter = new Window(this, WindowType.SpellDescription, Game1.whiteTexture, Color.White, clickable: false);
-        windowUI = new Window(this, WindowType.SpellDescription, Game1.whiteTexture, Color.Black, clickable: false){
+        windowDescriptionOuter = new Window(this, WindowType.SpellDescription, Game1.whiteTexture, Color.White, clickable: false);
+        windowDescription = new Window(this, WindowType.SpellDescription, Game1.whiteTexture, Color.Black, clickable: false){
             text = name switch{
                 Name.SummonProjectile => "SUMMON " + summonedEntity switch{
                     Name.Projectile1 => "A MAGICAL PROJECTILE",
@@ -131,8 +132,8 @@ public class Spell : Thing
                 };
                 break;
         }
-        if(windowUI.text != null) UIsize = Max(UIsize, new(64+(int)(game._font.MeasureString(windowUI.text).X*windowUI.textScale)+10,0));
-        if(windowUI.text2 != null) UIsize = Max(UIsize, new(64+(int)(game._font.MeasureString(windowUI.text2).X*windowUI.textScale)+10,0));
+        if(windowDescription.text != null) UIsize = Max(UIsize, new(64+(int)(game._font.MeasureString(windowDescription.text).X*windowDescription.textScale)+10,0));
+        if(windowDescription.text2 != null) UIsize = Max(UIsize, new(64+(int)(game._font.MeasureString(windowDescription.text2).X*windowDescription.textScale)+10,0));
         foreach(Window ws in windowSlots)
         {
             if(ws.text != null) UIsize = Max(UIsize, new(ws.textOffset.X+(int)(game._font.MeasureString(ws.text).X*ws.textScale)+10,0));
@@ -183,6 +184,7 @@ public class Spell : Thing
             }
         }
         attachment = new();
+        UpdateManaTextAppendix();
         return old;
     }
     public Attachment ReAttach(Attachment target)
@@ -209,6 +211,7 @@ public class Spell : Thing
                 target.parent.children[target.index] = this;
                 if(target.parent.windowSlots[target.index].textOffset.X == 64)windowSlot.texture = Game1.slotUpTexture;
                 else windowSlot.texture = Game1.slotLeftTexture;
+                UpdateManaTextAppendix();
                 break;
             }
             case Attachment.Type.Null:
@@ -218,7 +221,12 @@ public class Spell : Thing
         }
         return old;
     }
-
+    public void UpdateManaTextAppendix()
+    {
+        if(attachment.type == Attachment.Type.Child) manaTextAppendix = "*" + attachment.parent.childrenManaMul[attachment.index] + attachment.parent.manaTextAppendix;
+        else manaTextAppendix = "";
+        foreach(Spell s in children) s?.UpdateManaTextAppendix();
+    }
 
     public override void TickUpdate()
     {

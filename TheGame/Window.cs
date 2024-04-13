@@ -58,7 +58,13 @@ public class Window : GameObject
                     texture = ((Enemy)parent).ticksInvin > 0 ? Game1.invin2ed : Entity.Texture[Name.Invin2];
                 }
                 break;
-            case WindowType.SpellDescription or WindowType.SpellSlots:
+            case WindowType.SpellDescription:
+                text2 = ((Spell)parent).manaCost.ToString() + "µ" + ((Spell)parent).manaTextAppendix;
+                text2Color = game.manaColor;
+                if(game.gamescene == GameScene.Title) text2Scale = 0;
+                else text2Scale = 2;
+                break;
+            case WindowType.SpellSlots:
                 text2Color = game.manaColor;
                 if(game.gamescene == GameScene.Title) text2Scale = 0;
                 else text2Scale = 2;

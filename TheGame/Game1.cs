@@ -1704,8 +1704,8 @@ public class Game1 : Game
         }
         else
         {
-            DrawWindow(s.windowUIouter, new(new(x-2,y-2), s.UIsize+new Point(4,4)), null);
-            DrawWindow(s.windowUI, new(new(x,y), s.UIsize), null);
+            DrawWindow(s.windowDescriptionOuter, new(new(x-2,y-2), s.UIsize+new Point(4,4)), null);
+            DrawWindow(s.windowDescription, new(new(x,y), s.UIsize), null);
             DrawWindow(s.windowSlot, new(x, y, 64, 64), new());
             DrawWindow(s.windowIcon, new(x+14, y+14, 36, 36), new(x+10, y+10, 44, 44));
             foreach(Window ws in s.windowSlots) DrawWindow(ws, new(x, y, ws.texture.Width, ws.texture.Height), new(new Point(x,y) + ws.textOffset + new Point(-54,-4), new(44,44)));
