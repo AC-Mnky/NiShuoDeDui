@@ -89,7 +89,6 @@ public class Game1 : Game
     private int shopWidth, inventoryWidth;
     private bool shopOpen, inventoryOpen, inventoryAvailable;
     public int stage, wave;
-    // private Spell summonenemy1, summonenemyEasy, summonenemyFast, summonenemyVeryFast;
     private Dictionary<Name, Spell> enemySpell = null;
     public Spell summoncross1;
     public static Texture2D slotTexture, slotLeftTexture, slotUpTexture;
@@ -417,13 +416,13 @@ public class Game1 : Game
         paused = new Window(this, WindowType.Paused, transparentTexture, Color.Transparent, clickable: false){
             textScale = 3,
         };
-        shopWindow = new Window(this, WindowType.Shop, whiteTexture, Color.SaddleBrown, clickable: false);
-        inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, Color.DarkBlue, clickable: false);
-        moneyWindow = new Window(this, WindowType.Money, whiteTexture, Color.SaddleBrown){
+        shopWindow = new Window(this, WindowType.Shop, whiteTexture, new Color(0x7A,0x5C,0x58), clickable: false);
+        inventoryWindow = new Window(this, WindowType.Inventory, whiteTexture, new Color(0x8d,0x80,0xad), clickable: false);
+        moneyWindow = new Window(this, WindowType.Money, whiteTexture, new Color(0x7A,0x5C,0x58)){
             textScale = 2,
             textOffset = new(15,15)
         };
-        lifeWindow = new Window(this, WindowType.Life, whiteTexture, Color.DarkBlue){
+        lifeWindow = new Window(this, WindowType.Life, whiteTexture, new Color(0x8d,0x80,0xad)){
             textScale = 2,
             textOffset = new(15,15)
         };
@@ -626,9 +625,15 @@ public class Game1 : Game
             Spell x1 = NewSpell(Name.SummonEnemy, Name.Cross1);
             Spell x2 = NewSpell(Name.SummonEnemy, Name.Cross1);
             Spell x3 = NewSpell(Name.SummonEnemy, Name.Cross1);
-            x1.ReAttach(new(enemySpell[Name.Cross1], 0));
-            x2.ReAttach(new(x1, 0));
-            x3.ReAttach(new(x2, 0));
+            Spell y1 = NewSpell(Name.RandomWait);
+            Spell y2 = NewSpell(Name.RandomWait);
+            Spell y3 = NewSpell(Name.RandomWait);
+            y1.ReAttach(new(enemySpell[Name.Cross1], 0));
+            x1.ReAttach(new(y1,0));
+            y2.ReAttach(new(x1, 0));
+            x2.ReAttach(new(y2, 0));
+            y3.ReAttach(new(x2, 0));
+            x3.ReAttach(new(y3, 0));
 
             summoncross1 = NewSpell(Name.SummonEnemy, Name.Cross1);
         }
@@ -1030,6 +1035,9 @@ public class Game1 : Game
         {Name.ScaleDown, 25},
     };
     public static readonly Dictionary<(Name,int), float> ManaMul = new(){
+        {(Name.SummonEnemy, 0), 0f},
+        {(Name.SummonEnemy, 1), 0f},
+
         {(Name.Projectile1, 1), 1.2f},
         {(Name.Stone, 1), 5.0f},
         {(Name.Arrow, 1), 3.0f},
