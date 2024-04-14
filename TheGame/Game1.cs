@@ -26,8 +26,8 @@ public enum GameScene {Title, Perk, Build, Battle, Win, Lose, Options, Loading}
 public enum GameStatus {Paused, Running};
 public class Game1 : Game
 {
-    static bool CHEATALLOWED = true;
-    static bool SHOPALWAYSMAX = true;
+    static bool CHEATALLOWED = false;
+    static bool SHOPALWAYSMAX = false;
     public Random rand = new(RandomNumberGenerator.GetInt32(2147483647));
     private double _time;
     private int _exitPower;
