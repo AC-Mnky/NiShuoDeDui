@@ -32,7 +32,8 @@ UI: spellcast
 UI: square and circle spellslots
 UI: tower damage display
 Preview: less entities
-Core gameplay: (big changes) not so many spells
+Core gameplay: (big changes) players should not hold so many spells at once (or players should not edit spells freely(spells come in packs))
+Save
 Gameplay: better shop design (more expensive, different spells for different stages)
 Gameplay: stage 3 enemies
 Core gameplay: boss fight
@@ -42,9 +43,10 @@ Gameplay: (not urgent)better map generation
 Gameplay: (not urgent)better better collision
 Gameplay: much more spells
 Tutorial: make it better
-Core gameplay: physics / magic projectiles?
+(?)Core gameplay: physics / magic projectiles?
 QOL coding: entity-component matrix
 UI: 3*3*3 inventory
+(?)Gameplay: Health regen after boss fight?
 
 
 
