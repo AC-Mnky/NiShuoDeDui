@@ -25,11 +25,26 @@
 <!-- more more enemies -->
 <!-- more spells -->
 <!-- scaling spell -->
-(not urgent)draw perk, code perk
-(not urgent)better map generation
-(not urgent)better better collision
-more more more enemies
-more more spells
+---0.1.3---
+UI: fix manamul description bug
+UI: entity component ui
+UI: spellcast 
+UI: square and circle spellslots
+UI: tower damage display
+Preview: less entities
+Core gameplay: (big changes) not so many spells
+Gameplay: better shop design (more expensive, different spells for different stages)
+Gameplay: stage 3 enemies
+Core gameplay: boss fight
+UI: multicast manamul (*2)
+Core gameplay: (not urgent)draw perk, code perk
+Gameplay: (not urgent)better map generation
+Gameplay: (not urgent)better better collision
+Gameplay: much more spells
+Tutorial: make it better
+Core gameplay: physics / magic projectiles?
+QOL coding: entity-component matrix
+UI: 3*3*3 inventory
 
 
 

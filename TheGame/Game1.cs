@@ -1054,7 +1054,7 @@ public class Game1 : Game
         {(Name.ReduceYVelocity, 0), 1.0f},
         {(Name.AimClosestInSquareD6, 0), 1.2f},
         {(Name.TriggerUponDeath, 0), 1.5f},
-        {(Name.Wait60Ticks, 0), 1.5f},
+        {(Name.Wait60Ticks, 0), 1.1f},
         {(Name.VelocityZero, 0),  1.0f},
         {(Name.AimMouse, 0), 2.0f},
         {(Name.AimBack, 0), 1.0f},
